@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<menu-config xmlns="http://jmix.io/schema/flowui/menu">
+
+    <menu id="application" title="msg://com.company.base6/menu.application.title" opened="true">
+        <item view="User.list" title="msg://com.company.base6.view.user/UserListView.title"/>
+        <item view="UnitMeasure.list" title="msg://com.company.base6.view.unitmeasure/unitMeasureListView.title"/>
+        <item view="Material.list" title="msg://com.company.base6.view.material/materialListView.title"/>
+        <item view="Parametrsize.list" title="msg://com.company.base6.view.parametrsize/parametrsizeListView.title"/>
+        <item view="Typeworkpiece.list" title="msg://com.company.base6.view.typeworkpiece/typeworkpieceListView.title"/>
+        <item view="Fullnamematerial.list"
+              title="msg://com.company.base6.view.fullnamematerial/fullnamematerialListView.title"/>
+        <item view="Workpiece.list" title="msg://com.company.base6.view.workpiece/workpieceListView.title"/>
+        <item view="Specification.list" title="msg://com.company.base6.view.specification/specificationListView.title"/>
+    </menu>
+
+</menu-config>

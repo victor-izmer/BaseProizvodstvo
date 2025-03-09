@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd"
+        objectQuotingStrategy="QUOTE_ONLY_RESERVED_WORDS">
+    <changeSet id="1" author="Base6">
+        <createTable tableName="workpiece">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="PK_WORKPIECE"/>
+            </column>
+            <column name="Наименование" type="VARCHAR(255)"/>
+            <column name="Номер_чертежа" type="VARCHAR(255)"/>
+            <column name="Примечание_детали" type="VARCHAR(255)"/>
+            <column name="Цена_последняя" type="FLOAT"/>
+            <column name="Цена_последняя_НДС" type="BOOLEAN"/>
+            <column name="materialref" type="BIGINT"/>
+            <column name="РАЗМЕР" type="FLOAT"/>
+            <column name="Время_изготовления" type="SMALLINT"/>
+            <column name="photopath" type="CLOB"/>
+            <column name="drawpath" type="CLOB"/>
+            <column name="parametrsizeref" type="BIGINT"/>
+            <column name="typeref" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="2" author="Base6">
+        <addColumn tableName="typeworkpiece">
+            <column name="Картинка" type="${byte[].type}"/>
+        </addColumn>
+    </changeSet>
+    <changeSet id="3" author="Base6">
+        <addForeignKeyConstraint baseColumnNames="materialref" baseTableName="workpiece"
+                                 constraintName="FK_WORKPIECE_ON_MATERIALREF" referencedColumnNames="id"
+                                 referencedTableName="material"/>
+    </changeSet>
+    <changeSet id="4" author="Base6">
+        <addForeignKeyConstraint baseColumnNames="parametrsizeref" baseTableName="workpiece"
+                                 constraintName="FK_WORKPIECE_ON_PARAMETRSIZEREF" referencedColumnNames="id"
+                                 referencedTableName="parametrsize"/>
+    </changeSet>
+    <changeSet id="5" author="Base6">
+        <addForeignKeyConstraint baseColumnNames="typeref" baseTableName="workpiece"
+                                 constraintName="FK_WORKPIECE_ON_TYPEREF" referencedColumnNames="id"
+                                 referencedTableName="typeworkpiece"/>
+    </changeSet>
+    <changeSet id="6" author="Base6">
+        <dropColumn columnName="\u041A\u0430\u0440\u0442\u0438\u043D\u043A\u0430" tableName="typeworkpiece"/>
+    </changeSet>
+</databaseChangeLog>

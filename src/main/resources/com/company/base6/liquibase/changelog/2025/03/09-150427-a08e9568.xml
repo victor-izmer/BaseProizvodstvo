@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd"
+        objectQuotingStrategy="QUOTE_ONLY_RESERVED_WORDS">
+    <changeSet id="1" author="Base6">
+        <dropForeignKeyConstraint baseTableName="workpiece" constraintName="workpiece_materialref_fkey"/>
+    </changeSet>
+    <changeSet id="2" author="Base6">
+        <dropForeignKeyConstraint baseTableName="workpiece" constraintName="workpiece_parametrsizeref_fkey"/>
+    </changeSet>
+    <changeSet id="3" author="Base6">
+        <dropForeignKeyConstraint baseTableName="workpiece" constraintName="workpiece_typeref_fkey"/>
+    </changeSet>
+    <changeSet id="4" author="Base6">
+        <dropTable cascadeConstraints="true" tableName="material"/>
+    </changeSet>
+    <changeSet id="5" author="Base6">
+        <dropTable cascadeConstraints="true" tableName="parametrsize"/>
+    </changeSet>
+    <changeSet id="6" author="Base6">
+        <dropTable cascadeConstraints="true" tableName="typeworkpiece"/>
+    </changeSet>
+    <changeSet id="7" author="Base6">
+        <dropTable cascadeConstraints="true" tableName="workpiece"/>
+    </changeSet>
+</databaseChangeLog>

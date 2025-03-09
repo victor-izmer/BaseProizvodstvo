@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<view xmlns="http://jmix.io/schema/flowui/view"
+      xmlns:c="http://jmix.io/schema/flowui/jpql-condition"
+      title="msg://parametrsizeListView.title"
+      focusComponent="parametrsizesDataGrid">
+    <data>
+        <collection id="parametrsizesDc"
+                    class="com.company.base6.Parametrsize">
+            <fetchPlan extends="_base"/>
+            <loader id="parametrsizesDl" readOnly="true">
+                <query>
+                    <![CDATA[select e from Parametrsize e]]>
+                </query>
+            </loader>
+        </collection>
+        <instance id="parametrsizeDc"
+                  class="com.company.base6.Parametrsize">
+            <fetchPlan extends="_base"/>
+            <loader id="parametrsizeDl"/>
+        </instance>
+    </data>
+    <facets>
+        <dataLoadCoordinator auto="true"/>
+        <urlQueryParameters>
+            <genericFilter component="genericFilter"/>
+            <pagination component="pagination"/>
+        </urlQueryParameters>
+    </facets>
+    <actions>
+        <action id="selectAction" type="lookup_select"/>
+        <action id="discardAction" type="lookup_discard"/>
+    </actions>
+    <layout padding="false">
+        <formLayout id="layoutWrapper" classNames="master-detail-layout" height="100%">
+            <vbox id="listLayout" height="100%">
+                <genericFilter id="genericFilter"
+                               dataLoader="parametrsizesDl">
+                    <properties include=".*"/>
+                </genericFilter>
+                <hbox id="buttonsPanel" classNames="buttons-panel">
+                    <button id="createButton" action="parametrsizesDataGrid.create"/>
+                    <button id="editButton" action="parametrsizesDataGrid.edit"/>
+                    <button id="removeButton" action="parametrsizesDataGrid.remove"/>
+                    <simplePagination id="pagination" dataLoader="parametrsizesDl"/>
+                </hbox>
+                <dataGrid id="parametrsizesDataGrid"
+                          width="100%"
+                          minHeight="20em"
+                          dataContainer="parametrsizesDc"
+                          columnReorderingAllowed="true">
+                    <actions>
+                        <action id="create" type="list_create"/>
+                        <action id="edit" type="list_edit"/>
+                        <action id="remove" type="list_remove"/>
+                    </actions>
+                    <columns resizable="true">
+                        <column property="description"/>
+                    </columns>
+                </dataGrid>
+                <hbox id="lookupActions" visible="false">
+                    <button id="selectButton" action="selectAction"/>
+                    <button id="discardButton" action="discardAction"/>
+                </hbox>
+            </vbox>
+            <vbox id="detailsLayout" height="100%">
+                <formLayout id="form" dataContainer="parametrsizeDc">
+                    <responsiveSteps>
+                        <responsiveStep minWidth="0" columns="1"/>
+                        <responsiveStep minWidth="40em" columns="2"/>
+                    </responsiveSteps>
+                    <textField id="descriptionField" property="description"/>
+                </formLayout>
+                <hbox id="detailActions">
+                    <button id="saveButton" text="msg:///actions.Save" icon="CHECK" themeNames="primary"/>
+                    <button id="cancelButton" text="msg:///actions.Cancel" icon="BAN"/>
+                </hbox>
+            </vbox>
+        </formLayout>
+    </layout>
+</view>

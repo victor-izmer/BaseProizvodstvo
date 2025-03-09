@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<view xmlns="http://jmix.io/schema/flowui/view"
+      xmlns:c="http://jmix.io/schema/flowui/jpql-condition"
+      title="msg://specificationListView.title"
+      focusComponent="specificationsDataGrid">
+    <data>
+        <collection id="specificationsDc"
+                    class="com.company.base6.Specification">
+            <fetchPlan extends="_base">
+                <property name="detailref" fetchPlan="_base"/>
+                <property name="parentref" fetchPlan="_base"/>
+            </fetchPlan>
+            <loader id="specificationsDl" readOnly="true">
+                <query>
+                    <![CDATA[select e from Specification e]]>
+                </query>
+            </loader>
+        </collection>
+        <instance id="specificationDc"
+                  class="com.company.base6.Specification">
+            <fetchPlan extends="_base">
+                <property name="detailref" fetchPlan="_base"/>
+            </fetchPlan>
+            <loader id="specificationDl"/>
+        </instance>
+    </data>
+    <facets>
+        <dataLoadCoordinator auto="true"/>
+        <urlQueryParameters>
+            <genericFilter component="genericFilter"/>
+            <pagination component="pagination"/>
+        </urlQueryParameters>
+    </facets>
+    <actions>
+        <action id="selectAction" type="lookup_select"/>
+        <action id="discardAction" type="lookup_discard"/>
+    </actions>
+    <layout padding="false">
+        <formLayout id="layoutWrapper" classNames="master-detail-layout" height="100%">
+            <vbox id="listLayout" height="100%">
+                <genericFilter id="genericFilter"
+                               dataLoader="specificationsDl">
+                    <properties include=".*"/>
+                </genericFilter>
+                <hbox id="buttonsPanel" classNames="buttons-panel">
+                    <button id="createButton" action="specificationsDataGrid.create"/>
+                    <button id="editButton" action="specificationsDataGrid.edit"/>
+                    <button id="removeButton" action="specificationsDataGrid.remove"/>
+                    <simplePagination id="pagination" dataLoader="specificationsDl"/>
+                </hbox>
+                <treeDataGrid id="specificationsDataGrid"
+                          width="100%"
+                          minHeight="20em"
+                          dataContainer="specificationsDc"
+                          columnReorderingAllowed="true" hierarchyProperty="parentref">
+                    <actions>
+                        <action id="create" type="list_create"/>
+                        <action id="edit" type="list_edit"/>
+                        <action id="remove" type="list_remove"/>
+                    </actions>
+                    <columns resizable="true">
+                        <column property="detailref"/>
+                    </columns>
+                </treeDataGrid>
+                <hbox id="lookupActions" visible="false">
+                    <button id="selectButton" action="selectAction"/>
+                    <button id="discardButton" action="discardAction"/>
+                </hbox>
+            </vbox>
+            <vbox id="detailsLayout" height="100%">
+                <formLayout id="form" dataContainer="specificationDc">
+                    <responsiveSteps>
+                        <responsiveStep minWidth="0" columns="1"/>
+                        <responsiveStep minWidth="40em" columns="2"/>
+                    </responsiveSteps>
+                    <entityPicker id="detailrefField" property="detailref">
+                        <actions>
+                            <action id="entityLookup" type="entity_lookup"/>
+                            <action id="entityClear" type="entity_clear"/>
+                        </actions>
+                    </entityPicker>
+                    <textField id="количествоField" property="количество"/>
+                    <textArea id="примечаниеСпецификацииField" height="9.5em" property="примечаниеСпецификации"/>
+                </formLayout>
+                <hbox id="detailActions">
+                    <button id="saveButton" text="msg:///actions.Save" icon="CHECK" themeNames="primary"/>
+                    <button id="cancelButton" text="msg:///actions.Cancel" icon="BAN"/>
+                </hbox>
+            </vbox>
+        </formLayout>
+    </layout>
+</view>

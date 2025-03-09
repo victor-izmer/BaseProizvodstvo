@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<view xmlns="http://jmix.io/schema/flowui/view"
+      xmlns:c="http://jmix.io/schema/flowui/jpql-condition"
+      title="msg://workpieceListView.title"
+      focusComponent="workpiecesDataGrid">
+    <data>
+        <collection id="workpiecesDc"
+                    class="com.company.base6.Workpiece">
+            <fetchPlan extends="_base">
+                <property name="materialref" fetchPlan="_base"/>
+                <property name="parametrsizeref" fetchPlan="_base"/>
+                <property name="typeref" fetchPlan="_base"/>
+            </fetchPlan>
+            <loader id="workpiecesDl" readOnly="true">
+                <query>
+                    <![CDATA[select e from Workpiece e]]>
+                </query>
+            </loader>
+        </collection>
+        <instance id="workpieceDc"
+                  class="com.company.base6.Workpiece">
+            <fetchPlan extends="_base">
+                <property name="materialref" fetchPlan="_base"/>
+                <property name="parametrsizeref" fetchPlan="_base"/>
+                <property name="typeref" fetchPlan="_base"/>
+            </fetchPlan>
+            <loader id="workpieceDl"/>
+        </instance>
+    </data>
+    <facets>
+        <dataLoadCoordinator auto="true"/>
+        <urlQueryParameters>
+            <genericFilter component="genericFilter"/>
+            <pagination component="pagination"/>
+        </urlQueryParameters>
+    </facets>
+    <actions>
+        <action id="selectAction" type="lookup_select"/>
+        <action id="discardAction" type="lookup_discard"/>
+    </actions>
+    <layout padding="false">
+        <formLayout id="layoutWrapper" classNames="master-detail-layout" height="100%">
+            <vbox id="listLayout" height="100%">
+                <genericFilter id="genericFilter"
+                               dataLoader="workpiecesDl">
+                    <properties include=".*"/>
+                </genericFilter>
+                <hbox id="buttonsPanel" classNames="buttons-panel">
+                    <button id="createButton" action="workpiecesDataGrid.create"/>
+                    <button id="editButton" action="workpiecesDataGrid.edit"/>
+                    <button id="removeButton" action="workpiecesDataGrid.remove"/>
+                    <simplePagination id="pagination" dataLoader="workpiecesDl"/>
+                </hbox>
+                <dataGrid id="workpiecesDataGrid"
+                          width="100%"
+                          minHeight="20em"
+                          dataContainer="workpiecesDc"
+                          columnReorderingAllowed="true">
+                    <actions>
+                        <action id="create" type="list_create"/>
+                        <action id="edit" type="list_edit"/>
+                        <action id="remove" type="list_remove"/>
+                    </actions>
+                    <columns resizable="true">
+                        <column property="id"/>
+                        <column property="наименование"/>
+                        <column property="номерЧертежа"/>
+                        <column property="примечаниеДетали"/>
+                        <column property="ценаПоследняя"/>
+                        <column property="ценаПоследняяНдс"/>
+                        <column property="materialref"/>
+                        <column property="размер"/>
+                        <column property="времяИзготовления"/>
+                        <column property="photopath"/>
+                        <column property="drawpath"/>
+                        <column property="parametrsizeref"/>
+                        <column property="typeref"/>
+                    </columns>
+                </dataGrid>
+                <hbox id="lookupActions" visible="false">
+                    <button id="selectButton" action="selectAction"/>
+                    <button id="discardButton" action="discardAction"/>
+                </hbox>
+            </vbox>
+            <vbox id="detailsLayout" height="100%">
+                <formLayout id="form" dataContainer="workpieceDc">
+                    <responsiveSteps>
+                        <responsiveStep minWidth="0" columns="1"/>
+                        <responsiveStep minWidth="40em" columns="2"/>
+                    </responsiveSteps>
+                    <textField id="idField" property="id"/>
+                    <textField id="наименованиеField" property="наименование"/>
+                    <textField id="номерЧертежаField" property="номерЧертежа"/>
+                    <textField id="примечаниеДеталиField" property="примечаниеДетали"/>
+                    <textField id="ценаПоследняяField" property="ценаПоследняя"/>
+                    <checkbox id="ценаПоследняяНдсField" property="ценаПоследняяНдс"/>
+                    <entityPicker id="materialrefField" property="materialref">
+                        <actions>
+                            <action id="entityLookup" type="entity_lookup"/>
+                            <action id="entityClear" type="entity_clear"/>
+                        </actions>
+                    </entityPicker>
+                    <textField id="размерField" property="размер"/>
+                    <textField id="времяИзготовленияField" property="времяИзготовления"/>
+                    <textArea id="photopathField" height="9.5em" property="photopath"/>
+                    <textArea id="drawpathField" height="9.5em" property="drawpath"/>
+                    <entityPicker id="parametrsizerefField" property="parametrsizeref">
+                        <actions>
+                            <action id="entityLookup" type="entity_lookup"/>
+                            <action id="entityClear" type="entity_clear"/>
+                        </actions>
+                    </entityPicker>
+                    <entityPicker id="typerefField" property="typeref">
+                        <actions>
+                            <action id="entityLookup" type="entity_lookup"/>
+                            <action id="entityClear" type="entity_clear"/>
+                        </actions>
+                    </entityPicker>
+                </formLayout>
+                <hbox id="detailActions">
+                    <button id="saveButton" text="msg:///actions.Save" icon="CHECK" themeNames="primary"/>
+                    <button id="cancelButton" text="msg:///actions.Cancel" icon="BAN"/>
+                </hbox>
+            </vbox>
+        </formLayout>
+    </layout>
+</view>
