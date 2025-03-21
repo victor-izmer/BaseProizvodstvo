@@ -7,29 +7,32 @@
         <collection id="specificationsDc"
                     class="com.company.base6.Specification">
             <fetchPlan extends="_base">
-                <property name="detailref" fetchPlan="_base"/>
-                <property name="parentref" fetchPlan="_base"/>
+                <property name="detalref" fetchPlan="_base"/>
+                <property name="parentref" fetchPlan="_base">
+                    <property name="detalref" fetchPlan="_base"/>
+                </property>
+                <property name="unitMeasure" fetchPlan="_base"/>
+
+                <property name="id"/>
             </fetchPlan>
-            <loader id="specificationsDl" readOnly="true">
+            <loader id="specificationsDl" readOnly="true" cacheable="true">
                 <query>
-                    <![CDATA[select e from Specification e]]>
+                    <![CDATA[select e from Specification e ORDER BY e.id]]>
                 </query>
             </loader>
         </collection>
         <instance id="specificationDc"
                   class="com.company.base6.Specification">
             <fetchPlan extends="_base">
-                <property name="detailref" fetchPlan="_base"/>
+                <property name="detalref" fetchPlan="_base"/>
+                <property name="parentref" fetchPlan="_base"/>
             </fetchPlan>
             <loader id="specificationDl"/>
         </instance>
     </data>
     <facets>
         <dataLoadCoordinator auto="true"/>
-        <urlQueryParameters>
-            <genericFilter component="genericFilter"/>
-            <pagination component="pagination"/>
-        </urlQueryParameters>
+
     </facets>
     <actions>
         <action id="selectAction" type="lookup_select"/>
@@ -46,22 +49,32 @@
                     <button id="createButton" action="specificationsDataGrid.create"/>
                     <button id="editButton" action="specificationsDataGrid.edit"/>
                     <button id="removeButton" action="specificationsDataGrid.remove"/>
-                    <simplePagination id="pagination" dataLoader="specificationsDl"/>
                 </hbox>
+
                 <treeDataGrid id="specificationsDataGrid"
-                          width="100%"
-                          minHeight="20em"
-                          dataContainer="specificationsDc"
-                          columnReorderingAllowed="true" hierarchyProperty="parentref">
+                              width="100%"
+                              minHeight="20em"
+                              dataContainer="specificationsDc"
+                              hierarchyProperty="parentref"
+                              columnReorderingAllowed="true" showOrphans="true">
                     <actions>
                         <action id="create" type="list_create"/>
-                        <action id="edit" type="list_edit"/>
+                        <action id="edit" type="list_edit">
+                            <properties>
+                                <property name="openMode" value="DIALOG"/>
+                            </properties>
+                        </action>
                         <action id="remove" type="list_remove"/>
                     </actions>
                     <columns resizable="true">
-                        <column property="detailref"/>
+                        <column property="detalref.наименование" width="310px"/>
+                        <column property="количество" width="50px" textAlign="CENTER"/>
+                        <column property="unitMeasure" width="40px" textAlign="CENTER"/>
+                        <column property="primSpec" autoWidth="true"/>
+
                     </columns>
                 </treeDataGrid>
+
                 <hbox id="lookupActions" visible="false">
                     <button id="selectButton" action="selectAction"/>
                     <button id="discardButton" action="discardAction"/>
@@ -69,18 +82,37 @@
             </vbox>
             <vbox id="detailsLayout" height="100%">
                 <formLayout id="form" dataContainer="specificationDc">
+
                     <responsiveSteps>
                         <responsiveStep minWidth="0" columns="1"/>
                         <responsiveStep minWidth="40em" columns="2"/>
                     </responsiveSteps>
-                    <entityPicker id="detailrefField" property="detailref">
+                    <textField id="detalrefField" property="detalref" maxWidth="300px"/>
+                    <textField id="количествоField" property="количество" maxWidth="70px"/>
+                    <entityPicker id="едИзмField" property="unitMeasure" maxWidth="130px">
                         <actions>
                             <action id="entityLookup" type="entity_lookup"/>
                             <action id="entityClear" type="entity_clear"/>
                         </actions>
                     </entityPicker>
-                    <textField id="количествоField" property="количество"/>
-                    <textArea id="примечаниеСпецификацииField" height="9.5em" property="примечаниеСпецификации"/>
+                    <textField id="номерЧертежаField" property="detalref.номерЧертежа" maxWidth="150px"/>
+                    <textArea height="9.5em" property="detalref.примечаниеДетали"/>
+                    <textArea id="primSpecField" height="9.5em" property="primSpec"/>
+
+                    <image
+                            id="photoImage" classNames="photo-preview"
+                            resource="{fullPhotopath}" text="msg://image.text" property="detalref.fullPhotoPath"
+                            css=" height:300px; width:auto!important;object-fit: contain; "/>
+                    <image
+                            id="drawImage" classNames="photo-preview"
+                            resource="{fullDrawpath}" text="msg://image.text" property="detalref.fullDrawPath"
+                            css=" height:300px; width:auto!important;object-fit: contain; "/>
+                    <textField id="materialrefField" property="detalref.materialref.description" label="Материал"/>
+                    <textField id="параметрРазмераField" property="detalref.parametrsizeref" maxWidth="110px"/>
+                    <textField id="размерField" property="detalref.размер" maxWidth="70px"/>
+                    <textField id="времяИзготовленияField" property="detalref.времяИзготовления" maxWidth="100px"/>
+                    <textField id="parentrefField" property="parentref.detalref.наименование" maxWidth="350px"
+                               label="Родитель"/>
                 </formLayout>
                 <hbox id="detailActions">
                     <button id="saveButton" text="msg:///actions.Save" icon="CHECK" themeNames="primary"/>

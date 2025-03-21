@@ -10,7 +10,14 @@
         <item view="Fullnamematerial.list"
               title="msg://com.company.base6.view.fullnamematerial/fullnamematerialListView.title"/>
         <item view="Workpiece.list" title="msg://com.company.base6.view.workpiece/workpieceListView.title"/>
+        <item view="Department.list" title="msg://com.company.base6.view.department/departmentListView.title"/>
         <item view="Specification.list" title="msg://com.company.base6.view.specification/specificationListView.title"/>
+        <item view="StatusZayavka.list" title="msg://com.company.base6.view.statuszayavka/statusZayavkaListView.title"/>
+        <item view="TypeSupplier.list" title="msg://com.company.base6.view.typesupplier/typeSupplierListView.title"/>
+        <item view="Supplier.list" title="msg://com.company.base6.view.supplier/supplierListView.title"/>
+        <item view="Request.list" title="msg://com.company.base6.view.request/requestListView.title"/>
+        <item view="Operation.list" title="msg://com.company.base6.view.operation/operationListView.title"/>
+        <item view="Basket.list" title="msg://com.company.base6.view.basket/basketListView.title"/>
     </menu>
 
 </menu-config>

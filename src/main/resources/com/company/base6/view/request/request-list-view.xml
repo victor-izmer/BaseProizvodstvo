@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<view xmlns="http://jmix.io/schema/flowui/view"
+      xmlns:c="http://jmix.io/schema/flowui/jpql-condition"
+      title="msg://requestListView.title"
+      focusComponent="requestsDataGrid">
+    <data>
+        <collection id="requestsDc"
+                    class="com.company.base6.entity.Request">
+            <fetchPlan extends="_base">
+                <property name="supplierRef" fetch="AUTO" fetchPlan="_base"/>
+                <property name="statusZayavkaRef" fetch="AUTO" fetchPlan="_base"/>
+            </fetchPlan>
+            <loader id="requestsDl" readOnly="true">
+                <query>
+                    <![CDATA[select e from Request e]]>
+                </query>
+            </loader>
+        </collection>
+        <instance id="requestDc"
+                  class="com.company.base6.entity.Request">
+            <fetchPlan extends="_base">
+                <property name="supplierRef" fetch="AUTO" fetchPlan="_base"/>
+                <property name="statusZayavkaRef" fetch="AUTO" fetchPlan="_base"/>
+            </fetchPlan>
+            <loader id="requestDl"/>
+        </instance>
+    </data>
+    <facets>
+        <dataLoadCoordinator auto="true"/>
+        <urlQueryParameters>
+            <genericFilter component="genericFilter"/>
+            <pagination component="pagination"/>
+        </urlQueryParameters>
+    </facets>
+    <actions>
+        <action id="selectAction" type="lookup_select"/>
+        <action id="discardAction" type="lookup_discard"/>
+    </actions>
+    <layout padding="false">
+        <formLayout id="layoutWrapper" classNames="master-detail-layout" height="100%">
+            <vbox id="listLayout" height="100%">
+                <genericFilter id="genericFilter"
+                               dataLoader="requestsDl">
+                    <properties include=".*"/>
+                </genericFilter>
+                <hbox id="buttonsPanel" classNames="buttons-panel">
+                    <button id="createButton" action="requestsDataGrid.create"/>
+                    <button id="editButton" action="requestsDataGrid.edit"/>
+                    <button id="removeButton" action="requestsDataGrid.remove"/>
+                    <simplePagination id="pagination" dataLoader="requestsDl"/>
+                </hbox>
+                <dataGrid id="requestsDataGrid"
+                          width="100%"
+                          minHeight="20em"
+                          dataContainer="requestsDc"
+                          columnReorderingAllowed="true">
+                    <actions>
+                        <action id="create" type="list_create"/>
+                        <action id="edit" type="list_edit"/>
+                        <action id="remove" type="list_remove"/>
+                    </actions>
+                    <columns resizable="true">
+                        <column property="supplierRef"/>
+                        <column property="dateRequest"/>
+                        <column property="scanInvoice"/>
+                        <column property="dateControl"/>
+                        <column property="dateFinish"/>
+                        <column property="primRequest"/>
+                        <column property="statusZayavkaRef"/>
+                        <column property="sumRequest"/>
+                    </columns>
+                </dataGrid>
+                <hbox id="lookupActions" visible="false">
+                    <button id="selectButton" action="selectAction"/>
+                    <button id="discardButton" action="discardAction"/>
+                </hbox>
+            </vbox>
+            <vbox id="detailsLayout" height="100%">
+                <formLayout id="form" dataContainer="requestDc">
+                    <responsiveSteps>
+                        <responsiveStep minWidth="0" columns="1"/>
+                        <responsiveStep minWidth="40em" columns="2"/>
+                    </responsiveSteps>
+                    <entityPicker id="supplierRefField" property="supplierRef">
+                        <actions>
+                            <action id="entityLookup" type="entity_lookup"/>
+                            <action id="entityClear" type="entity_clear"/>
+                        </actions>
+                    </entityPicker>
+                    <datePicker id="dateRequestField" property="dateRequest"/>
+                    <textField id="scanInvoiceField" property="scanInvoice"/>
+                    <datePicker id="dateControlField" property="dateControl"/>
+                    <datePicker id="dateFinishField" property="dateFinish"/>
+                    <textField id="primRequestField" property="primRequest"/>
+                    <entityPicker id="statusZayavkaRefField" property="statusZayavkaRef">
+                        <actions>
+                            <action id="entityLookup" type="entity_lookup"/>
+                            <action id="entityClear" type="entity_clear"/>
+                        </actions>
+                    </entityPicker>
+                    <textField id="sumRequestField" property="sumRequest"/>
+                </formLayout>
+                <hbox id="detailActions">
+                    <button id="saveButton" text="msg:///actions.Save" icon="CHECK" themeNames="primary"/>
+                    <button id="cancelButton" text="msg:///actions.Cancel" icon="BAN"/>
+                </hbox>
+            </vbox>
+        </formLayout>
+    </layout>
+</view>

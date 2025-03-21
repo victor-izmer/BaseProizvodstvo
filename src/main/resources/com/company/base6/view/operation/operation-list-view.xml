@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<view xmlns="http://jmix.io/schema/flowui/view"
+      xmlns:c="http://jmix.io/schema/flowui/jpql-condition"
+      title="msg://operationListView.title"
+      focusComponent="operationsDataGrid">
+    <data>
+        <collection id="operationsDc"
+                    class="com.company.base6.entity.Operation">
+            <fetchPlan extends="_base">
+                <property name="typeOperationRef" fetch="AUTO" fetchPlan="_base"/>
+                <property name="detailOut" fetch="AUTO" fetchPlan="_base"/>
+            </fetchPlan>
+            <loader id="operationsDl" readOnly="true">
+                <query>
+                    <![CDATA[select e from Operation e]]>
+                </query>
+            </loader>
+        </collection>
+    </data>
+    <facets>
+        <dataLoadCoordinator auto="true"/>
+        <urlQueryParameters>
+            <genericFilter component="genericFilter"/>
+            <pagination component="pagination"/>
+        </urlQueryParameters>
+    </facets>
+    <actions>
+        <action id="selectAction" type="lookup_select"/>
+        <action id="discardAction" type="lookup_discard"/>
+    </actions>
+    <layout>
+        <genericFilter id="genericFilter"
+                       dataLoader="operationsDl">
+            <properties include=".*"/>
+        </genericFilter>
+        <hbox id="buttonsPanel" classNames="buttons-panel">
+            <button id="createButton" action="operationsDataGrid.create"/>
+            <button id="editButton" action="operationsDataGrid.edit"/>
+            <button id="removeButton" action="operationsDataGrid.remove"/>
+            <simplePagination id="pagination" dataLoader="operationsDl"/>
+        </hbox>
+        <dataGrid id="operationsDataGrid"
+                  width="100%"
+                  minHeight="20em"
+                  dataContainer="operationsDc"
+                  columnReorderingAllowed="true">
+            <actions>
+                <action id="create" type="list_create"/>
+                <action id="edit" type="list_edit"/>
+                <action id="remove" type="list_remove"/>
+            </actions>
+            <columns resizable="true">
+                <column property="typeOperationRef"/>
+                <column property="detailOut"/>
+                <column property="priceOp"/>
+                <column property="nds"/>
+                <column property="primOp"/>
+                <column property="durationOp"/>
+            </columns>
+        </dataGrid>
+        <hbox id="lookupActions" visible="false">
+            <button id="selectButton" action="selectAction"/>
+            <button id="discardButton" action="discardAction"/>
+        </hbox>
+    </layout>
+</view>

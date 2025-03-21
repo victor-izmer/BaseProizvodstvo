@@ -1,19 +1,17 @@
-package com.company.base6.view.specification;
+package com.company.base6.view.basket;
 
-import com.company.base6.Specification;
+import com.company.base6.entity.Basket;
 import com.company.base6.view.main.MainView;
 import com.vaadin.flow.component.ClickEvent;
 import com.vaadin.flow.component.HasValueAndElement;
 import com.vaadin.flow.component.formlayout.FormLayout;
-import com.vaadin.flow.component.grid.ItemDoubleClickEvent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.Route;
 import io.jmix.core.validation.group.UiCrossFieldChecks;
 import io.jmix.flowui.action.SecuredBaseAction;
 import io.jmix.flowui.component.UiComponentUtils;
-import io.jmix.flowui.component.grid.TreeDataGrid;
-import io.jmix.flowui.component.image.JmixImage;
+import io.jmix.flowui.component.grid.DataGrid;
 import io.jmix.flowui.component.validation.ValidationErrors;
 import io.jmix.flowui.kit.action.Action;
 import io.jmix.flowui.kit.action.ActionPerformedEvent;
@@ -24,30 +22,30 @@ import io.jmix.flowui.model.InstanceContainer;
 import io.jmix.flowui.model.InstanceLoader;
 import io.jmix.flowui.view.*;
 
-@Route(value = "specifications", layout = MainView.class)
-@ViewController(id = "Specification.list")
-@ViewDescriptor(path = "specification-list-view.xml")
-@LookupComponent("specificationsDataGrid")
+@Route(value = "baskets", layout = MainView.class)
+@ViewController(id = "Basket.list")
+@ViewDescriptor(path = "basket-list-view.xml")
+@LookupComponent("basketsDataGrid")
 @DialogMode(width = "64em")
-public class SpecificationListView extends StandardListView<Specification> {
+public class BasketListView extends StandardListView<Basket> {
 
     @ViewComponent
     private DataContext dataContext;
 
     @ViewComponent
-    private CollectionContainer<Specification> specificationsDc;
+    private CollectionContainer<Basket> basketsDc;
 
     @ViewComponent
-    private InstanceContainer<Specification> specificationDc;
+    private InstanceContainer<Basket> basketDc;
 
     @ViewComponent
-    private InstanceLoader<Specification> specificationDl;
+    private InstanceLoader<Basket> basketDl;
 
     @ViewComponent
     private VerticalLayout listLayout;
 
     @ViewComponent
-    private TreeDataGrid<Specification> specificationsDataGrid;
+    private DataGrid<Basket> basketsDataGrid;
 
     @ViewComponent
     private FormLayout form;
@@ -57,36 +55,34 @@ public class SpecificationListView extends StandardListView<Specification> {
 
     @Subscribe
     public void onInit(final InitEvent event) {
-        specificationsDataGrid.getActions().forEach(action -> {
+        basketsDataGrid.getActions().forEach(action -> {
             if (action instanceof SecuredBaseAction secured) {
                 secured.addEnabledRule(() -> listLayout.isEnabled());
             }
         });
     }
 
-
-
     @Subscribe
     public void onBeforeShow(final BeforeShowEvent event) {
         updateControls(false);
     }
 
-    @Subscribe("specificationsDataGrid.create")
-    public void onSpecificationsDataGridCreate(final ActionPerformedEvent event) {
+    @Subscribe("basketsDataGrid.create")
+    public void onBasketsDataGridCreate(final ActionPerformedEvent event) {
         dataContext.clear();
-        Specification entity = dataContext.create(Specification.class);
-        specificationDc.setItem(entity);
+        Basket entity = dataContext.create(Basket.class);
+        basketDc.setItem(entity);
         updateControls(true);
     }
 
-    @Subscribe("specificationsDataGrid.edit")
-    public void onSpecificationsDataGridEdit(final ActionPerformedEvent event) {
+    @Subscribe("basketsDataGrid.edit")
+    public void onBasketsDataGridEdit(final ActionPerformedEvent event) {
         updateControls(true);
     }
 
     @Subscribe("saveButton")
     public void onSaveButtonClick(final ClickEvent<JmixButton> event) {
-        Specification item = specificationDc.getItem();
+        Basket item = basketDc.getItem();
         ValidationErrors validationErrors = validateView(item);
         if (!validationErrors.isEmpty()) {
             ViewValidation viewValidation = getViewValidation();
@@ -95,33 +91,33 @@ public class SpecificationListView extends StandardListView<Specification> {
             return;
         }
         dataContext.save();
-        specificationsDc.replaceItem(item);
+        basketsDc.replaceItem(item);
         updateControls(false);
     }
 
     @Subscribe("cancelButton")
     public void onCancelButtonClick(final ClickEvent<JmixButton> event) {
         dataContext.clear();
-        specificationDc.setItem(null);
-        specificationDl.load();
+        basketDc.setItem(null);
+        basketDl.load();
         updateControls(false);
     }
 
-    @Subscribe(id = "specificationsDc", target = Target.DATA_CONTAINER)
-    public void onSpecificationsDcItemChange(final InstanceContainer.ItemChangeEvent<Specification> event) {
-        Specification entity = event.getItem();
+    @Subscribe(id = "basketsDc", target = Target.DATA_CONTAINER)
+    public void onBasketsDcItemChange(final InstanceContainer.ItemChangeEvent<Basket> event) {
+        Basket entity = event.getItem();
         dataContext.clear();
         if (entity != null) {
-            specificationDl.setEntityId(entity.getId());
-            specificationDl.load();
+            basketDl.setEntityId(entity.getId());
+            basketDl.load();
         } else {
-            specificationDl.setEntityId(null);
-            specificationDc.setItem(null);
+            basketDl.setEntityId(null);
+            basketDc.setItem(null);
         }
         updateControls(false);
     }
 
-    protected ValidationErrors validateView(Specification entity) {
+    protected ValidationErrors validateView(Basket entity) {
         ViewValidation viewValidation = getViewValidation();
         ValidationErrors validationErrors = viewValidation.validateUiComponents(form);
         if (!validationErrors.isEmpty()) {
@@ -140,12 +136,10 @@ public class SpecificationListView extends StandardListView<Specification> {
 
         detailActions.setVisible(editing);
         listLayout.setEnabled(!editing);
-        specificationsDataGrid.getActions().forEach(Action::refreshState);
+        basketsDataGrid.getActions().forEach(Action::refreshState);
     }
 
     private ViewValidation getViewValidation() {
         return getApplicationContext().getBean(ViewValidation.class);
     }
-
-
 }

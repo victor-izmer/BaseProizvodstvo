@@ -1,20 +1,39 @@
 package com.company.base6;
 
+import io.jmix.core.DataManager;
 import io.jmix.core.DeletePolicy;
+import io.jmix.core.FileRef;
 import io.jmix.core.entity.annotation.OnDeleteInverse;
+import io.jmix.core.metamodel.annotation.InstanceName;
 import io.jmix.core.metamodel.annotation.JmixEntity;
+import io.jmix.core.metamodel.annotation.JmixProperty;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.net.URI;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+
+import static org.aspectj.weaver.tools.cache.SimpleCacheFactory.path;
 
 @JmixEntity
 @Entity
 @Table(name = "workpiece")
 public class Workpiece {
+
+
     @Id
     @Column(name = "id", nullable = false)
     private Long id;
 
+    @InstanceName
     @Size(max = 255)
     @Column(name = "Наименование")
     private String наименование;
@@ -44,12 +63,10 @@ public class Workpiece {
     @Column(name = "Время_изготовления")
     private Short времяИзготовления;
 
-    @Lob
-    @Column(name = "photopath")
+    @Column(name = "photopath", length = 1024)
     private String photopath;
 
-    @Lob
-    @Column(name = "drawpath")
+    @Column(name = "drawpath", length = 1024)
     private String drawpath;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -60,6 +77,40 @@ public class Workpiece {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "typeref", nullable = false)
     private Typeworkpiece typeref;
+
+    @JmixProperty
+    @DependsOnProperties({"наименование", "photopath"})
+    public String getFullPhotoPath() {
+        String fileName = "photos/Комплектующие/" + наименование + "/" + photopath;
+        fileName= fileName.replace(" ", "_"); // Заменяем " " на "_"
+        return fileName;
+    }
+    @JmixProperty
+    @DependsOnProperties({"наименование", "drawpath"})
+    public String getFullDrawPath() {
+        String fileName = "photos/Комплектующие/" + наименование + "/" + drawpath;
+        fileName= fileName.replace(" ", "_"); // Заменяем " " на "_"
+        return fileName;
+    }
+
+
+    public void setDrawpath(String drawpath) {
+        this.drawpath = drawpath;
+    }
+
+    public String getDrawpath() {
+        return drawpath;
+    }
+
+    public void setPhotopath(String photopath) {
+        if (наименование != null) {
+            this.photopath = "Фото_" + наименование + ".jpg"; // Формат: "Фото_Болт.jpg"
+        }
+    }
+
+    public String getPhotopath() {
+        return photopath;
+    }
 
     public void setMaterialref(Fullnamematerial materialref) {
         this.materialref = materialref;
@@ -148,21 +199,15 @@ public class Workpiece {
     public void setВремяИзготовления(Short времяИзготовления) {
         this.времяИзготовления = времяИзготовления;
     }
-
-    public String getPhotopath() {
-        return photopath;
-    }
-
-    public void setPhotopath(String photopath) {
-        this.photopath = photopath;
-    }
-
-    public String getDrawpath() {
-        return drawpath;
-    }
-
-    public void setDrawpath(String drawpath) {
-        this.drawpath = drawpath;
+    @PrePersist
+    @PreUpdate
+    public void generatePhotoPath() {
+        if (наименование != null && !наименование.isEmpty()) {
+            String safeName = наименование.replaceAll("\\s+", "_");
+            String path = "photos/Комплектующие/" + safeName + "/Фото_" + safeName + ".jpg";
+            this.photopath = path;
+            System.out.println("Сгенерирован photopath: " + this.photopath); // Логирование
+        }
     }
 
 }

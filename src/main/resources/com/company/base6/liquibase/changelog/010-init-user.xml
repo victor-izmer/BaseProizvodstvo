@@ -7,7 +7,7 @@
 
     <!-- DO NOT REMOVE. This changelog is required for user management. -->
 
-    <changeSet id="1" author="Base6" context="!cuba">
+    <changeSet id="1" author="Base4" context="!cuba">
 
         <createTable tableName="USER_">
             <column name="ID" type="${uuid.type}">
@@ -29,14 +29,8 @@
 
     </changeSet>
 
-    <changeSet id="2" author="Base6" context="!cuba">
-        <createIndex indexName="IDX_USER__ON_USERNAME"
-                     tableName="USER_" unique="true">
-            <column name="USERNAME"/>
-        </createIndex>
-    </changeSet>
 
-    <changeSet id="3" author="Base6" context="!cuba">
+    <changeSet id="3" author="Base4" context="!cuba">
 
         <insert tableName="USER_" dbms="postgresql, mssql, hsqldb">
             <column name="ID" value="60885987-1b61-4247-94c7-dff348347f93"/>
@@ -56,7 +50,7 @@
 
     </changeSet>
 
-    <changeSet id="4" author="Base6" context="!cuba">
+    <changeSet id="4" author="Base4" context="!cuba">
 
         <insert tableName="SEC_ROLE_ASSIGNMENT" dbms="postgresql, mssql, hsqldb">
             <column name="ID" value="6c9e420a-2b7a-4c42-8654-a9027ee14083"/>

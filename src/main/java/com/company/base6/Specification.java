@@ -1,13 +1,15 @@
 package com.company.base6;
 
+import io.jmix.core.FileRef;
+import io.jmix.core.metamodel.annotation.InstanceName;
 import io.jmix.core.metamodel.annotation.JmixEntity;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
 
 @JmixEntity
 @Entity
 @Table(name = "specification", indexes = {
-        @Index(name = "IDX_SPECIFICATION_UNITREF", columnList = "id")
+        @Index(name = "IDX_SPECIFICATION_DETALREF", columnList = "DETALREF_ID"),
+        @Index(name = "IDX_SPECIFICATION_UNIT_MEASURE", columnList = "UNIT_MEASURE_ID")
 })
 public class Specification {
     @Id
@@ -15,35 +17,48 @@ public class Specification {
     @Column(name = "id", nullable = false)
     private Long id;
 
-    @NotNull
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "detailref", nullable = false)
-    private Workpiece detailref;
-
-    @NotNull
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "parentref", nullable = false)
-    private Workpiece parentref;
-
+    @JoinColumn(name = "PARENTREF_ID")
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Specification parentref;
     @Column(name = "Количество")
     private Float количество;
-
-    @JoinColumn(name = "unitref", nullable = false)
-    @NotNull
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    private UnitMeasure unitref;
-
+    @JoinColumn(name = "UNIT_MEASURE_ID")
+    @ManyToOne(fetch = FetchType.LAZY)
+    private UnitMeasure unitMeasure;
+    @InstanceName
     @Lob
     @Column(name = "Примечание_спецификации")
-    private String примечаниеСпецификации;
+    private String primSpec;
 
-    public UnitMeasure getUnitref() {
-        return unitref;
+    @JoinColumn(name = "DETALREF_ID")
+    @OneToOne(fetch = FetchType.LAZY)
+    private Workpiece detalref;
+
+
+    public UnitMeasure getUnitMeasure() {
+        return unitMeasure;
     }
 
-    public void setUnitref(UnitMeasure unitref) {
-        this.unitref = unitref;
+    public void setUnitMeasure(UnitMeasure unitMeasure) {
+        this.unitMeasure = unitMeasure;
     }
+
+    public Workpiece getDetalref() {
+        return detalref;
+    }
+
+    public void setDetalref(Workpiece detalref) {
+        this.detalref = detalref;
+    }
+
+    public void setParentref(Specification parentref) {
+        this.parentref = parentref;
+    }
+
+    public Specification getParentref() {
+        return parentref;
+    }
+
 
     public Long getId() {
         return id;
@@ -51,22 +66,6 @@ public class Specification {
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public Workpiece getDetailref() {
-        return detailref;
-    }
-
-    public void setDetailref(Workpiece detailref) {
-        this.detailref = detailref;
-    }
-
-    public Workpiece getParentref() {
-        return parentref;
-    }
-
-    public void setParentref(Workpiece parentref) {
-        this.parentref = parentref;
     }
 
     public Float getКоличество() {
@@ -77,12 +76,12 @@ public class Specification {
         this.количество = количество;
     }
 
-    public String getПримечаниеСпецификации() {
-        return примечаниеСпецификации;
+    public String getPrimSpec() {
+        return primSpec;
     }
 
-    public void setПримечаниеСпецификации(String Field) {
-        this.примечаниеСпецификации = Field;
+    public void setPrimSpec(String Field) {
+        this.primSpec = Field;
     }
 
 }
