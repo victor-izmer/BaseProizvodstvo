@@ -1,8 +1,15 @@
 package com.company.base6.entity;
 
+import io.jmix.core.MetadataTools;
 import io.jmix.core.entity.annotation.JmixGeneratedValue;
+import io.jmix.core.metamodel.annotation.DependsOnProperties;
+import io.jmix.core.metamodel.annotation.InstanceName;
 import io.jmix.core.metamodel.annotation.JmixEntity;
+import io.jmix.core.metamodel.datatype.DatatypeFormatter;
 import jakarta.persistence.*;
+import io.jmix.flowui.model.CollectionLoader;
+import io.jmix.flowui.model.InstanceLoader;
+import io.jmix.flowui.component.grid.DataGrid;
 
 import java.util.Date;
 
@@ -119,5 +126,13 @@ public class Request {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    @InstanceName
+    @DependsOnProperties({"supplierRef", "dateRequest"})
+    public String getInstanceName(MetadataTools metadataTools, DatatypeFormatter datatypeFormatter) {
+        return String.format("%s %s",
+                metadataTools.format(supplierRef),
+                datatypeFormatter.formatDate(dateRequest));
     }
 }

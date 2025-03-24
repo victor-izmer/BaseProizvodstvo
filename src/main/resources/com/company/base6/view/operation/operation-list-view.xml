@@ -12,7 +12,7 @@
             </fetchPlan>
             <loader id="operationsDl" readOnly="true">
                 <query>
-                    <![CDATA[select e from Operation e]]>
+                    <![CDATA[select e from Operation e ORDER BY e.id]]>
                 </query>
             </loader>
         </collection>

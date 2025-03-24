@@ -2,19 +2,19 @@ package com.company.base6.entity;
 
 import com.company.base6.Workpiece;
 import io.jmix.core.entity.annotation.JmixGeneratedValue;
+import io.jmix.core.metamodel.annotation.InstanceName;
 import io.jmix.core.metamodel.annotation.JmixEntity;
 import jakarta.persistence.*;
 
 @JmixEntity
-@Table(name = "OPERATION", indexes = {
-        @Index(name = "IDX_OPERATION_", columnList = "")
-})
+@Table(name = "OPERATION")
 @Entity
 public class Operation {
     @JmixGeneratedValue
     @Column(name = "ID", nullable = false)
     @Id
     private Long id;
+    @InstanceName
     @JoinColumn(name = "TYPE_OPERATION_REF_ID")
     @ManyToOne(fetch = FetchType.LAZY)
     private TypeOperation typeOperationRef;

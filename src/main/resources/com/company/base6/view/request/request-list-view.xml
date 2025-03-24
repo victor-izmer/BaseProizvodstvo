@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <view xmlns="http://jmix.io/schema/flowui/view"
-      xmlns:c="http://jmix.io/schema/flowui/jpql-condition"
+      xmlns:c="http://jmix.io/schema/flowui/jpql-condition" xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
       title="msg://requestListView.title"
       focusComponent="requestsDataGrid">
     <data>
@@ -12,10 +12,29 @@
             </fetchPlan>
             <loader id="requestsDl" readOnly="true">
                 <query>
-                    <![CDATA[select e from Request e]]>
+                    <![CDATA[select e from Request e ORDER BY e.dateRequest]]>
                 </query>
             </loader>
         </collection>
+
+
+        <collection id="basketsDc"
+                    class="com.company.base6.entity.Basket">
+            <fetchPlan extends="_base">
+                <property name="detalRef" fetch="AUTO" fetchPlan="_base"/>
+                <property name="unitmeasureRef" fetch="AUTO" fetchPlan="_base"/>
+                <property name="requestRef" fetch="AUTO" fetchPlan="_base"/>
+            </fetchPlan>
+            <loader id="basketsDl">
+                <query>
+                    <![CDATA[
+                        select b from Basket b
+                        WHERE b.requestRef.id = :requestId]]>
+                </query>
+            </loader>
+        </collection>
+
+
         <instance id="requestDc"
                   class="com.company.base6.entity.Request">
             <fetchPlan extends="_base">
@@ -24,9 +43,21 @@
             </fetchPlan>
             <loader id="requestDl"/>
         </instance>
+
+        <instance id="workpieceDc"
+                  class="com.company.base6.Workpiece">
+            <fetchPlan extends="_base">
+                <property name="materialref" fetch="AUTO" fetchPlan="_base"/>
+            </fetchPlan>
+            <loader id="workpieceDl">
+                <query><![CDATA[select w from Workpiece w where w.id = :workpieceId]]></query>
+            </loader>
+        </instance>
+
     </data>
     <facets>
         <dataLoadCoordinator auto="true"/>
+        <settings auto="true"/>
         <urlQueryParameters>
             <genericFilter component="genericFilter"/>
             <pagination component="pagination"/>
@@ -53,23 +84,58 @@
                           width="100%"
                           minHeight="20em"
                           dataContainer="requestsDc"
-                          columnReorderingAllowed="true">
+                          columnReorderingAllowed="true" pageSize="25">
                     <actions>
                         <action id="create" type="list_create"/>
                         <action id="edit" type="list_edit"/>
                         <action id="remove" type="list_remove"/>
                     </actions>
                     <columns resizable="true">
-                        <column property="supplierRef"/>
-                        <column property="dateRequest"/>
-                        <column property="scanInvoice"/>
-                        <column property="dateControl"/>
-                        <column property="dateFinish"/>
-                        <column property="primRequest"/>
-                        <column property="statusZayavkaRef"/>
-                        <column property="sumRequest"/>
+                        <column property="supplierRef" width="130px"/>
+                        <column property="dateRequest" width="70px"/>
+                        <column property="scanInvoice" textAlign="END" width="120px"/>
+                        <column property="dateControl" width="70px"/>
+                        <column property="primRequest" width="150px"/>
+                        <column property="statusZayavkaRef" width="40px"/>
+                        <column property="sumRequest" width="40px"/>
                     </columns>
+
                 </dataGrid>
+
+
+                <!-- Список корзин -->
+                <dataGrid id="basketsDataGrid"
+                          width="100%"
+                          minHeight="15em"
+                          dataContainer="basketsDc"
+                          detailsVisibleOnClick="true">
+                    <columns>
+                        <column property="detalRef.наименование"/>
+                        <column property="quantity"/>
+                        <column property="unitmeasureRef.description"/>
+                    </columns>
+
+
+                </dataGrid>
+
+                <!-- Детали Workpiece -->
+                <vbox id="workpieceDetails" visible="{workpieceDc.item != null}" spacing="true">
+                    <h4 text="Детали изделия"/>
+                    <textField id="materialField"
+                               value="{workpieceDc.item.materialref.name}"
+                               label="Материал"
+                               readOnly="true"/>
+                    <textField id="sizeField"
+                               value="{workpieceDc.item.размер}"
+                               label="Размер"
+                               readOnly="true"/>
+                    <image id="photoImage"
+                           width="200px"
+                           height="200px"
+                           />
+                </vbox>
+
+
                 <hbox id="lookupActions" visible="false">
                     <button id="selectButton" action="selectAction"/>
                     <button id="discardButton" action="discardAction"/>
@@ -87,18 +153,19 @@
                             <action id="entityClear" type="entity_clear"/>
                         </actions>
                     </entityPicker>
-                    <datePicker id="dateRequestField" property="dateRequest"/>
-                    <textField id="scanInvoiceField" property="scanInvoice"/>
-                    <datePicker id="dateControlField" property="dateControl"/>
-                    <datePicker id="dateFinishField" property="dateFinish"/>
-                    <textField id="primRequestField" property="primRequest"/>
-                    <entityPicker id="statusZayavkaRefField" property="statusZayavkaRef">
+                    <entityPicker id="statusZayavkaRefField" property="statusZayavkaRef" maxWidth="130px">
                         <actions>
                             <action id="entityLookup" type="entity_lookup"/>
                             <action id="entityClear" type="entity_clear"/>
                         </actions>
                     </entityPicker>
-                    <textField id="sumRequestField" property="sumRequest"/>
+                    <textField id="sumRequestField" property="sumRequest" maxWidth="130px"/>
+                    <datePicker id="dateRequestField" property="dateRequest" maxWidth="130px"/>
+                    <datePicker id="dateControlField" property="dateControl" maxWidth="130px"/>
+                    <datePicker id="dateFinishField" property="dateFinish" maxWidth="130px"/>
+                    <textField id="primRequestField" property="primRequest"/>
+                    <textField id="scanInvoiceField" property="scanInvoice" alignSelf="END" css=" direction: rtl;"/>
+
                 </formLayout>
                 <hbox id="detailActions">
                     <button id="saveButton" text="msg:///actions.Save" icon="CHECK" themeNames="primary"/>

@@ -2,7 +2,10 @@ package com.company.base6.entity;
 
 import com.company.base6.UnitMeasure;
 import com.company.base6.Workpiece;
+import io.jmix.core.MetadataTools;
 import io.jmix.core.entity.annotation.JmixGeneratedValue;
+import io.jmix.core.metamodel.annotation.DependsOnProperties;
+import io.jmix.core.metamodel.annotation.InstanceName;
 import io.jmix.core.metamodel.annotation.JmixEntity;
 import jakarta.persistence.*;
 
@@ -18,9 +21,11 @@ public class Basket {
     @Column(name = "ID", nullable = false)
     @Id
     private Long id;
+
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "REQUEST_REF_ID")
-    @ManyToOne(fetch = FetchType.LAZY)
     private Request requestRef;
+
     @JoinColumn(name = "DETAL_REF_ID")
     @ManyToOne(fetch = FetchType.LAZY)
     private Workpiece detalRef;
@@ -119,5 +124,14 @@ public class Basket {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    @InstanceName
+    @DependsOnProperties({"requestRef", "detalRef", "operationRef"})
+    public String getInstanceName(MetadataTools metadataTools) {
+        return String.format("%s %s %s",
+                metadataTools.format(requestRef),
+                metadataTools.format(detalRef),
+                metadataTools.format(operationRef));
     }
 }

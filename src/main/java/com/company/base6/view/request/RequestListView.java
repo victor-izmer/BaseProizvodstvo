@@ -1,17 +1,23 @@
 package com.company.base6.view.request;
 
+import com.company.base6.entity.Basket;
 import com.company.base6.entity.Request;
 import com.company.base6.view.main.MainView;
 import com.vaadin.flow.component.ClickEvent;
 import com.vaadin.flow.component.HasValueAndElement;
 import com.vaadin.flow.component.formlayout.FormLayout;
+import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.data.selection.SelectionEvent;
 import com.vaadin.flow.router.Route;
 import io.jmix.core.validation.group.UiCrossFieldChecks;
 import io.jmix.flowui.action.SecuredBaseAction;
 import io.jmix.flowui.component.UiComponentUtils;
 import io.jmix.flowui.component.grid.DataGrid;
+import com.vaadin.flow.component.grid.Grid.SelectionMode;
+import io.jmix.flowui.component.image.JmixImage;
 import io.jmix.flowui.component.validation.ValidationErrors;
 import io.jmix.flowui.kit.action.Action;
 import io.jmix.flowui.kit.action.ActionPerformedEvent;
@@ -22,12 +28,29 @@ import io.jmix.flowui.model.InstanceContainer;
 import io.jmix.flowui.model.InstanceLoader;
 import io.jmix.flowui.view.*;
 
+
+import io.jmix.flowui.Notifications;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import static org.reflections.Reflections.log;
+
+import com.company.base6.entity.Basket;
+import com.company.base6.Workpiece;
+import io.jmix.flowui.model.CollectionLoader;
+import io.jmix.flowui.model.InstanceLoader;
+
+
 @Route(value = "requests", layout = MainView.class)
 @ViewController(id = "Request.list")
 @ViewDescriptor(path = "request-list-view.xml")
 @LookupComponent("requestsDataGrid")
 @DialogMode(width = "64em")
+
 public class RequestListView extends StandardListView<Request> {
+
+    @Autowired
+    private Notifications notifications;
+
 
     @ViewComponent
     private DataContext dataContext;
@@ -53,14 +76,41 @@ public class RequestListView extends StandardListView<Request> {
     @ViewComponent
     private HorizontalLayout detailActions;
 
-    @Subscribe
-    public void onInit(final InitEvent event) {
-        requestsDataGrid.getActions().forEach(action -> {
-            if (action instanceof SecuredBaseAction secured) {
-                secured.addEnabledRule(() -> listLayout.isEnabled());
+    @ViewComponent
+    private CollectionLoader<Basket> basketsDl;
+
+    @ViewComponent
+    private InstanceLoader<Workpiece> workpieceDl;
+
+    @ViewComponent
+    private DataGrid<Basket> basketsDataGrid;
+
+
+    // Обработчик выбора заявки
+    private void handleRequestSelection(SelectionEvent<Grid<Request>, Request> event) {
+        event.getFirstSelectedItem().ifPresent(request -> {
+            basketsDl.setParameter("requestId", request.getId());
+            basketsDl.load();
+        });
+    }
+    // Обработчик выбора корзины
+    @Subscribe("basketsDataGrid")
+    private void onDataGridSelect(SelectionEvent<Grid<Basket>, Basket> event) {
+        event.getFirstSelectedItem().ifPresent(basket -> {
+            if (basket.getDetalRef() != null) {
+                workpieceDl.setParameter("workpieceId", basket.getDetalRef().getId());
+                workpieceDl.load();
             }
         });
     }
+    @Subscribe
+    public void onInit(final InitEvent event) {
+        requestsDataGrid.addSelectionListener(this::handleRequestSelection);
+        basketsDataGrid.addSelectionListener(this::onDataGridSelect);
+
+    }
+
+
 
     @Subscribe
     public void onBeforeShow(final BeforeShowEvent event) {
@@ -142,4 +192,11 @@ public class RequestListView extends StandardListView<Request> {
     private ViewValidation getViewValidation() {
         return getApplicationContext().getBean(ViewValidation.class);
     }
+
+    @Subscribe(id = "photoImage", subject = "singleClickListener")
+    public void onPhotoImageClick(final ClickEvent<JmixImage> event) {
+        log.info("OnAction {}", event);
+    }
+
+
 }
