@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <view xmlns="http://jmix.io/schema/flowui/view"
       xmlns:c="http://jmix.io/schema/flowui/jpql-condition" xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+
       title="msg://requestListView.title"
       focusComponent="requestsDataGrid">
     <data>
@@ -50,7 +51,11 @@
                 <property name="materialref" fetch="AUTO" fetchPlan="_base"/>
             </fetchPlan>
             <loader id="workpieceDl">
-                <query><![CDATA[select w from Workpiece w where w.id = :workpieceId]]></query>
+                <query><![CDATA[
+                    SELECT w FROM Workpiece w
+                    LEFT JOIN FETCH w.materialref
+                    WHERE w.id = :workpieceId
+                ]]></query>
             </loader>
         </instance>
 
@@ -114,26 +119,9 @@
                         <column property="quantity"/>
                         <column property="unitmeasureRef.description"/>
                     </columns>
-
-
                 </dataGrid>
 
-                <!-- Детали Workpiece -->
-                <vbox id="workpieceDetails" visible="{workpieceDc.item != null}" spacing="true">
-                    <h4 text="Детали изделия"/>
-                    <textField id="materialField"
-                               value="{workpieceDc.item.materialref.name}"
-                               label="Материал"
-                               readOnly="true"/>
-                    <textField id="sizeField"
-                               value="{workpieceDc.item.размер}"
-                               label="Размер"
-                               readOnly="true"/>
-                    <image id="photoImage"
-                           width="200px"
-                           height="200px"
-                           />
-                </vbox>
+
 
 
                 <hbox id="lookupActions" visible="false">
@@ -143,10 +131,8 @@
             </vbox>
             <vbox id="detailsLayout" height="100%">
                 <formLayout id="form" dataContainer="requestDc">
-                    <responsiveSteps>
-                        <responsiveStep minWidth="0" columns="1"/>
-                        <responsiveStep minWidth="40em" columns="2"/>
-                    </responsiveSteps>
+
+                    <p>
                     <entityPicker id="supplierRefField" property="supplierRef">
                         <actions>
                             <action id="entityLookup" type="entity_lookup"/>
@@ -162,10 +148,30 @@
                     <textField id="sumRequestField" property="sumRequest" maxWidth="130px"/>
                     <datePicker id="dateRequestField" property="dateRequest" maxWidth="130px"/>
                     <datePicker id="dateControlField" property="dateControl" maxWidth="130px"/>
-                    <datePicker id="dateFinishField" property="dateFinish" maxWidth="130px"/>
+                    <datePicker id="dateFinishField" property="dateFinish" maxWidth="131px"/>
                     <textField id="primRequestField" property="primRequest"/>
                     <textField id="scanInvoiceField" property="scanInvoice" alignSelf="END" css=" direction: rtl;"/>
-
+                    </p>
+                    <!-- Детали Workpiece -->
+                    <p id="workpieceDetails">
+                        <h4 text="Параметры комплектующей"/>
+                        <textField id="materialField"
+                                   value="{workpieceDc.item.materialref.name}"
+                                   label="Материал"
+                                   readOnly="true" maxWidth="500px"/>
+                        <textField id="sizeField"
+                                   value="{workpieceDc.item.размер}"
+                                   label="Размер"
+                                   readOnly="true"/>
+                        <image id="photoImage" classNames="photo-preview"
+                               css=" height:300px; width:auto!important;object-fit: contain; "
+                               resource="{workpieceDc.item.getFullPhotoPath}"
+                        />
+                        <image id="drawImage" classNames="photo-preview"
+                               css=" height:300px; width:auto!important;object-fit: contain; "
+                               resource="{workpieceDc.item.getFullDrawPath}"
+                        />
+                    </p>
                 </formLayout>
                 <hbox id="detailActions">
                     <button id="saveButton" text="msg:///actions.Save" icon="CHECK" themeNames="primary"/>

@@ -81,14 +81,14 @@ public class Workpiece {
     @JmixProperty
     @DependsOnProperties({"наименование", "photopath"})
     public String getFullPhotoPath() {
-        String fileName = "photos/Комплектующие/" + наименование + "/" + photopath;
+        String fileName = "photos/Комплектующие/" + наименование + "_" + номерЧертежа + "/" + photopath;
         fileName= fileName.replace(" ", "_"); // Заменяем " " на "_"
         return fileName;
     }
     @JmixProperty
     @DependsOnProperties({"наименование", "drawpath"})
     public String getFullDrawPath() {
-        String fileName = "photos/Комплектующие/" + наименование + "/" + drawpath;
+        String fileName = "photos/Комплектующие/" + наименование + "_" + номерЧертежа + "/" + drawpath;
         fileName= fileName.replace(" ", "_"); // Заменяем " " на "_"
         return fileName;
     }
@@ -103,9 +103,9 @@ public class Workpiece {
     }
 
     public void setPhotopath(String photopath) {
-        if (наименование != null) {
-            this.photopath = "Фото_" + наименование + ".jpg"; // Формат: "Фото_Болт.jpg"
-        }
+
+            this.photopath = photopath;
+
     }
 
     public String getPhotopath() {
@@ -199,15 +199,6 @@ public class Workpiece {
     public void setВремяИзготовления(Short времяИзготовления) {
         this.времяИзготовления = времяИзготовления;
     }
-    @PrePersist
-    @PreUpdate
-    public void generatePhotoPath() {
-        if (наименование != null && !наименование.isEmpty()) {
-            String safeName = наименование.replaceAll("\\s+", "_");
-            String path = "photos/Комплектующие/" + safeName + "/Фото_" + safeName + ".jpg";
-            this.photopath = path;
-            System.out.println("Сгенерирован photopath: " + this.photopath); // Логирование
-        }
-    }
+
 
 }

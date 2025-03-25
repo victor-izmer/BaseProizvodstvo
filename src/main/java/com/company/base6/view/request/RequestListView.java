@@ -10,6 +10,7 @@ import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.selection.SelectionEvent;
 import com.vaadin.flow.router.Route;
 import io.jmix.core.validation.group.UiCrossFieldChecks;
@@ -31,13 +32,16 @@ import io.jmix.flowui.view.*;
 
 import io.jmix.flowui.Notifications;
 import org.springframework.beans.factory.annotation.Autowired;
+import com.vaadin.flow.component.html.Image;
+import com.vaadin.flow.component.page.Page;
+import com.vaadin.flow.component.UI;
 
 import static org.reflections.Reflections.log;
 
 import com.company.base6.entity.Basket;
 import com.company.base6.Workpiece;
 import io.jmix.flowui.model.CollectionLoader;
-import io.jmix.flowui.model.InstanceLoader;
+
 
 
 @Route(value = "requests", layout = MainView.class)
@@ -86,6 +90,12 @@ public class RequestListView extends StandardListView<Request> {
     private DataGrid<Basket> basketsDataGrid;
 
 
+    @ViewComponent
+    private InstanceContainer<Workpiece> workpieceDc;
+    @ViewComponent
+    private JmixImage<Object> drawImage;
+
+
     // Обработчик выбора заявки
     private void handleRequestSelection(SelectionEvent<Grid<Request>, Request> event) {
         event.getFirstSelectedItem().ifPresent(request -> {
@@ -102,6 +112,44 @@ public class RequestListView extends StandardListView<Request> {
                 workpieceDl.load();
             }
         });
+    }
+
+    @Subscribe(id = "workpieceDc", target = Target.DATA_CONTAINER)
+    public void onWorkpieceDcItemChange(InstanceContainer.ItemChangeEvent<Workpiece> event) {
+        Workpiece workpiece = event.getItem();
+        if (workpiece != null) {
+            // Обновляем компоненты вручную
+            updateMaterialField(workpiece);
+            updateSizeField(workpiece);
+            updatePhotoImage(workpiece);
+            updateDrawImage(workpiece);
+        }
+    }
+    private void updateMaterialField(Workpiece workpiece) {
+        TextField materialField = (TextField) getContent().getComponent("materialField");
+        if (materialField != null) {
+            materialField.setValue(workpiece.getMaterialref() != null ? workpiece.getMaterialref().getDescription() : "");
+        }
+    }
+
+    private void updateSizeField(Workpiece workpiece) {
+        TextField sizeField = (TextField) getContent().getComponent("sizeField");
+        if (sizeField != null) {
+            sizeField.setValue(String.valueOf(workpiece.getРазмер()));
+        }
+    }
+
+    private void updatePhotoImage(Workpiece workpiece) {
+        Image photoImage = (Image) getContent().getComponent("photoImage");
+        if (photoImage != null) {
+            photoImage.setSrc(workpiece.getFullPhotoPath());
+        }
+    }
+    private void updateDrawImage(Workpiece workpiece) {
+        Image DrawImage = (Image) getContent().getComponent("drawImage");
+        if (drawImage != null) {
+            drawImage.setSrc(workpiece.getFullDrawPath());
+        }
     }
     @Subscribe
     public void onInit(final InitEvent event) {
@@ -193,10 +241,22 @@ public class RequestListView extends StandardListView<Request> {
         return getApplicationContext().getBean(ViewValidation.class);
     }
 
-    @Subscribe(id = "photoImage", subject = "singleClickListener")
-    public void onPhotoImageClick(final ClickEvent<JmixImage> event) {
-        log.info("OnAction {}", event);
+    @Subscribe("photoImage")
+    public void onPhotoImageClick(ClickEvent<Image> event) {
+        Workpiece workpiece = workpieceDc.getItem();
+        if (workpiece != null) {
+            String photoPath = workpiece.getFullPhotoPath();
+            openImageInNewTab(photoPath);
+        }
     }
 
+    private void openImageInNewTab(String photoPath) {
+        // Получаем текущий UI и Page
+        UI.getCurrent().access(() -> {
+            Page page = UI.getCurrent().getPage();
+            String encodedPath = photoPath.replace(" ", "%20");
+            page.executeJs("window.open($0, '_blank')", "file:///" + encodedPath);
+        });
+    }
 
 }
