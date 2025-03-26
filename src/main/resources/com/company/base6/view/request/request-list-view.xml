@@ -166,6 +166,7 @@
                         <image id="photoImage" classNames="photo-preview"
                                css=" height:300px; width:auto!important;object-fit: contain; "
                                resource="{workpieceDc.item.getFullPhotoPath}"
+
                         />
                         <image id="drawImage" classNames="photo-preview"
                                css=" height:300px; width:auto!important;object-fit: contain; "

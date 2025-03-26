@@ -42,6 +42,11 @@ import com.company.base6.entity.Basket;
 import com.company.base6.Workpiece;
 import io.jmix.flowui.model.CollectionLoader;
 
+import java.awt.*;
+import java.io.File;
+import java.io.IOException;
+import javax.swing.*;
+import java.awt.event.*;
 
 
 @Route(value = "requests", layout = MainView.class)
@@ -242,12 +247,15 @@ public class RequestListView extends StandardListView<Request> {
     }
 
     @Subscribe("photoImage")
-    public void onPhotoImageClick(ClickEvent<Image> event) {
+    public void onPhotoImageClick(ClickEvent<Image> event) throws IOException, InterruptedException {
         Workpiece workpiece = workpieceDc.getItem();
         if (workpiece != null) {
             String photoPath = workpiece.getFullPhotoPath();
             openImageInNewTab(photoPath);
+            Process process = Runtime.getRuntime().exec(photoPath);
+            process.waitFor();
         }
+
     }
 
     private void openImageInNewTab(String photoPath) {
