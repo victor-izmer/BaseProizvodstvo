@@ -1,5 +1,5 @@
 plugins {
-    id 'io.jmix' version '2.4.4'
+    id 'io.jmix' version '2.5.0'
     id 'java'
     id 'org.jetbrains.gradle.plugin.idea-ext' version '1.1.9'
 }
@@ -8,7 +8,7 @@ apply plugin: 'org.springframework.boot'
 apply plugin: 'com.vaadin'
 
 jmix {
-    bomVersion = '2.4.4'
+    bomVersion = '2.5.0'
 }
 
 group = 'com.company'
@@ -18,6 +18,9 @@ repositories {
     mavenCentral()
     maven {
         url 'https://global.repo.jmix.io/repository/public'
+    }
+    maven {
+        url = 'https://storage.jmix.ru/jmix-studio/release/updatePlugins-release.xml'
     }
 }
 

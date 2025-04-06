@@ -1,6 +1,7 @@
 package com.company.base6.view.workpiece;
 
-import com.company.base6.Workpiece;
+
+import com.company.base6.entity.Workpiece;
 import com.company.base6.view.main.MainView;
 import com.vaadin.flow.component.ClickEvent;
 import com.vaadin.flow.component.HasValueAndElement;

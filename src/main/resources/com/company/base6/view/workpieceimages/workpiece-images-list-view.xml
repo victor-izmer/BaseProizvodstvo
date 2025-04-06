@@ -1,22 +1,26 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <view xmlns="http://jmix.io/schema/flowui/view"
       xmlns:c="http://jmix.io/schema/flowui/jpql-condition"
-      title="msg://unitMeasureListView.title"
-      focusComponent="unitMeasuresDataGrid">
+      title="msg://workpieceImagesListView.title"
+      focusComponent="workpieceImagesesDataGrid">
     <data>
-        <collection id="unitMeasuresDc"
-                    class="com.company.base6.entity.UnitMeasure">
-            <fetchPlan extends="_base"/>
-            <loader id="unitMeasuresDl" readOnly="true">
+        <collection id="workpieceImagesesDc"
+                    class="com.company.base6.entity.WorkpieceImages">
+            <fetchPlan extends="_base">
+                <property name="workpieceRef" fetchPlan="_base"/>
+            </fetchPlan>
+            <loader id="workpieceImagesesDl" readOnly="true">
                 <query>
-                    <![CDATA[select e from UnitMeasure e]]>
+                    <![CDATA[select e from WorkpieceImages e]]>
                 </query>
             </loader>
         </collection>
-        <instance id="unitMeasureDc"
-                  class="com.company.base6.entity.UnitMeasure">
-            <fetchPlan extends="_base"/>
-            <loader id="unitMeasureDl"/>
+        <instance id="workpieceImagesDc"
+                  class="com.company.base6.entity.WorkpieceImages">
+            <fetchPlan extends="_base">
+                <property name="workpieceRef" fetchPlan="_base"/>
+            </fetchPlan>
+            <loader id="workpieceImagesDl"/>
         </instance>
     </data>
     <facets>
@@ -34,27 +38,29 @@
         <formLayout id="layoutWrapper" classNames="master-detail-layout" height="100%">
             <vbox id="listLayout" height="100%">
                 <genericFilter id="genericFilter"
-                               dataLoader="unitMeasuresDl">
+                               dataLoader="workpieceImagesesDl">
                     <properties include=".*"/>
                 </genericFilter>
                 <hbox id="buttonsPanel" classNames="buttons-panel">
-                    <button id="createButton" action="unitMeasuresDataGrid.create"/>
-                    <button id="editButton" action="unitMeasuresDataGrid.edit"/>
-                    <button id="removeButton" action="unitMeasuresDataGrid.remove"/>
-                    <simplePagination id="pagination" dataLoader="unitMeasuresDl"/>
+                    <button id="createButton" action="workpieceImagesesDataGrid.createAction"/>
+                    <button id="editButton" action="workpieceImagesesDataGrid.editAction"/>
+                    <button id="removeButton" action="workpieceImagesesDataGrid.removeAction"/>
+                    <simplePagination id="pagination" dataLoader="workpieceImagesesDl"/>
                 </hbox>
-                <dataGrid id="unitMeasuresDataGrid"
+                <dataGrid id="workpieceImagesesDataGrid"
                           width="100%"
                           minHeight="20em"
-                          dataContainer="unitMeasuresDc"
+                          dataContainer="workpieceImagesesDc"
                           columnReorderingAllowed="true">
                     <actions>
-                        <action id="create" type="list_create"/>
-                        <action id="edit" type="list_edit"/>
-                        <action id="remove" type="list_remove"/>
+                        <action id="createAction" type="list_create"/>
+                        <action id="editAction" type="list_edit"/>
+                        <action id="removeAction" type="list_remove"/>
                     </actions>
                     <columns resizable="true">
                         <column property="description"/>
+                        <column property="filePath"/>
+                        <column property="workpieceRef"/>
                     </columns>
                 </dataGrid>
                 <hbox id="lookupActions" visible="false">
@@ -63,12 +69,20 @@
                 </hbox>
             </vbox>
             <vbox id="detailsLayout" height="100%">
-                <formLayout id="form" dataContainer="unitMeasureDc">
+                <formLayout id="form" dataContainer="workpieceImagesDc">
                     <responsiveSteps>
                         <responsiveStep minWidth="0" columns="1"/>
                         <responsiveStep minWidth="40em" columns="2"/>
                     </responsiveSteps>
                     <textField id="descriptionField" property="description"/>
+                    <fileStorageUploadField id="filePathField" clearButtonVisible="true" fileNameVisible="true"
+                                            property="filePath"/>
+                    <entityPicker id="workpieceRefField" property="workpieceRef">
+                        <actions>
+                            <action id="entityLookupAction" type="entity_lookup"/>
+                            <action id="entityClearAction" type="entity_clear"/>
+                        </actions>
+                    </entityPicker>
                 </formLayout>
                 <hbox id="detailActions">
                     <button id="saveButton" text="msg:///actions.Save" icon="CHECK" themeNames="primary"/>

@@ -1,52 +1,51 @@
 package com.company.base6.view.request;
 
+
 import com.company.base6.entity.Basket;
 import com.company.base6.entity.Request;
+import com.company.base6.entity.Workpiece;
 import com.company.base6.view.main.MainView;
 import com.vaadin.flow.component.ClickEvent;
 import com.vaadin.flow.component.HasValueAndElement;
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.grid.Grid;
-import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.page.Page;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.selection.SelectionEvent;
 import com.vaadin.flow.router.Route;
+import io.jmix.core.FileRef;
+import io.jmix.core.FileStorage;
+import io.jmix.core.FileStorageLocator;
 import io.jmix.core.validation.group.UiCrossFieldChecks;
-import io.jmix.flowui.action.SecuredBaseAction;
+import io.jmix.flowui.Notifications;
 import io.jmix.flowui.component.UiComponentUtils;
 import io.jmix.flowui.component.grid.DataGrid;
-import com.vaadin.flow.component.grid.Grid.SelectionMode;
 import io.jmix.flowui.component.image.JmixImage;
 import io.jmix.flowui.component.validation.ValidationErrors;
+import io.jmix.flowui.download.Downloader;
 import io.jmix.flowui.kit.action.Action;
 import io.jmix.flowui.kit.action.ActionPerformedEvent;
 import io.jmix.flowui.kit.component.button.JmixButton;
-import io.jmix.flowui.model.CollectionContainer;
-import io.jmix.flowui.model.DataContext;
-import io.jmix.flowui.model.InstanceContainer;
-import io.jmix.flowui.model.InstanceLoader;
+import io.jmix.flowui.model.*;
 import io.jmix.flowui.view.*;
-
-
-import io.jmix.flowui.Notifications;
 import org.springframework.beans.factory.annotation.Autowired;
-import com.vaadin.flow.component.html.Image;
-import com.vaadin.flow.component.page.Page;
-import com.vaadin.flow.component.UI;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
+//import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import static org.reflections.Reflections.log;
-
-import com.company.base6.entity.Basket;
-import com.company.base6.Workpiece;
-import io.jmix.flowui.model.CollectionLoader;
-
-import java.awt.*;
-import java.io.File;
 import java.io.IOException;
-import javax.swing.*;
-import java.awt.event.*;
+import java.io.InputStream;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.net.URLConnection;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Collection;
+import java.util.List;
 
 
 @Route(value = "requests", layout = MainView.class)
@@ -99,6 +98,9 @@ public class RequestListView extends StandardListView<Request> {
     private InstanceContainer<Workpiece> workpieceDc;
     @ViewComponent
     private JmixImage<Object> drawImage;
+    @ViewComponent
+    private JmixImage<Object> photoImage;
+
 
 
     // Обработчик выбора заявки
@@ -247,15 +249,126 @@ public class RequestListView extends StandardListView<Request> {
     }
 
     @Subscribe("photoImage")
-    public void onPhotoImageClick(ClickEvent<Image> event) throws IOException, InterruptedException {
+    public void onPhotoImageClick(ClickEvent<Image> event) throws IOException, InterruptedException, URISyntaxException {
         Workpiece workpiece = workpieceDc.getItem();
         if (workpiece != null) {
             String photoPath = workpiece.getFullPhotoPath();
-            openImageInNewTab(photoPath);
-            Process process = Runtime.getRuntime().exec(photoPath);
-            process.waitFor();
+            openImageInBrowser(photoPath);
         }
 
+    }
+    @Autowired
+    private Downloader downloader;
+
+    @Value("${jmix.core.photoDir}")
+    private String photoDir;
+
+    private Path getPhotoBasePath() {
+        //Path sdtr = Paths.get("${jmix.core.photoDir}");
+        return Paths.get(photoDir).toAbsolutePath();
+    }
+    @Autowired
+    private FileStorageLocator fileStorageLocator;
+
+    private void openImageInBrowser(String photoPath) throws URISyntaxException, IOException {
+
+        //saveToLocalFile(photoPath);
+        Path absolutePath = Paths.get(photoPath).toAbsolutePath();
+        //String baseUrl = ServletUriComponentsBuilder.fromCurrentContextPath().build().toUriString();
+
+        // Формируем полный URL к статическому ресурсу
+        //String fullUrl = baseUrl + "/" + photoPath;
+
+        // Создаем FileRef из строки
+
+        //Runtime.getRuntime().exec("cmd.exe /c Start " + absolutePath.toString());
+        // System.out.println(absolutePath);
+        //FileRef fileRef =FileRef.fromString(photoPath);
+        String strfile = absolutePath.toString();
+        //Path filenamestr = absolutePath.getFileName();
+
+        //String fnsStr = filenamestr.toString();
+        //Path fnsFull = filenamestr.getRoot();
+        //strfile=fnsStr;
+        //ResourceHandlerRegistry registry;
+        //uploadFile(photoPath);
+        saveToLocalFile(photoPath);
+        //saveToLocalFile(photoPath);
+        UI.getCurrent().access(() -> {
+            try {
+                // 1. Формируем корректный URL
+                //String encodedPath = URLEncoder.encode(photoPath, StandardCharsets.UTF_8)
+                //        .replace("%2F", "/");
+
+                // 2. Используем HTTP-сервер для доступа к файлам
+                //String httpUrl = "http://localhost:8080/" + encodedPath;
+
+                // 3. Открываем в браузере
+                Page page = UI.getCurrent().getPage();
+                page.executeJs("window.open($0)", photoPath, "popup");
+
+
+
+            } catch (Exception e) {
+                notifications.show("Ошибка открытия изображения");
+            }
+        });
+    }
+    private void getAndSaveImage(String photoPath) {
+        try {
+
+            URLConnection connection = new URL(photoPath).openConnection();
+            try (InputStream responseStream = connection.getInputStream()) {
+
+                FileStorage fileStorage = fileStorageLocator.getDefault();
+                FileRef fileRef = fileStorage.saveStream("photo.jpg", responseStream);
+
+
+            }
+        } catch (IOException e) {
+            throw new RuntimeException("Error getting image", e);
+        }
+    }
+
+    @Autowired
+    private FileStorage fileStorage;
+
+    public FileRef uploadFile(String filenameStr) {
+        InputStream is = getClass().getResourceAsStream(
+                filenameStr
+        );
+        return fileStorage.saveStream("ФАЙЛ-тест.jpg", is);
+    }
+
+
+    private void saveToLocalFile(String filePath) {
+        //FileStorage fileStorage = fileStorageLocator.getDefault();
+        //FileRef fileRef = FileRef.fromString("ext::" +filePath);
+        //InputStream is = getClass().getResourceAsStream(filePath);
+        //FileRef FR = Paths.get(filePath);
+// Получаем базовый URL (например, http://localhost:8080)
+        //String baseUrl = ServletUriComponentsBuilder.fromCurrentContextPath().build().toUriString();
+        //is = getClass().getResourceAsStream(filePath);
+        // Формируем полный URL к статическому ресурсу
+        //String fullUrl = baseUrl + "/" + filePath;
+        //downloader.download(fileRef);
+        try {
+            String fileexeurl= "C:/Users/Zver/IdeaProjects/Base6/photos/Комплектующие/Ящик_фруктовый_400х300х180_302-А/Фото_Ящик_фруктовый_400х300х180_302-А.jpg";
+
+            //FileRef FR= FileRef.fromString(filePath);
+
+            //String str2 = fileStorage.toString();
+            // Запуск процесса
+            Process process = Runtime.getRuntime().exec("cmd.exe /c Start " + fileexeurl);
+
+            // Ожидание завершения процесса (опционально)
+            process.waitFor();
+
+            // Вывод кода завершения
+            System.out.println("Процесс завершен с кодом: " + process.exitValue());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void openImageInNewTab(String photoPath) {

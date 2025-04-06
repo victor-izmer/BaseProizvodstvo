@@ -1,6 +1,6 @@
 package com.company.base6.view.material;
 
-import com.company.base6.Material;
+import com.company.base6.entity.Material;
 import com.company.base6.view.main.MainView;
 import com.vaadin.flow.component.ClickEvent;
 import com.vaadin.flow.component.HasValueAndElement;

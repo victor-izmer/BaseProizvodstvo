@@ -5,7 +5,7 @@
       focusComponent="typeworkpiecesDataGrid">
     <data>
         <collection id="typeworkpiecesDc"
-                    class="com.company.base6.Typeworkpiece">
+                    class="com.company.base6.entity.Typeworkpiece">
             <fetchPlan extends="_base"/>
             <loader id="typeworkpiecesDl" readOnly="true">
                 <query>
@@ -14,7 +14,7 @@
             </loader>
         </collection>
         <instance id="typeworkpieceDc"
-                  class="com.company.base6.Typeworkpiece">
+                  class="com.company.base6.entity.Typeworkpiece">
             <fetchPlan extends="_base"/>
             <loader id="typeworkpieceDl"/>
         </instance>

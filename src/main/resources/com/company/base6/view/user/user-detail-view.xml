@@ -1,12 +1,26 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <view xmlns="http://jmix.io/schema/flowui/view"
-      title="msg://UserDetailView.title"
-      focusComponent="form">
+      focusComponent="form" title="msg://view.title">
     <data>
+        <collection id="departmentsDc" class="com.company.base6.entity.Department">
+            <loader id="departmentsDl" readOnly="true">
+                <query>
+                    <![CDATA[select e from Department e
+                    order by e.name asc]]>
+                </query>
+            </loader>
+            <fetchPlan extends="_base"/>
+        </collection>
         <instance id="userDc"
                   class="com.company.base6.entity.User">
-            <fetchPlan extends="_base"/>
+            <fetchPlan extends="_base">
+                <property name="department" fetchPlan="_base"/>
+                <property name="steps" fetchPlan="_base">
+                    <property name="step" fetchPlan="_base"/>
+                </property>
+            </fetchPlan>
             <loader/>
+            <collection id="stepsDc" property="steps"/>
         </instance>
     </data>
     <actions>
@@ -18,7 +32,6 @@
     </facets>
     <layout>
         <formLayout id="form" dataContainer="userDc">
-            <textField id="usernameField" property="username" readOnly="true"/>
             <passwordField id="passwordField"
                            label="msg://com.company.base6.entity/User.password"
                            required="true"
@@ -32,7 +45,27 @@
             <textField id="emailField" property="email"/>
             <comboBox id="timeZoneField" property="timeZoneId" clearButtonVisible="true"/>
             <checkbox id="activeField" property="active"/>
+            <select id="statusExeRefField" property="statusExeRef"/>
+            <entityComboBox id="departmentField" property="department" itemsContainer="departmentsDc"/>
+            <datePicker id="joiningDateField" property="joiningDate"/>
+            <details summaryText="Picture">
+                <hbox>
+                    <fileStorageUploadField id="pictureField" property="picture" dataContainer="userDc"/>
+                    <image id="image" height="10em" width="10em" dataContainer="userDc" property="picture" classNames="user-picture"/>
+                </hbox>
+            </details>
         </formLayout>
+        <hbox id="buttonsPanel" classNames="buttons-panel">
+            <button id="generateButton" text="Создать"/>
+        </hbox>
+        <dataGrid id="stepsDataGrid" dataContainer="stepsDc" width="100%" height="100%">
+            <columns>
+                <column key="completed" sortable="false" width="4em" flexGrow="0"/>
+                <column property="dueDate"/>
+                <column property="completeDate"/>
+                <column property="step.name"/>
+            </columns>
+        </dataGrid>
         <hbox id="detailActions">
             <button id="saveAndCloseButton" action="saveAction"/>
             <button id="closeButton" action="closeAction"/>

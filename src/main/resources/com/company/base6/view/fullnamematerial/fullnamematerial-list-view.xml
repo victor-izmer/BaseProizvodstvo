@@ -5,7 +5,7 @@
       focusComponent="fullnamematerialsDataGrid">
     <data>
         <collection id="fullnamematerialsDc"
-                    class="com.company.base6.Fullnamematerial">
+                    class="com.company.base6.entity.Fullnamematerial">
             <fetchPlan extends="_base"/>
             <loader id="fullnamematerialsDl" readOnly="true">
                 <query>
@@ -14,7 +14,7 @@
             </loader>
         </collection>
         <instance id="fullnamematerialDc"
-                  class="com.company.base6.Fullnamematerial">
+                  class="com.company.base6.entity.Fullnamematerial">
             <fetchPlan extends="_base"/>
             <loader id="fullnamematerialDl"/>
         </instance>

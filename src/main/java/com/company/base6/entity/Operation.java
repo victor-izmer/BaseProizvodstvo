@@ -1,6 +1,6 @@
 package com.company.base6.entity;
 
-import com.company.base6.Workpiece;
+
 import io.jmix.core.entity.annotation.JmixGeneratedValue;
 import io.jmix.core.metamodel.annotation.InstanceName;
 import io.jmix.core.metamodel.annotation.JmixEntity;

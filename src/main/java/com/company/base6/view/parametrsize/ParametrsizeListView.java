@@ -1,6 +1,7 @@
 package com.company.base6.view.parametrsize;
 
-import com.company.base6.Parametrsize;
+
+import com.company.base6.entity.Parametrsize;
 import com.company.base6.view.main.MainView;
 import com.vaadin.flow.component.ClickEvent;
 import com.vaadin.flow.component.HasValueAndElement;

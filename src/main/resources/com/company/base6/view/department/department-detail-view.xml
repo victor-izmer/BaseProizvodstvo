@@ -10,7 +10,9 @@
                     order by e.username asc]]>
                 </query>
             </loader>
-            <fetchPlan extends="_base"/>
+            <fetchPlan extends="_base">
+                <property name="steps" fetchPlan="_base"/>
+            </fetchPlan>
         </collection>
         <instance id="departmentDc"
                   class="com.company.base6.entity.Department">

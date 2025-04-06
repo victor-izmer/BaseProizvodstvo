@@ -5,7 +5,7 @@
       focusComponent="workpiecesDataGrid">
     <data>
         <collection id="workpiecesDc"
-                    class="com.company.base6.Workpiece">
+                    class="com.company.base6.entity.Workpiece">
             <fetchPlan extends="_base">
                 <property name="materialref" fetchPlan="_base"/>
                 <property name="parametrsizeref" fetchPlan="_base"/>
@@ -18,7 +18,7 @@
             </loader>
         </collection>
         <instance id="workpieceDc"
-                  class="com.company.base6.Workpiece">
+                  class="com.company.base6.entity.Workpiece">
             <fetchPlan extends="_base">
                 <property name="materialref" fetchPlan="_base"/>
                 <property name="parametrsizeref" fetchPlan="_base"/>
@@ -72,8 +72,8 @@
                         <column property="materialref"/>
                         <column property="размер"/>
                         <column property="времяИзготовления"/>
-                        <column property="photopath"/>
-                        <column property="drawpath"/>
+                        <column property="photoPath"/>
+                        <column property="drawPath"/>
                         <column property="parametrsizeref"/>
                         <column property="typeref"/>
                     </columns>
@@ -103,8 +103,8 @@
                     </entityPicker>
                     <textField id="размерField" property="размер"/>
                     <textField id="времяИзготовленияField" property="времяИзготовления"/>
-                    <textArea id="photopathField" height="9.5em" property="photopath"/>
-                    <textArea id="drawpathField" height="9.5em" property="drawpath"/>
+                    <textArea id="photopathField" height="9.5em" property="photoPath"/>
+                    <textArea id="drawpathField" height="9.5em" property="drawPath"/>
                     <entityPicker id="parametrsizerefField" property="parametrsizeref">
                         <actions>
                             <action id="entityLookup" type="entity_lookup"/>

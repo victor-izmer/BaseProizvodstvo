@@ -1,6 +1,5 @@
-package com.company.base6;
+package com.company.base6.entity;
 
-import io.jmix.core.FileRef;
 import io.jmix.core.metamodel.annotation.InstanceName;
 import io.jmix.core.metamodel.annotation.JmixEntity;
 import jakarta.persistence.*;
@@ -30,8 +29,9 @@ public class Specification {
     @Column(name = "Примечание_спецификации")
     private String primSpec;
 
+
     @JoinColumn(name = "DETALREF_ID")
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     private Workpiece detalref;
 
 

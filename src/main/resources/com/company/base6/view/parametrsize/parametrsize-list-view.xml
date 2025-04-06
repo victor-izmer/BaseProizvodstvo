@@ -5,7 +5,7 @@
       focusComponent="parametrsizesDataGrid">
     <data>
         <collection id="parametrsizesDc"
-                    class="com.company.base6.Parametrsize">
+                    class="com.company.base6.entity.Parametrsize">
             <fetchPlan extends="_base"/>
             <loader id="parametrsizesDl" readOnly="true">
                 <query>
@@ -14,7 +14,7 @@
             </loader>
         </collection>
         <instance id="parametrsizeDc"
-                  class="com.company.base6.Parametrsize">
+                  class="com.company.base6.entity.Parametrsize">
             <fetchPlan extends="_base"/>
             <loader id="parametrsizeDl"/>
         </instance>

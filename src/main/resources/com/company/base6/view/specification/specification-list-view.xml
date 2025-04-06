@@ -5,9 +5,10 @@
       focusComponent="specificationsDataGrid">
     <data>
         <collection id="specificationsDc"
-                    class="com.company.base6.Specification">
+                    class="com.company.base6.entity.Specification">
             <fetchPlan extends="_base">
                 <property name="detalref" fetchPlan="_base"/>
+
                 <property name="parentref" fetchPlan="_base">
                     <property name="detalref" fetchPlan="_base"/>
                 </property>
@@ -22,7 +23,7 @@
             </loader>
         </collection>
         <instance id="specificationDc"
-                  class="com.company.base6.Specification">
+                  class="com.company.base6.entity.Specification">
             <fetchPlan extends="_base">
                 <property name="detalref" fetchPlan="_base"/>
                 <property name="parentref" fetchPlan="_base"/>
@@ -101,11 +102,11 @@
 
                     <image
                             id="photoImage" classNames="photo-preview"
-                            resource="{fullPhotopath}" text="msg://image.text" property="detalref.fullPhotoPath"
+                            resource="{fullPhotopath}" text="msg://image.text" property="detalref.drawPath"
                             css=" height:300px; width:auto!important;object-fit: contain; "/>
                     <image
                             id="drawImage" classNames="photo-preview"
-                            resource="{fullDrawpath}" text="msg://image.text" property="detalref.fullDrawPath"
+                            resource="{detalref.getFullDrawPath}" text="msg://image.text"
                             css=" height:300px; width:auto!important;object-fit: contain; "/>
                     <textField id="materialrefField" property="detalref.materialref.description" label="Материал"/>
                     <textField id="параметрРазмераField" property="detalref.parametrsizeref" maxWidth="110px"/>

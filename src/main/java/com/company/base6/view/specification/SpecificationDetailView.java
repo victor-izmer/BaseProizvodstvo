@@ -1,6 +1,7 @@
 package com.company.base6.view.specification;
 
-import com.company.base6.Specification;
+
+import com.company.base6.entity.Specification;
 import com.company.base6.view.main.MainView;
 import com.vaadin.flow.router.Route;
 import io.jmix.flowui.view.EditedEntityContainer;

@@ -1,30 +1,29 @@
-package com.company.base6;
+package com.company.base6.entity;
 
-import io.jmix.core.metamodel.annotation.InstanceName;
-import io.jmix.core.metamodel.annotation.JmixEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
 
-import java.util.LinkedHashSet;
 import java.util.Set;
+import io.jmix.core.metamodel.annotation.JmixEntity;
 
 @JmixEntity
 @Entity
-@Table(name = "typeworkpiece")
-public class Typeworkpiece {
+@Table(name = "fullnamematerial")
+public class Fullnamematerial {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Long id;
 
-    @InstanceName
     @Size(max = 255)
     @Column(name = "description")
     private String description;
 
-    @Column(name = "Картинка")
-    private byte[] картинка;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "material")
+    private Material material;
 
-    @OneToMany(mappedBy = "typeref")
+    @OneToMany(mappedBy = "materialref")
     private Set<Workpiece> workpieces;
 
     public Long getId() {
@@ -43,12 +42,12 @@ public class Typeworkpiece {
         this.description = description;
     }
 
-    public byte[] getКартинка() {
-        return картинка;
+    public Material getMaterial() {
+        return material;
     }
 
-    public void setКартинка(byte[] картинка) {
-        this.картинка = картинка;
+    public void setMaterial(Material material) {
+        this.material = material;
     }
 
     public Set<Workpiece> getWorkpieces() {

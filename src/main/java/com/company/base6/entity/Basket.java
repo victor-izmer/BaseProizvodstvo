@@ -1,7 +1,5 @@
 package com.company.base6.entity;
 
-import com.company.base6.UnitMeasure;
-import com.company.base6.Workpiece;
 import io.jmix.core.MetadataTools;
 import io.jmix.core.entity.annotation.JmixGeneratedValue;
 import io.jmix.core.metamodel.annotation.DependsOnProperties;
@@ -22,7 +20,7 @@ public class Basket {
     @Id
     private Long id;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "REQUEST_REF_ID")
     private Request requestRef;
 

@@ -1,34 +1,23 @@
-package com.company.base6;
+package com.company.base6.entity;
 
-import io.jmix.core.DataManager;
+
+import com.company.base6.DependsOnProperties;
 import io.jmix.core.DeletePolicy;
-import io.jmix.core.FileRef;
+import io.jmix.core.entity.annotation.JmixGeneratedValue;
 import io.jmix.core.entity.annotation.OnDeleteInverse;
 import io.jmix.core.metamodel.annotation.InstanceName;
 import io.jmix.core.metamodel.annotation.JmixEntity;
-import io.jmix.core.metamodel.annotation.JmixProperty;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.net.URI;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
-
-import static org.aspectj.weaver.tools.cache.SimpleCacheFactory.path;
 
 @JmixEntity
 @Entity
 @Table(name = "workpiece")
+@Cacheable
+
 public class Workpiece {
-
-
+    @JmixGeneratedValue
     @Id
     @Column(name = "id", nullable = false)
     private Long id;
@@ -64,10 +53,10 @@ public class Workpiece {
     private Short времяИзготовления;
 
     @Column(name = "photopath", length = 1024)
-    private String photopath;
+    private String photoPath;
 
     @Column(name = "drawpath", length = 1024)
-    private String drawpath;
+    private String drawPath;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "parametrsizeref")
@@ -78,38 +67,44 @@ public class Workpiece {
     @JoinColumn(name = "typeref", nullable = false)
     private Typeworkpiece typeref;
 
-    @JmixProperty
-    @DependsOnProperties({"наименование", "photopath"})
+
+    /*private Path getPhotoBasePath() {
+        //Path sdtr = Paths.get("${jmix.core.photoDir}");
+        return Paths.get("photos/").toAbsolutePath();
+    }*/
+    @Transient
+    @DependsOnProperties({"наименование", "fullPhotopath"})
     public String getFullPhotoPath() {
-        String fileName = "photos/Комплектующие/" + наименование + "_" + номерЧертежа + "/" + photopath;
+        String fileName =  "/photos/Комплектующие/" + наименование + "_" + номерЧертежа + "/" + photoPath;
         fileName= fileName.replace(" ", "_"); // Заменяем " " на "_"
         return fileName;
     }
-    @JmixProperty
-    @DependsOnProperties({"наименование", "drawpath"})
+
+
     public String getFullDrawPath() {
-        String fileName = "photos/Комплектующие/" + наименование + "_" + номерЧертежа + "/" + drawpath;
+
+        String fileName = "/photos/Комплектующие/" + наименование + "_" + номерЧертежа + "/" + drawPath;
         fileName= fileName.replace(" ", "_"); // Заменяем " " на "_"
         return fileName;
     }
 
 
-    public void setDrawpath(String drawpath) {
-        this.drawpath = drawpath;
+    public void setDrawPath(String drawPath) {
+        this.drawPath = drawPath;
     }
 
-    public String getDrawpath() {
-        return drawpath;
+    public String getDrawPath() {
+        return drawPath;
     }
 
-    public void setPhotopath(String photopath) {
+    public void setPhotoPath(String photoPath) {
 
-            this.photopath = photopath;
+            this.photoPath = photoPath;
 
     }
 
-    public String getPhotopath() {
-        return photopath;
+    public String getPhotoPath() {
+        return photoPath;
     }
 
     public void setMaterialref(Fullnamematerial materialref) {

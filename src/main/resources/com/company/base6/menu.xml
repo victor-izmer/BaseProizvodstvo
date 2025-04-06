@@ -2,6 +2,7 @@
 <menu-config xmlns="http://jmix.io/schema/flowui/menu">
 
     <menu id="application" title="msg://com.company.base6/menu.application.title" opened="true">
+        <item view="MyOnboardingView" title="msg://com.company.base6.view.myonboarding/myOnboardingView.title"/>
         <item view="User.list" title="msg://com.company.base6.view.user/UserListView.title"/>
         <item view="UnitMeasure.list" title="msg://com.company.base6.view.unitmeasure/unitMeasureListView.title"/>
         <item view="Material.list" title="msg://com.company.base6.view.material/materialListView.title"/>
@@ -18,6 +19,10 @@
         <item view="Request.list" title="msg://com.company.base6.view.request/requestListView.title"/>
         <item view="Operation.list" title="msg://com.company.base6.view.operation/operationListView.title"/>
         <item view="Basket.list" title="msg://com.company.base6.view.basket/basketListView.title"/>
+        <item view="WorkpieceImages.list"
+              title="msg://com.company.base6.view.workpieceimages/workpieceImagesListView.title"/>
+        <item view="Step.list" title="msg://com.company.base6.view.step/stepListView.title"/>
+
     </menu>
 
 </menu-config>

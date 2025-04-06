@@ -1,4 +1,4 @@
-package com.company.base6;
+package com.company.base6.entity;
 
 import io.jmix.core.metamodel.annotation.InstanceName;
 import io.jmix.core.metamodel.annotation.JmixEntity;

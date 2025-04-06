@@ -1,6 +1,7 @@
 package com.company.base6.view.unitmeasure;
 
-import com.company.base6.UnitMeasure;
+
+import com.company.base6.entity.UnitMeasure;
 import com.company.base6.view.main.MainView;
 import com.vaadin.flow.component.ClickEvent;
 import com.vaadin.flow.component.HasValueAndElement;

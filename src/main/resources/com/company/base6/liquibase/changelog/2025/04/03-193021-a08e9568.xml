@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd"
+        objectQuotingStrategy="QUOTE_ONLY_RESERVED_WORDS">
+    <changeSet id="1" author="Base6">
+        <createTable tableName="WORKPIECE_IMAGES">
+            <column name="ID" type="UUID">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="PK_WORKPIECE_IMAGES"/>
+            </column>
+            <column name="VERSION" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="DESCRIPTION" type="VARCHAR(255)"/>
+            <column name="FILE_PATH" type="VARCHAR(1024)"/>
+            <column name="WORKPIECE_REF_ID" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="2" author="Base6">
+        <createIndex indexName="IDX_WORKPIECE_IMAGES_WORKPIECE_REF" tableName="WORKPIECE_IMAGES">
+            <column name="WORKPIECE_REF_ID"/>
+        </createIndex>
+
+        <addForeignKeyConstraint baseColumnNames="WORKPIECE_REF_ID" baseTableName="WORKPIECE_IMAGES"
+                                 constraintName="FK_WORKPIECE_IMAGES_ON_WORKPIECE_REF" referencedColumnNames="id"
+                                 referencedTableName="workpiece"/>
+    </changeSet>
+</databaseChangeLog>

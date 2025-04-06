@@ -46,7 +46,7 @@
         </instance>
 
         <instance id="workpieceDc"
-                  class="com.company.base6.Workpiece">
+                  class="com.company.base6.entity.Workpiece">
             <fetchPlan extends="_base">
                 <property name="materialref" fetch="AUTO" fetchPlan="_base"/>
             </fetchPlan>
@@ -72,19 +72,24 @@
         <action id="selectAction" type="lookup_select"/>
         <action id="discardAction" type="lookup_discard"/>
     </actions>
-    <layout padding="false">
+    <layout padding="false" boxSizing="BORDER_BOX">
         <formLayout id="layoutWrapper" classNames="master-detail-layout" height="100%">
+
             <vbox id="listLayout" height="100%">
                 <genericFilter id="genericFilter"
                                dataLoader="requestsDl">
                     <properties include=".*"/>
                 </genericFilter>
+
                 <hbox id="buttonsPanel" classNames="buttons-panel">
                     <button id="createButton" action="requestsDataGrid.create"/>
                     <button id="editButton" action="requestsDataGrid.edit"/>
                     <button id="removeButton" action="requestsDataGrid.remove"/>
                     <simplePagination id="pagination" dataLoader="requestsDl"/>
                 </hbox>
+
+
+
                 <dataGrid id="requestsDataGrid"
                           width="100%"
                           minHeight="20em"
@@ -131,29 +136,35 @@
             </vbox>
             <vbox id="detailsLayout" height="100%">
                 <formLayout id="form" dataContainer="requestDc">
-
+                    <responsiveSteps>
+                        <responsiveStep minWidth="60em" columns="1"/>
+                        <responsiveStep minWidth="90em" columns="2"/>
+                    </responsiveSteps>
                     <p>
-                    <entityPicker id="supplierRefField" property="supplierRef">
+                    <entityPicker id="supplierRefField" property="supplierRef" label="Поставщик">
                         <actions>
                             <action id="entityLookup" type="entity_lookup"/>
                             <action id="entityClear" type="entity_clear"/>
                         </actions>
                     </entityPicker>
-                    <entityPicker id="statusZayavkaRefField" property="statusZayavkaRef" maxWidth="130px">
+                    <entityPicker id="statusZayavkaRefField" property="statusZayavkaRef" maxWidth="130px"
+                                  label="Статус">
                         <actions>
                             <action id="entityLookup" type="entity_lookup"/>
                             <action id="entityClear" type="entity_clear"/>
                         </actions>
                     </entityPicker>
-                    <textField id="sumRequestField" property="sumRequest" maxWidth="130px"/>
-                    <datePicker id="dateRequestField" property="dateRequest" maxWidth="130px"/>
-                    <datePicker id="dateControlField" property="dateControl" maxWidth="130px"/>
-                    <datePicker id="dateFinishField" property="dateFinish" maxWidth="131px"/>
-                    <textField id="primRequestField" property="primRequest"/>
-                    <textField id="scanInvoiceField" property="scanInvoice" alignSelf="END" css=" direction: rtl;"/>
+                    <textField id="sumRequestField" property="sumRequest" maxWidth="130px" label="Сумма"/>
+                    <datePicker id="dateRequestField" property="dateRequest" maxWidth="130px" label="Создание"/>
+                    <datePicker id="dateControlField" property="dateControl" maxWidth="130px" label="Контроль"/>
+                    <datePicker id="dateFinishField" property="dateFinish" maxWidth="131px" label="Окончание"/>
+                    <textField id="primRequestField" property="primRequest" label="Примечание"/>
+                    <textField id="scanInvoiceField" property="scanInvoice" alignSelf="END" css=" direction: rtl;"
+                               label="Счет"/>
                     </p>
                     <!-- Детали Workpiece -->
                     <p id="workpieceDetails">
+                        <p>
                         <h4 text="Параметры комплектующей"/>
                         <textField id="materialField"
                                    value="{workpieceDc.item.materialref.name}"
@@ -163,6 +174,8 @@
                                    value="{workpieceDc.item.размер}"
                                    label="Размер"
                                    readOnly="true"/>
+                        </p>
+                        <p>
                         <image id="photoImage" classNames="photo-preview"
                                css=" height:300px; width:auto!important;object-fit: contain; "
                                resource="{workpieceDc.item.getFullPhotoPath}"
@@ -172,6 +185,7 @@
                                css=" height:300px; width:auto!important;object-fit: contain; "
                                resource="{workpieceDc.item.getFullDrawPath}"
                         />
+                        </p>
                     </p>
                 </formLayout>
                 <hbox id="detailActions">
