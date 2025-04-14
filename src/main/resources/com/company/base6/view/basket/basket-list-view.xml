@@ -80,6 +80,7 @@
                         <action id="remove" type="list_remove"/>
                     </actions>
                     <columns resizable="true">
+                        <column property="id"/>
                         <column property="requestRef"/>
                         <column property="detalRef"/>
                         <column property="operationRef"/>
@@ -101,6 +102,7 @@
                         <responsiveStep minWidth="0" columns="1"/>
                         <responsiveStep minWidth="40em" columns="2"/>
                     </responsiveSteps>
+                    <textField id="idField" property="id"/>
                     <entityPicker id="requestRefField" property="requestRef">
                         <actions>
                             <action id="entityLookup" type="entity_lookup"/>

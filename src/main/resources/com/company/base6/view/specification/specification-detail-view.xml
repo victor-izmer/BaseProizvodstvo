@@ -11,6 +11,7 @@
     </data>
     <facets>
         <dataLoadCoordinator auto="true"/>
+        <settings auto="true"/>
     </facets>
     <actions>
         <action id="saveAction" type="detail_saveClose"/>
@@ -22,7 +23,7 @@
                 <responsiveStep minWidth="0" columns="1"/>
                 <responsiveStep minWidth="40em" columns="2"/>
             </responsiveSteps>
-            <textField id="количествоField" property="количество"/>
+            <textField id="количествоField" property="skolko"/>
             <textArea id="primSpecField" height="9.5em" property="primSpec"/>
         </formLayout>
         <hbox id="detailActions">

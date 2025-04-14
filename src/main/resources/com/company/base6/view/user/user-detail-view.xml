@@ -32,6 +32,7 @@
     </facets>
     <layout>
         <formLayout id="form" dataContainer="userDc">
+            <textField id="usernameField" property="username"/>
             <passwordField id="passwordField"
                            label="msg://com.company.base6.entity/User.password"
                            required="true"
@@ -48,12 +49,12 @@
             <select id="statusExeRefField" property="statusExeRef"/>
             <entityComboBox id="departmentField" property="department" itemsContainer="departmentsDc"/>
             <datePicker id="joiningDateField" property="joiningDate"/>
-            <details summaryText="Picture">
+
                 <hbox>
                     <fileStorageUploadField id="pictureField" property="picture" dataContainer="userDc"/>
                     <image id="image" height="10em" width="10em" dataContainer="userDc" property="picture" classNames="user-picture"/>
                 </hbox>
-            </details>
+
         </formLayout>
         <hbox id="buttonsPanel" classNames="buttons-panel">
             <button id="generateButton" text="Создать"/>

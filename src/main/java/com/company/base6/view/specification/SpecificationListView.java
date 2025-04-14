@@ -1,11 +1,13 @@
 package com.company.base6.view.specification;
 
 import com.company.base6.entity.Specification;
+import com.company.base6.entity.Workpiece;
 import com.company.base6.view.main.MainView;
 import com.vaadin.flow.component.ClickEvent;
 import com.vaadin.flow.component.HasValueAndElement;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.grid.ItemDoubleClickEvent;
+import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.Route;
@@ -132,6 +134,7 @@ public class SpecificationListView extends StandardListView<Specification> {
     }
 
     private void updateControls(boolean editing) {
+
         UiComponentUtils.getComponents(form).forEach(component -> {
             if (component instanceof HasValueAndElement<?, ?> field) {
                 field.setReadOnly(!editing);
@@ -141,11 +144,18 @@ public class SpecificationListView extends StandardListView<Specification> {
         detailActions.setVisible(editing);
         listLayout.setEnabled(!editing);
         specificationsDataGrid.getActions().forEach(Action::refreshState);
+
     }
 
     private ViewValidation getViewValidation() {
         return getApplicationContext().getBean(ViewValidation.class);
     }
 
+    private void updatePhotoImage(Workpiece workpiece) {
+        Image photoImage = (Image) getContent().getComponent("photoImage");
+        if (photoImage != null) {
+            photoImage.setSrc(workpiece.getFullPhotoPath());
+        }
+    }
 
 }

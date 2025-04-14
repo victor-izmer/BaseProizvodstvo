@@ -7,13 +7,14 @@
         <collection id="specificationsDc"
                     class="com.company.base6.entity.Specification">
             <fetchPlan extends="_base">
-                <property name="detalref" fetchPlan="_base"/>
-
-                <property name="parentref" fetchPlan="_base">
-                    <property name="detalref" fetchPlan="_base"/>
+                <property fetchPlan="_base" name="detalref">
+                    <property name="description"/>
+                    <property name="photoPath"/>
                 </property>
-                <property name="unitMeasure" fetchPlan="_base"/>
-
+                <property fetchPlan="_base" name="parentref">
+                    <property fetchPlan="_base" name="detalref"/>
+                </property>
+                <property fetchPlan="_base" name="unitMeasure"/>
                 <property name="id"/>
             </fetchPlan>
             <loader id="specificationsDl" readOnly="true" cacheable="true">
@@ -25,15 +26,16 @@
         <instance id="specificationDc"
                   class="com.company.base6.entity.Specification">
             <fetchPlan extends="_base">
-                <property name="detalref" fetchPlan="_base"/>
-                <property name="parentref" fetchPlan="_base"/>
+                <property fetchPlan="_base" name="detalref"/>
+                <property fetchPlan="_base" name="parentref"/>
+                <property fetchPlan="_base" name="unitMeasure"/>
             </fetchPlan>
             <loader id="specificationDl"/>
         </instance>
     </data>
     <facets>
         <dataLoadCoordinator auto="true"/>
-
+        <settings auto="true"/>
     </facets>
     <actions>
         <action id="selectAction" type="lookup_select"/>
@@ -68,8 +70,8 @@
                         <action id="remove" type="list_remove"/>
                     </actions>
                     <columns resizable="true">
-                        <column property="detalref.наименование" width="310px"/>
-                        <column property="количество" width="50px" textAlign="CENTER"/>
+                        <column property="detalref.description" width="310px"/>
+                        <column property="skolko" width="50px" textAlign="CENTER"/>
                         <column property="unitMeasure" width="40px" textAlign="CENTER"/>
                         <column property="primSpec" autoWidth="true"/>
 
@@ -88,31 +90,36 @@
                         <responsiveStep minWidth="0" columns="1"/>
                         <responsiveStep minWidth="40em" columns="2"/>
                     </responsiveSteps>
+                    <textField id="idField" property="detalref.id" maxWidth="70px"/>
+                    <textField id="photField" property="detalref.photoPath" maxWidth="200px"/>
+                    <textField id="drawField" property="detalref.drawPath" maxWidth="200px"/>
                     <textField id="detalrefField" property="detalref" maxWidth="300px"/>
-                    <textField id="количествоField" property="количество" maxWidth="70px"/>
+                    <textField id="количествоField" property="skolko" maxWidth="70px"/>
                     <entityPicker id="едИзмField" property="unitMeasure" maxWidth="130px">
                         <actions>
                             <action id="entityLookup" type="entity_lookup"/>
                             <action id="entityClear" type="entity_clear"/>
                         </actions>
                     </entityPicker>
-                    <textField id="номерЧертежаField" property="detalref.номерЧертежа" maxWidth="150px"/>
-                    <textArea height="9.5em" property="detalref.примечаниеДетали"/>
+                    <textField id="номерЧертежаField" property="detalref.numDraw" maxWidth="150px"/>
+                    <textArea height="9.5em" property="detalref.primDetal"/>
                     <textArea id="primSpecField" height="9.5em" property="primSpec"/>
 
                     <image
                             id="photoImage" classNames="photo-preview"
-                            resource="{fullPhotopath}" text="msg://image.text" property="detalref.drawPath"
-                            css=" height:300px; width:auto!important;object-fit: contain; "/>
+                            resource="{detalref.photoId}" text="msg://image.text"
+                            css=" height:300px; width:auto!important;object-fit: contain; max-width: 300px;"
+                            dataContainer="specificationDc" property="detalref.photoId"/>
                     <image
                             id="drawImage" classNames="photo-preview"
-                            resource="{detalref.getFullDrawPath}" text="msg://image.text"
-                            css=" height:300px; width:auto!important;object-fit: contain; "/>
+                            resource="{detalref.drawId}" text="msg://image.text"
+                            css=" height:300px; width:auto!important;object-fit: contain; max-width: 300px;"
+                            dataContainer="specificationDc" property="detalref.drawId"/>
                     <textField id="materialrefField" property="detalref.materialref.description" label="Материал"/>
                     <textField id="параметрРазмераField" property="detalref.parametrsizeref" maxWidth="110px"/>
-                    <textField id="размерField" property="detalref.размер" maxWidth="70px"/>
-                    <textField id="времяИзготовленияField" property="detalref.времяИзготовления" maxWidth="100px"/>
-                    <textField id="parentrefField" property="parentref.detalref.наименование" maxWidth="350px"
+                    <textField id="размерField" property="detalref.size" maxWidth="70px"/>
+                    <textField id="времяИзготовленияField" property="detalref.timeProduce" maxWidth="100px"/>
+                    <textField id="parentrefField" property="parentref.detalref.description" maxWidth="350px"
                                label="Родитель"/>
                 </formLayout>
                 <hbox id="detailActions">

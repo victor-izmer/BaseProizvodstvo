@@ -19,6 +19,7 @@ import java.util.Date;
         @Index(name = "IDX_REQUEST_STATUS_ZAYAVKA_REF", columnList = "STATUS_ZAYAVKA_REF_ID")
 })
 @Entity
+@Cacheable
 public class Request {
     @JmixGeneratedValue
     @Column(name = "ID", nullable = false)

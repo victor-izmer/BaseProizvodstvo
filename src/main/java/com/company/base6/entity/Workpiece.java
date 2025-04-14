@@ -7,9 +7,11 @@ import io.jmix.core.entity.annotation.JmixGeneratedValue;
 import io.jmix.core.entity.annotation.OnDeleteInverse;
 import io.jmix.core.metamodel.annotation.InstanceName;
 import io.jmix.core.metamodel.annotation.JmixEntity;
+import io.jmix.core.metamodel.annotation.JmixProperty;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import org.slf4j.LoggerFactory;
 
 @JmixEntity
 @Entity
@@ -25,21 +27,21 @@ public class Workpiece {
     @InstanceName
     @Size(max = 255)
     @Column(name = "Наименование")
-    private String наименование;
+    private String description;
 
     @Size(max = 255)
     @Column(name = "Номер_чертежа")
-    private String номерЧертежа;
+    private String numDraw;
 
     @Size(max = 255)
     @Column(name = "Примечание_детали")
-    private String примечаниеДетали;
+    private String primDetal;
 
     @Column(name = "Цена_последняя")
-    private Float ценаПоследняя;
+    private Float priceLast;
 
     @Column(name = "Цена_последняя_НДС")
-    private Boolean ценаПоследняяНдс;
+    private Boolean priceLastNDS;
 
     @OnDeleteInverse(DeletePolicy.CASCADE)
     @ManyToOne(fetch = FetchType.LAZY)
@@ -47,10 +49,10 @@ public class Workpiece {
     private Fullnamematerial materialref;
 
     @Column(name = "РАЗМЕР")
-    private Float размер;
+    private Float size;
 
     @Column(name = "Время_изготовления")
-    private Short времяИзготовления;
+    private Short timeProduce;
 
     @Column(name = "photopath", length = 1024)
     private String photoPath;
@@ -72,22 +74,35 @@ public class Workpiece {
         //Path sdtr = Paths.get("${jmix.core.photoDir}");
         return Paths.get("photos/").toAbsolutePath();
     }*/
-    @Transient
-    @DependsOnProperties({"наименование", "fullPhotopath"})
+    @JmixProperty
+    @DependsOnProperties({"наименование", "photopath"})
     public String getFullPhotoPath() {
-        String fileName =  "/photos/Комплектующие/" + наименование + "_" + номерЧертежа + "/" + photoPath;
+        String fileName =  "photos/Комплектующие/" + description + "_" + numDraw + "/" + photoPath;
+        //String fileName =  "/photos/Комплектующие/" + id + "/" + "Фото_"+ id+ ".jpg";
         fileName= fileName.replace(" ", "_"); // Заменяем " " на "_"
         return fileName;
     }
-
-
+    @JmixProperty
+    @DependsOnProperties({"наименование", "drawpath"})
     public String getFullDrawPath() {
-
-        String fileName = "/photos/Комплектующие/" + наименование + "_" + номерЧертежа + "/" + drawPath;
+        String fileName = "photos/Комплектующие/" + description + "_" + numDraw + "/" + drawPath;
         fileName= fileName.replace(" ", "_"); // Заменяем " " на "_"
         return fileName;
     }
+    @JmixProperty
+    @DependsOnProperties({"наименование", "photopath"})
+    public String getPhotoId() {
+        String fileName =  "photos/Комплектующие/" + id + "/" + "Фото_"+id+".jpg";
 
+        return fileName;
+    }
+    @JmixProperty
+    @DependsOnProperties({"наименование", "drawpath"})
+    public String getDrawId() {
+        String fileName =  "photos/Комплектующие/" + id + "/" + "Чертеж_"+id+".jpg";
+
+        return fileName;
+    }
 
     public void setDrawPath(String drawPath) {
         this.drawPath = drawPath;
@@ -104,6 +119,7 @@ public class Workpiece {
     }
 
     public String getPhotoPath() {
+        LoggerFactory.getLogger(Workpiece.class).info("Фото: {}", photoPath);
         return photoPath;
     }
 
@@ -139,60 +155,60 @@ public class Workpiece {
         this.id = id;
     }
 
-    public String getНаименование() {
-        return наименование;
+    public String getDescription() {
+        return description;
     }
 
-    public void setНаименование(String наименование) {
-        this.наименование = наименование;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
-    public String getНомерЧертежа() {
-        return номерЧертежа;
+    public String getNumDraw() {
+        return numDraw;
     }
 
-    public void setНомерЧертежа(String номерЧертежа) {
-        this.номерЧертежа = номерЧертежа;
+    public void setNumDraw(String numDraw) {
+        this.numDraw = numDraw;
     }
 
-    public String getПримечаниеДетали() {
-        return примечаниеДетали;
+    public String getPrimDetal() {
+        return primDetal;
     }
 
-    public void setПримечаниеДетали(String примечаниеДетали) {
-        this.примечаниеДетали = примечаниеДетали;
+    public void setPrimDetal(String primDetal) {
+        this.primDetal = primDetal;
     }
 
-    public Float getЦенаПоследняя() {
-        return ценаПоследняя;
+    public Float getPriceLast() {
+        return priceLast;
     }
 
-    public void setЦенаПоследняя(Float ценаПоследняя) {
-        this.ценаПоследняя = ценаПоследняя;
+    public void setPriceLast(Float priceLast) {
+        this.priceLast = priceLast;
     }
 
-    public Boolean getЦенаПоследняяНдс() {
-        return ценаПоследняяНдс;
+    public Boolean getPriceLastNDS() {
+        return priceLastNDS;
     }
 
-    public void setЦенаПоследняяНдс(Boolean ценаПоследняяНдс) {
-        this.ценаПоследняяНдс = ценаПоследняяНдс;
+    public void setPriceLastNDS(Boolean priceLastNDS) {
+        this.priceLastNDS = priceLastNDS;
     }
 
-    public Float getРазмер() {
-        return размер;
+    public Float getSize() {
+        return size;
     }
 
-    public void setРазмер(Float размер) {
-        this.размер = размер;
+    public void setSize(Float size) {
+        this.size = size;
     }
 
-    public Short getВремяИзготовления() {
-        return времяИзготовления;
+    public Short getTimeProduce() {
+        return timeProduce;
     }
 
-    public void setВремяИзготовления(Short времяИзготовления) {
-        this.времяИзготовления = времяИзготовления;
+    public void setTimeProduce(Short timeProduce) {
+        this.timeProduce = timeProduce;
     }
 
 

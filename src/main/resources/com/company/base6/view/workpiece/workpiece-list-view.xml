@@ -64,16 +64,14 @@
                     </actions>
                     <columns resizable="true">
                         <column property="id"/>
-                        <column property="наименование"/>
-                        <column property="номерЧертежа"/>
-                        <column property="примечаниеДетали"/>
-                        <column property="ценаПоследняя"/>
-                        <column property="ценаПоследняяНдс"/>
+                        <column property="description"/>
+                        <column property="numDraw"/>
+                        <column property="primDetal"/>
+                        <column property="priceLast"/>
+                        <column property="priceLastNDS"/>
                         <column property="materialref"/>
-                        <column property="размер"/>
-                        <column property="времяИзготовления"/>
-                        <column property="photoPath"/>
-                        <column property="drawPath"/>
+                        <column property="size"/>
+                        <column property="timeProduce"/>
                         <column property="parametrsizeref"/>
                         <column property="typeref"/>
                     </columns>
@@ -90,21 +88,29 @@
                         <responsiveStep minWidth="40em" columns="2"/>
                     </responsiveSteps>
                     <textField id="idField" property="id"/>
-                    <textField id="наименованиеField" property="наименование"/>
-                    <textField id="номерЧертежаField" property="номерЧертежа"/>
-                    <textField id="примечаниеДеталиField" property="примечаниеДетали"/>
-                    <textField id="ценаПоследняяField" property="ценаПоследняя"/>
-                    <checkbox id="ценаПоследняяНдсField" property="ценаПоследняяНдс"/>
+                    <textField id="descriptionField" property="description"/>
+                    <textField id="NumDrawField" property="numDraw"/>
+                    <textField id="primDetalField" property="primDetal"/>
+                    <textField id="priceLastField" property="priceLast"/>
+                    <checkbox id="priceLastNDSField" property="priceLastNDS"/>
                     <entityPicker id="materialrefField" property="materialref">
                         <actions>
                             <action id="entityLookup" type="entity_lookup"/>
                             <action id="entityClear" type="entity_clear"/>
                         </actions>
                     </entityPicker>
-                    <textField id="размерField" property="размер"/>
-                    <textField id="времяИзготовленияField" property="времяИзготовления"/>
-                    <textArea id="photopathField" height="9.5em" property="photoPath"/>
-                    <textArea id="drawpathField" height="9.5em" property="drawPath"/>
+                    <textField id="sizeField" property="size"/>
+                    <textField id="timeProduceField" property="timeProduce"/>
+                    <image
+                            id="photoImage" classNames="photo-preview"
+                            resource="{photoId}"
+                            css=" height:300px; width:auto!important;object-fit: contain; "
+                            property="photoId"/>
+                    <image
+                            id="drawImage" classNames="photo-preview"
+                            resource="{drawId}"
+                            css=" height:300px; width:auto!important;object-fit: contain; "
+                            property="drawId"/>
                     <entityPicker id="parametrsizerefField" property="parametrsizeref">
                         <actions>
                             <action id="entityLookup" type="entity_lookup"/>

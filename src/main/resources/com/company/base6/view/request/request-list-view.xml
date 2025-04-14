@@ -67,6 +67,7 @@
             <genericFilter component="genericFilter"/>
             <pagination component="pagination"/>
         </urlQueryParameters>
+
     </facets>
     <actions>
         <action id="selectAction" type="lookup_select"/>
@@ -74,33 +75,43 @@
     </actions>
     <layout padding="false" boxSizing="BORDER_BOX">
         <formLayout id="layoutWrapper" classNames="master-detail-layout" height="100%">
-
-            <vbox id="listLayout" height="100%">
+            <responsiveSteps>
+                <responsiveStep minWidth="0" columns="1"/>
+            </responsiveSteps>
+            <vbox id="listLayout" height="100%" width="100%">
                 <genericFilter id="genericFilter"
-                               dataLoader="requestsDl">
+                               dataLoader="requestsDl" css="padding: 0;">
                     <properties include=".*"/>
                 </genericFilter>
 
-                <hbox id="buttonsPanel" classNames="buttons-panel">
+                <hbox id="buttonsPanel" classNames="buttons-panel" css="padding: 0;">
                     <button id="createButton" action="requestsDataGrid.create"/>
                     <button id="editButton" action="requestsDataGrid.edit"/>
                     <button id="removeButton" action="requestsDataGrid.remove"/>
-                    <simplePagination id="pagination" dataLoader="requestsDl"/>
+                    <simplePagination id="pagination" dataLoader="requestsDl" itemsPerPageItems="20"
+                                      itemsPerPageDefaultValue="20" itemsPerPageVisible="false"/>
                 </hbox>
-
-
 
                 <dataGrid id="requestsDataGrid"
                           width="100%"
-                          minHeight="20em"
+                          minHeight="30em"
                           dataContainer="requestsDc"
-                          columnReorderingAllowed="true" pageSize="25">
+                          columnReorderingAllowed="true" pageSize="20" maxHeight="40em">
                     <actions>
-                        <action id="create" type="list_create"/>
-                        <action id="edit" type="list_edit"/>
+                        <action id="create" type="list_create">
+                            <properties>
+                                <property name="openMode" value="DIALOG"/>
+                            </properties>
+                        </action>
+                        <action id="edit" type="list_edit">
+                            <properties>
+                                <property name="openMode" value="DIALOG"/>
+                            </properties>
+                        </action>
                         <action id="remove" type="list_remove"/>
                     </actions>
                     <columns resizable="true">
+                        <column property="id" width="130px"/>
                         <column property="supplierRef" width="130px"/>
                         <column property="dateRequest" width="70px"/>
                         <column property="scanInvoice" textAlign="END" width="120px"/>
@@ -116,83 +127,61 @@
                 <!-- Список корзин -->
                 <dataGrid id="basketsDataGrid"
                           width="100%"
-                          minHeight="15em"
+                          minHeight="12em"
                           dataContainer="basketsDc"
-                          detailsVisibleOnClick="true">
+                          detailsVisibleOnClick="true" maxHeight="25em">
                     <columns>
-                        <column property="detalRef.наименование"/>
+                        <column property="id"/>
+                        <column property="detalRef.description"/>
                         <column property="quantity"/>
                         <column property="unitmeasureRef.description"/>
                     </columns>
                 </dataGrid>
+                <hbox id="detailsLayout" height="100%" >
+                    <formLayout id="form" dataContainer="requestDc" >
+                        <responsiveSteps>
+                            <responsiveStep minWidth="60em" columns="1"/>
+                            <responsiveStep minWidth="90em" columns="2"/>
+                        </responsiveSteps>
+                        <p>
 
+                        <textField id="primRequestField" property="primRequest" label="Примечание" width="70em"
+                                   minHeight="2em"/>
+                        <textField id="scanInvoiceField" property="scanInvoice" alignSelf="END" css=" direction: rtl;"
+                                   label="Счет"/>
 
+                            <textField id="materialField"
+                                       value="{workpieceDc.item.materialref.name}"
+                                       label="Материал"
+                                       readOnly="true" maxWidth="40em" minWidth="10em"/>
+                            <textField id="sizeField"
+                                       value="{workpieceDc.item.размер}"
+                                       label="Размер"
+                                       readOnly="true"/>
 
+                            <image id="photoImage" classNames="photo-preview"
+                                   css=" height:300px; width:auto!important;object-fit: contain; max-width: 300px;"
+                                   resource="{workpieceDc.item.getFullPhotoPath}"
 
+                            />
+                            <image id="drawImage" classNames="photo-preview"
+                                   css=" height:300px; width:auto!important;object-fit: contain; max-width: 300px;"
+                                   resource="{workpieceDc.item.getFullDrawPath}"
+                            />
+
+                        </p>
+                    </formLayout>
+                    <hbox id="detailActions">
+                        <button id="saveButton" text="msg:///actions.Save" icon="CHECK" themeNames="primary"/>
+                        <button id="cancelButton" text="msg:///actions.Cancel" icon="BAN"/>
+                    </hbox>
+                </hbox>
                 <hbox id="lookupActions" visible="false">
                     <button id="selectButton" action="selectAction"/>
                     <button id="discardButton" action="discardAction"/>
                 </hbox>
             </vbox>
-            <vbox id="detailsLayout" height="100%">
-                <formLayout id="form" dataContainer="requestDc">
-                    <responsiveSteps>
-                        <responsiveStep minWidth="60em" columns="1"/>
-                        <responsiveStep minWidth="90em" columns="2"/>
-                    </responsiveSteps>
-                    <p>
-                    <entityPicker id="supplierRefField" property="supplierRef" label="Поставщик">
-                        <actions>
-                            <action id="entityLookup" type="entity_lookup"/>
-                            <action id="entityClear" type="entity_clear"/>
-                        </actions>
-                    </entityPicker>
-                    <entityPicker id="statusZayavkaRefField" property="statusZayavkaRef" maxWidth="130px"
-                                  label="Статус">
-                        <actions>
-                            <action id="entityLookup" type="entity_lookup"/>
-                            <action id="entityClear" type="entity_clear"/>
-                        </actions>
-                    </entityPicker>
-                    <textField id="sumRequestField" property="sumRequest" maxWidth="130px" label="Сумма"/>
-                    <datePicker id="dateRequestField" property="dateRequest" maxWidth="130px" label="Создание"/>
-                    <datePicker id="dateControlField" property="dateControl" maxWidth="130px" label="Контроль"/>
-                    <datePicker id="dateFinishField" property="dateFinish" maxWidth="131px" label="Окончание"/>
-                    <textField id="primRequestField" property="primRequest" label="Примечание"/>
-                    <textField id="scanInvoiceField" property="scanInvoice" alignSelf="END" css=" direction: rtl;"
-                               label="Счет"/>
-                    </p>
-                    <!-- Детали Workpiece -->
-                    <p id="workpieceDetails">
-                        <p>
-                        <h4 text="Параметры комплектующей"/>
-                        <textField id="materialField"
-                                   value="{workpieceDc.item.materialref.name}"
-                                   label="Материал"
-                                   readOnly="true" maxWidth="500px"/>
-                        <textField id="sizeField"
-                                   value="{workpieceDc.item.размер}"
-                                   label="Размер"
-                                   readOnly="true"/>
-                        </p>
-                        <p>
-                        <image id="photoImage" classNames="photo-preview"
-                               css=" height:300px; width:auto!important;object-fit: contain; "
-                               resource="{workpieceDc.item.getFullPhotoPath}"
 
-                        />
-                        <image id="drawImage" classNames="photo-preview"
-                               css=" height:300px; width:auto!important;object-fit: contain; "
-                               resource="{workpieceDc.item.getFullDrawPath}"
-                        />
-                        </p>
-                    </p>
-                </formLayout>
-                <hbox id="detailActions">
-                    <button id="saveButton" text="msg:///actions.Save" icon="CHECK" themeNames="primary"/>
-                    <button id="cancelButton" text="msg:///actions.Cancel" icon="BAN"/>
-                </hbox>
-            </vbox>
         </formLayout>
     </layout>
 </view>

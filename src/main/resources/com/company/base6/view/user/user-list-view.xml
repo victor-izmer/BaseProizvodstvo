@@ -10,7 +10,7 @@
             </fetchPlan>
             <loader id="usersDl" readOnly="true">
                 <query>
-                    <![CDATA[select e from User e order by e.username]]>
+                    <![CDATA[select e from User e  ]]>
                 </query>
             </loader>
         </collection>

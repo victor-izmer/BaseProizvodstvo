@@ -34,7 +34,6 @@ import io.jmix.flowui.model.*;
 import io.jmix.flowui.view.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
 //import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.io.IOException;
@@ -44,8 +43,6 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Collection;
-import java.util.List;
 
 
 @Route(value = "requests", layout = MainView.class)
@@ -142,7 +139,7 @@ public class RequestListView extends StandardListView<Request> {
     private void updateSizeField(Workpiece workpiece) {
         TextField sizeField = (TextField) getContent().getComponent("sizeField");
         if (sizeField != null) {
-            sizeField.setValue(String.valueOf(workpiece.getРазмер()));
+            sizeField.setValue(String.valueOf(workpiece.getSize()));
         }
     }
 
@@ -272,43 +269,14 @@ public class RequestListView extends StandardListView<Request> {
 
     private void openImageInBrowser(String photoPath) throws URISyntaxException, IOException {
 
-        //saveToLocalFile(photoPath);
         Path absolutePath = Paths.get(photoPath).toAbsolutePath();
-        //String baseUrl = ServletUriComponentsBuilder.fromCurrentContextPath().build().toUriString();
-
-        // Формируем полный URL к статическому ресурсу
-        //String fullUrl = baseUrl + "/" + photoPath;
-
-        // Создаем FileRef из строки
-
-        //Runtime.getRuntime().exec("cmd.exe /c Start " + absolutePath.toString());
-        // System.out.println(absolutePath);
-        //FileRef fileRef =FileRef.fromString(photoPath);
         String strfile = absolutePath.toString();
-        //Path filenamestr = absolutePath.getFileName();
-
-        //String fnsStr = filenamestr.toString();
-        //Path fnsFull = filenamestr.getRoot();
-        //strfile=fnsStr;
-        //ResourceHandlerRegistry registry;
-        //uploadFile(photoPath);
         saveToLocalFile(photoPath);
-        //saveToLocalFile(photoPath);
         UI.getCurrent().access(() -> {
             try {
-                // 1. Формируем корректный URL
-                //String encodedPath = URLEncoder.encode(photoPath, StandardCharsets.UTF_8)
-                //        .replace("%2F", "/");
 
-                // 2. Используем HTTP-сервер для доступа к файлам
-                //String httpUrl = "http://localhost:8080/" + encodedPath;
-
-                // 3. Открываем в браузере
                 Page page = UI.getCurrent().getPage();
                 page.executeJs("window.open($0)", photoPath, "popup");
-
-
-
             } catch (Exception e) {
                 notifications.show("Ошибка открытия изображения");
             }
@@ -342,23 +310,10 @@ public class RequestListView extends StandardListView<Request> {
 
 
     private void saveToLocalFile(String filePath) {
-        //FileStorage fileStorage = fileStorageLocator.getDefault();
-        //FileRef fileRef = FileRef.fromString("ext::" +filePath);
-        //InputStream is = getClass().getResourceAsStream(filePath);
-        //FileRef FR = Paths.get(filePath);
-// Получаем базовый URL (например, http://localhost:8080)
-        //String baseUrl = ServletUriComponentsBuilder.fromCurrentContextPath().build().toUriString();
-        //is = getClass().getResourceAsStream(filePath);
-        // Формируем полный URL к статическому ресурсу
-        //String fullUrl = baseUrl + "/" + filePath;
-        //downloader.download(fileRef);
+
         try {
             String fileexeurl= "C:/Users/Zver/IdeaProjects/Base6/photos/Комплектующие/Ящик_фруктовый_400х300х180_302-А/Фото_Ящик_фруктовый_400х300х180_302-А.jpg";
 
-            //FileRef FR= FileRef.fromString(filePath);
-
-            //String str2 = fileStorage.toString();
-            // Запуск процесса
             Process process = Runtime.getRuntime().exec("cmd.exe /c Start " + fileexeurl);
 
             // Ожидание завершения процесса (опционально)

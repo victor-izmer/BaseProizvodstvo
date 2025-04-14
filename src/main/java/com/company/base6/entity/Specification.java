@@ -6,6 +6,7 @@ import jakarta.persistence.*;
 
 @JmixEntity
 @Entity
+@Cacheable
 @Table(name = "specification", indexes = {
         @Index(name = "IDX_SPECIFICATION_DETALREF", columnList = "DETALREF_ID"),
         @Index(name = "IDX_SPECIFICATION_UNIT_MEASURE", columnList = "UNIT_MEASURE_ID")
@@ -20,7 +21,7 @@ public class Specification {
     @ManyToOne(fetch = FetchType.LAZY)
     private Specification parentref;
     @Column(name = "Количество")
-    private Float количество;
+    private Float skolko;
     @JoinColumn(name = "UNIT_MEASURE_ID")
     @ManyToOne(fetch = FetchType.LAZY)
     private UnitMeasure unitMeasure;
@@ -68,12 +69,12 @@ public class Specification {
         this.id = id;
     }
 
-    public Float getКоличество() {
-        return количество;
+    public Float getSkolko() {
+        return skolko;
     }
 
-    public void setКоличество(Float количество) {
-        this.количество = количество;
+    public void setSkolko(Float skolko) {
+        this.skolko = skolko;
     }
 
     public String getPrimSpec() {
