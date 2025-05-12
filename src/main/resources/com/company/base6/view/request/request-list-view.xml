@@ -1,187 +1,77 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <view xmlns="http://jmix.io/schema/flowui/view"
-      xmlns:c="http://jmix.io/schema/flowui/jpql-condition" xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
-
+      xmlns:c="http://jmix.io/schema/flowui/jpql-condition"
       title="msg://requestListView.title"
       focusComponent="requestsDataGrid">
     <data>
         <collection id="requestsDc"
                     class="com.company.base6.entity.Request">
             <fetchPlan extends="_base">
-                <property name="supplierRef" fetch="AUTO" fetchPlan="_base"/>
-                <property name="statusZayavkaRef" fetch="AUTO" fetchPlan="_base"/>
             </fetchPlan>
             <loader id="requestsDl" readOnly="true">
                 <query>
-                    <![CDATA[select e from Request e ORDER BY e.dateRequest]]>
+                    <![CDATA[select e from Request e]]>
                 </query>
             </loader>
         </collection>
-
-
-        <collection id="basketsDc"
-                    class="com.company.base6.entity.Basket">
-            <fetchPlan extends="_base">
-                <property name="detalRef" fetch="AUTO" fetchPlan="_base"/>
-                <property name="unitmeasureRef" fetch="AUTO" fetchPlan="_base"/>
-                <property name="requestRef" fetch="AUTO" fetchPlan="_base"/>
-            </fetchPlan>
-            <loader id="basketsDl">
-                <query>
-                    <![CDATA[
-                        select b from Basket b
-                        WHERE b.requestRef.id = :requestId]]>
-                </query>
-            </loader>
-        </collection>
-
-
-        <instance id="requestDc"
-                  class="com.company.base6.entity.Request">
-            <fetchPlan extends="_base">
-                <property name="supplierRef" fetch="AUTO" fetchPlan="_base"/>
-                <property name="statusZayavkaRef" fetch="AUTO" fetchPlan="_base"/>
-            </fetchPlan>
-            <loader id="requestDl"/>
-        </instance>
-
-        <instance id="workpieceDc"
-                  class="com.company.base6.entity.Workpiece">
-            <fetchPlan extends="_base">
-                <property name="materialref" fetch="AUTO" fetchPlan="_base"/>
-            </fetchPlan>
-            <loader id="workpieceDl">
-                <query><![CDATA[
-                    SELECT w FROM Workpiece w
-                    LEFT JOIN FETCH w.materialref
-                    WHERE w.id = :workpieceId
-                ]]></query>
-            </loader>
-        </instance>
-
     </data>
     <facets>
         <dataLoadCoordinator auto="true"/>
-        <settings auto="true"/>
         <urlQueryParameters>
             <genericFilter component="genericFilter"/>
             <pagination component="pagination"/>
         </urlQueryParameters>
-
     </facets>
     <actions>
         <action id="selectAction" type="lookup_select"/>
         <action id="discardAction" type="lookup_discard"/>
     </actions>
-    <layout padding="false" boxSizing="BORDER_BOX">
-        <formLayout id="layoutWrapper" classNames="master-detail-layout" height="100%">
-            <responsiveSteps>
-                <responsiveStep minWidth="0" columns="1"/>
-            </responsiveSteps>
-            <vbox id="listLayout" height="100%" width="100%">
-                <genericFilter id="genericFilter"
-                               dataLoader="requestsDl" css="padding: 0;">
-                    <properties include=".*"/>
-                </genericFilter>
+    <layout>
+        <button id="button" text="Проверка сроков"/>
+        <button id="CountSum" text="Сумма"/>
+        <genericFilter id="genericFilter"
+                       dataLoader="requestsDl">
+            <properties include=".*"/>
+        </genericFilter>
+        <hbox id="buttonsPanel" classNames="buttons-panel">
+            <button id="createButton" action="requestsDataGrid.createAction"/>
+            <button id="editButton" action="requestsDataGrid.editAction"/>
+            <button id="removeButton" action="requestsDataGrid.removeAction"/>
+            <simplePagination id="pagination" dataLoader="requestsDl" itemsPerPageDefaultValue="20"/>
+        </hbox>
+        <dataGrid id="requestsDataGrid"
+                  width="100%"
+                  minHeight="20em"
+                  dataContainer="requestsDc"
+                  columnReorderingAllowed="true">
+            <actions>
+                <action id="createAction" type="list_create">
+                    <properties>
+                        <property name="openMode" value="DIALOG"/>
+                    </properties>
+                </action>
+                <action id="editAction" type="list_edit">
+                    <properties>
+                        <property name="openMode" value="DIALOG"/>
+                    </properties>
+                </action>
+                <action id="removeAction" type="list_remove"/>
+            </actions>
+            <columns resizable="true">
 
-                <hbox id="buttonsPanel" classNames="buttons-panel" css="padding: 0;">
-                    <button id="createButton" action="requestsDataGrid.create"/>
-                    <button id="editButton" action="requestsDataGrid.edit"/>
-                    <button id="removeButton" action="requestsDataGrid.remove"/>
-                    <simplePagination id="pagination" dataLoader="requestsDl" itemsPerPageItems="20"
-                                      itemsPerPageDefaultValue="20" itemsPerPageVisible="false"/>
-                </hbox>
-
-                <dataGrid id="requestsDataGrid"
-                          width="100%"
-                          minHeight="30em"
-                          dataContainer="requestsDc"
-                          columnReorderingAllowed="true" pageSize="20" maxHeight="40em">
-                    <actions>
-                        <action id="create" type="list_create">
-                            <properties>
-                                <property name="openMode" value="DIALOG"/>
-                            </properties>
-                        </action>
-                        <action id="edit" type="list_edit">
-                            <properties>
-                                <property name="openMode" value="DIALOG"/>
-                            </properties>
-                        </action>
-                        <action id="remove" type="list_remove"/>
-                    </actions>
-                    <columns resizable="true">
-                        <column property="id" width="130px"/>
-                        <column property="supplierRef" width="130px"/>
-                        <column property="dateRequest" width="70px"/>
-                        <column property="scanInvoice" textAlign="END" width="120px"/>
-                        <column property="dateControl" width="70px"/>
-                        <column property="primRequest" width="150px"/>
-                        <column property="statusZayavkaRef" width="40px"/>
-                        <column property="sumRequest" width="40px"/>
-                    </columns>
-
-                </dataGrid>
-
-
-                <!-- Список корзин -->
-                <dataGrid id="basketsDataGrid"
-                          width="100%"
-                          minHeight="12em"
-                          dataContainer="basketsDc"
-                          detailsVisibleOnClick="true" maxHeight="25em">
-                    <columns>
-                        <column property="id"/>
-                        <column property="detalRef.description"/>
-                        <column property="quantity"/>
-                        <column property="unitmeasureRef.description"/>
-                    </columns>
-                </dataGrid>
-                <hbox id="detailsLayout" height="100%" >
-                    <formLayout id="form" dataContainer="requestDc" >
-                        <responsiveSteps>
-                            <responsiveStep minWidth="60em" columns="1"/>
-                            <responsiveStep minWidth="90em" columns="2"/>
-                        </responsiveSteps>
-                        <p>
-
-                        <textField id="primRequestField" property="primRequest" label="Примечание" width="70em"
-                                   minHeight="2em"/>
-                        <textField id="scanInvoiceField" property="scanInvoice" alignSelf="END" css=" direction: rtl;"
-                                   label="Счет"/>
-
-                            <textField id="materialField"
-                                       value="{workpieceDc.item.materialref.name}"
-                                       label="Материал"
-                                       readOnly="true" maxWidth="40em" minWidth="10em"/>
-                            <textField id="sizeField"
-                                       value="{workpieceDc.item.размер}"
-                                       label="Размер"
-                                       readOnly="true"/>
-
-                            <image id="photoImage" classNames="photo-preview"
-                                   css=" height:300px; width:auto!important;object-fit: contain; max-width: 300px;"
-                                   resource="{workpieceDc.item.getFullPhotoPath}"
-
-                            />
-                            <image id="drawImage" classNames="photo-preview"
-                                   css=" height:300px; width:auto!important;object-fit: contain; max-width: 300px;"
-                                   resource="{workpieceDc.item.getFullDrawPath}"
-                            />
-
-                        </p>
-                    </formLayout>
-                    <hbox id="detailActions">
-                        <button id="saveButton" text="msg:///actions.Save" icon="CHECK" themeNames="primary"/>
-                        <button id="cancelButton" text="msg:///actions.Cancel" icon="BAN"/>
-                    </hbox>
-                </hbox>
-                <hbox id="lookupActions" visible="false">
-                    <button id="selectButton" action="selectAction"/>
-                    <button id="discardButton" action="discardAction"/>
-                </hbox>
-            </vbox>
-
-        </formLayout>
+                <column property="numInvoice"/>
+                <column property="dateRequest"/>
+                <column property="scanInvoice" textAlign="END" key="scan"/>
+                <column property="dateControl"/>
+                <column property="dateFinish"/>
+                <column property="primRequest"/>
+                <column property="sumRequest"/>
+                <column property="supplierRef"/>
+            </columns>
+        </dataGrid>
+        <hbox id="lookupActions" visible="false">
+            <button id="selectButton" action="selectAction"/>
+            <button id="discardButton" action="discardAction"/>
+        </hbox>
     </layout>
 </view>

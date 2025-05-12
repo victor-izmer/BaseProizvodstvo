@@ -44,6 +44,16 @@
             </fetchPlan>
             <loader id="basketDl"/>
         </instance>
+        <collection id="requestsDc" class="com.company.base6.entity.Request">
+            <loader id="requestsDl" readOnly="true">
+                <query>
+                    <![CDATA[select e from Request e where e.basketRef = :container_basketsDc]]>
+                </query>
+            </loader>
+            <fetchPlan extends="_base"/>
+        </collection>
+
+
     </data>
     <facets>
         <dataLoadCoordinator auto="true"/>
@@ -97,7 +107,26 @@
                 </hbox>
             </vbox>
             <vbox id="detailsLayout" height="100%">
+
                 <formLayout id="form" dataContainer="basketDc">
+
+                    <dataGrid id="requestsDataGrid" dataContainer="requestsDc" minWidth="100px" width="100%">
+                        <actions>
+                            <action id="create" type="list_create"/>
+                            <action id="edit" type="list_edit"/>
+                            <action id="remove" type="list_remove"/>
+                        </actions>
+                        <columns>
+                            <column property="supplierRef"/>
+                            <column property="dateRequest"/>
+                            <column property="numInvoice"/>
+                            <column property="scanInvoice"/>
+                            <column property="dateControl"/>
+                            <column property="dateFinish"/>
+                            <column property="primRequest"/>
+                            <column property="sumRequest"/>
+                        </columns>
+                    </dataGrid>
                     <responsiveSteps>
                         <responsiveStep minWidth="0" columns="1"/>
                         <responsiveStep minWidth="40em" columns="2"/>
@@ -131,6 +160,7 @@
                     <button id="saveButton" text="msg:///actions.Save" icon="CHECK" themeNames="primary"/>
                     <button id="cancelButton" text="msg:///actions.Cancel" icon="BAN"/>
                 </hbox>
+
             </vbox>
         </formLayout>
     </layout>

@@ -32,6 +32,17 @@
             </fetchPlan>
             <loader id="specificationDl"/>
         </instance>
+        <collection id="specificationDetalDc" class="com.company.base6.entity.Specification">
+            <fetchPlan extends="_base">
+                <property name="parentref" fetchPlan="_base"/>
+                <property name="detalref" fetchPlan="_base"/>
+            </fetchPlan>
+            <loader id="specificationDetalDl" readOnly="true">
+                <query>
+                    <![CDATA[select e from Specification e where e.parentref.id = :detal]]>
+                </query>
+            </loader>
+        </collection>
     </data>
     <facets>
         <dataLoadCoordinator auto="true"/>
@@ -43,23 +54,18 @@
     </actions>
     <layout padding="false">
         <formLayout id="layoutWrapper" classNames="master-detail-layout" height="100%">
-            <vbox id="listLayout" height="100%">
+            <vbox id="listLayout" height="100%" width="40%" maxWidth="40%">
                 <genericFilter id="genericFilter"
                                dataLoader="specificationsDl">
                     <properties include=".*"/>
                 </genericFilter>
-                <hbox id="buttonsPanel" classNames="buttons-panel">
-                    <button id="createButton" action="specificationsDataGrid.create"/>
-                    <button id="editButton" action="specificationsDataGrid.edit"/>
-                    <button id="removeButton" action="specificationsDataGrid.remove"/>
-                </hbox>
 
                 <treeDataGrid id="specificationsDataGrid"
                               width="100%"
                               minHeight="20em"
                               dataContainer="specificationsDc"
                               hierarchyProperty="parentref"
-                              columnReorderingAllowed="true" showOrphans="true">
+                              columnReorderingAllowed="true" showOrphans="true" >
                     <actions>
                         <action id="create" type="list_create"/>
                         <action id="edit" type="list_edit">
@@ -74,6 +80,7 @@
                         <column property="skolko" width="50px" textAlign="CENTER"/>
                         <column property="unitMeasure" width="40px" textAlign="CENTER"/>
                         <column property="primSpec" autoWidth="true"/>
+                        <column property="id"/>
 
                     </columns>
                 </treeDataGrid>
@@ -84,43 +91,70 @@
                 </hbox>
             </vbox>
             <vbox id="detailsLayout" height="100%">
-                <formLayout id="form" dataContainer="specificationDc">
+                <hbox id="buttonsPanelchild" classNames="buttons-panel">
+                    <button id="createButtonchild" action="childSpecification.create"/>
+                    <button id="editButtonchild" action="childSpecification.edit"/>
+                    <button id="removeButtonchild" action="childSpecification.remove"/>
+                </hbox>
+                <dataGrid id="childSpecification"
+                          dataContainer="specificationDetalDc"
+                          minHeight="35rem"
+                          aggregationPosition="TOP"
+                          columnReorderingAllowed="true">
+                    <actions>
+                        <action id="create" type="list_create">
+                            <properties>
+                                <property name="openMode" value="DIALOG"/>
+                            </properties>
+                        </action>
+                        <action id="edit" type="list_edit">
+                            <properties>
+                                <property name="openMode" value="DIALOG"/>
+                            </properties>
+                        </action>
+                        <action id="remove" type="list_remove"/>
+                    </actions>
+                    <columns resizable="true">
+                        <column property="detalref"/>
+                        <column property="skolko"/>
+                        <column property="detalref.typeref"/>
+                        <column property="unitMeasure"/>
+                        <column property="primSpec"/>
+                        <column property="detalref.timeProduce"/>
+                    </columns>
+                </dataGrid>
+                <formLayout id="form" dataContainer="specificationDetalDc">
 
                     <responsiveSteps>
                         <responsiveStep minWidth="0" columns="1"/>
                         <responsiveStep minWidth="40em" columns="2"/>
                     </responsiveSteps>
-                    <textField id="idField" property="detalref.id" maxWidth="70px"/>
-                    <textField id="photField" property="detalref.photoPath" maxWidth="200px"/>
-                    <textField id="drawField" property="detalref.drawPath" maxWidth="200px"/>
-                    <textField id="detalrefField" property="detalref" maxWidth="300px"/>
-                    <textField id="количествоField" property="skolko" maxWidth="70px"/>
-                    <entityPicker id="едИзмField" property="unitMeasure" maxWidth="130px">
-                        <actions>
-                            <action id="entityLookup" type="entity_lookup"/>
-                            <action id="entityClear" type="entity_clear"/>
-                        </actions>
-                    </entityPicker>
-                    <textField id="номерЧертежаField" property="detalref.numDraw" maxWidth="150px"/>
-                    <textArea height="9.5em" property="detalref.primDetal"/>
-                    <textArea id="primSpecField" height="9.5em" property="primSpec"/>
 
+                <hbox>
                     <image
                             id="photoImage" classNames="photo-preview"
                             resource="{detalref.photoId}" text="msg://image.text"
                             css=" height:300px; width:auto!important;object-fit: contain; max-width: 300px;"
-                            dataContainer="specificationDc" property="detalref.photoId"/>
+                            dataContainer="specificationDetalDc" property="detalref.photoId"/>
                     <image
                             id="drawImage" classNames="photo-preview"
                             resource="{detalref.drawId}" text="msg://image.text"
                             css=" height:300px; width:auto!important;object-fit: contain; max-width: 300px;"
-                            dataContainer="specificationDc" property="detalref.drawId"/>
+                            dataContainer="specificationDetalDc" property="detalref.drawId" minWidth="40em"/>
+                    <textArea property="detalref.primDetal" label="Примечание детали" minWidth="40em"/>
+                </hbox>
+                    <div>
+                        <iframe id="pdfFrame" width="100%" height="100%" alignSelf="STRETCH"
+                                resource="detalRef.getFullPhotoPath"/>
+                    </div>
+                <div>
                     <textField id="materialrefField" property="detalref.materialref.description" label="Материал"/>
                     <textField id="параметрРазмераField" property="detalref.parametrsizeref" maxWidth="110px"/>
                     <textField id="размерField" property="detalref.size" maxWidth="70px"/>
                     <textField id="времяИзготовленияField" property="detalref.timeProduce" maxWidth="100px"/>
-                    <textField id="parentrefField" property="parentref.detalref.description" maxWidth="350px"
-                               label="Родитель"/>
+                </div>
+                    <textArea id="primSpecField" height="9.5em" property="primSpec"/>
+
                 </formLayout>
                 <hbox id="detailActions">
                     <button id="saveButton" text="msg:///actions.Save" icon="CHECK" themeNames="primary"/>
