@@ -43,6 +43,7 @@
                 </query>
             </loader>
         </collection>
+
     </data>
     <facets>
         <dataLoadCoordinator auto="true"/>
@@ -121,6 +122,8 @@
                         <column property="unitMeasure"/>
                         <column property="primSpec"/>
                         <column property="detalref.timeProduce"/>
+                        <column property="detalref.priceLast"/>
+                        <column property="detalref.priceLastNDS"/>
                     </columns>
                 </dataGrid>
                 <formLayout id="form" dataContainer="specificationDetalDc">
