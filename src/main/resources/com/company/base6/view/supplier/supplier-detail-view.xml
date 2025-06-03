@@ -10,6 +10,14 @@
             </fetchPlan>
             <loader id="supplierDl"/>
         </instance>
+        <collection id="typeSuppliersDc" class="com.company.base6.entity.TypeSupplier">
+            <fetchPlan extends="_base"/>
+            <loader id="typeSuppliersDl" readOnly="true">
+                <query>
+                    <![CDATA[select e from TypeSupplier e]]>
+                </query>
+            </loader>
+        </collection>
     </data>
     <facets>
         <dataLoadCoordinator auto="true"/>
@@ -24,17 +32,15 @@
                 <responsiveStep minWidth="0" columns="1"/>
                 <responsiveStep minWidth="40em" columns="2"/>
             </responsiveSteps>
-            <textField id="descriptionField" property="description"/>
+            <textField id="descriptionField" property="description" maxWidth="25em"/>
+            <entityComboBox id="typeSuppliersComboBox"
+                            itemsContainer="typeSuppliersDc"
+                            dataContainer="supplierDc"
+                            property="typeSupplierRef" maxWidth="20em"/>
             <textField id="whatDoField" property="whatDo"/>
-            <entityPicker id="typeSupplierRefField" property="typeSupplierRef">
-                <actions>
-                    <action id="entityLookup" type="entity_lookup"/>
-                    <action id="entityClear" type="entity_clear"/>
-                </actions>
-            </entityPicker>
-            <textField id="contactField" property="contact"/>
-            <textField id="primSupplierField" property="primSupplier"/>
-            <textField id="textRequestField" property="textRequest"/>
+            <textArea id="contactField" property="contact" minRows="4"/>
+            <textArea id="primSupplierField" property="primSupplier" minRows="4"/>
+            <textArea id="textRequestField" property="textRequest" minRows="4"/>
             <textField id="pathFilesField" property="pathFiles"/>
         </formLayout>
         <hbox id="detailActions">

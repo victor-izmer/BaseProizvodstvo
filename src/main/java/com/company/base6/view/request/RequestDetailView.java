@@ -1,5 +1,6 @@
 package com.company.base6.view.request;
 
+import com.company.base6.entity.Basket;
 import com.company.base6.entity.Request;
 import com.company.base6.view.main.MainView;
 import com.vaadin.flow.component.ClickEvent;
@@ -8,19 +9,36 @@ import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.html.IFrame;
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.page.Page;
+import com.vaadin.flow.data.renderer.ComponentRenderer;
+import com.vaadin.flow.data.renderer.Renderer;
 import com.vaadin.flow.router.Route;
-import io.jmix.core.DataManager;
+import io.jmix.core.*;
 import io.jmix.flowui.Notifications;
+import io.jmix.flowui.UiComponents;
+import io.jmix.flowui.component.checkbox.JmixCheckbox;
+import io.jmix.flowui.component.datepicker.TypedDatePicker;
+import io.jmix.flowui.component.grid.DataGrid;
 import io.jmix.flowui.component.textfield.TypedTextField;
+import io.jmix.flowui.component.upload.FileStorageUploadField;
+import io.jmix.flowui.download.DownloadFormat;
+import io.jmix.flowui.download.Downloader;
+import io.jmix.flowui.kit.action.ActionPerformedEvent;
 import io.jmix.flowui.kit.component.button.JmixButton;
+import io.jmix.flowui.model.CollectionPropertyContainer;
+import io.jmix.flowui.model.InstanceContainer;
 import io.jmix.flowui.view.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.awt.*;
+import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URISyntaxException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDate;
 
 import static java.lang.Boolean.TRUE;
 
@@ -31,17 +49,64 @@ import static java.lang.Boolean.TRUE;
 public class RequestDetailView extends StandardDetailView<Request> {
     @Autowired
     private DataManager dataManager;
+    @ViewComponent
+    private CollectionPropertyContainer<Basket> basketRefDc;
+    @ViewComponent
+    private DataGrid<Basket> basketRefDataGrid;
+    @ViewComponent
+    private InstanceContainer<Request> requestDc;
+    @ViewComponent
+    private FileStorageUploadField fieldFileInvoice;
+    @ViewComponent
+    private TypedDatePicker<Comparable> dateControlField;
 
     @Subscribe
     public void onInitEntity(final InitEntityEvent<Request> event) {
         Boolean t=true;
-        System.out.println("Список заявок : Заявка: " +t);
+        System.out.println("Список заказа : Заказ: " +t);
     }
+    @Autowired
+    private Downloader downloader;
+    @ViewComponent
+    private IFrame pdfFrame;
+    @Autowired
+    private FileStorage fileStorage;
 
     @Subscribe
     public void onBeforeShow(final BeforeShowEvent event) {
         // final Long sumCount = dataManager.loadValue("select COUNT(b.price) from Basket b", Long.class).one();
         //notifications.show("Сумма "+ sumCount);
+        Request currentRequest=requestDc.getItem();
+        if(currentRequest.getScanInvoice()!= null){
+            String fileName=  currentRequest.getScanInvoice();
+            File f = new File(fileName);
+            //System.out.println(f.getName());
+            Integer ssTemp=f.getAbsolutePath().lastIndexOf("Счета поставщиков\\");
+            if (ssTemp != -1) {
+                String ss = f.getAbsolutePath().substring(ssTemp);
+
+                String fn = f.getAbsolutePath().substring(f.getAbsolutePath().lastIndexOf("\\") + 1);
+                //System.out.println(ss);
+                currentRequest.setScanInvoice(ss);
+                pdfFrame.setSrc(ss);
+                String encodedPath = ss.replaceAll(" ", "%20");
+
+                String next=encodedPath.replaceAll("\\\\","/");
+                FileRef ff= FileRef.fromString(encodedPath);
+                fileStorage.getStorageName()
+                        .toString()
+                        .replace("\\", "/");
+            }
+
+        } else{
+            //pdfFrame.setSrc(currentRequest.getFileInvoice().getPath()); // не работает. НЕ выдает картинку Could not navigate to 'fs
+        }
+
+        if(currentRequest.getDateRequest()== null)
+            getEditedEntity().setDateRequest(LocalDate.now());
+        if(currentRequest.getDateControl()== null)
+            getEditedEntity().setDateControl(LocalDate.now().plusDays(5));
+
     }
     @Autowired
     private Notifications notifications;
@@ -58,11 +123,35 @@ public class RequestDetailView extends StandardDetailView<Request> {
             }
         });
     }
-    @Subscribe(id = "ViewFile", subject = "clickListener")
-    public void onViewFileClick(final ClickEvent<JmixButton> event) throws URISyntaxException, IOException {
-        TypedTextField pdfPath = (TypedTextField) getContent().getComponent("scanInvoiceField");
-        String nameforpdf=(String) pdfPath.getTypedValue();
-        //openPDFInBrowser(nameforpdf);
-        getContent().getComponent("pdfFrame");
+    @Autowired
+    protected Metadata metadata;
+
+
+    protected void showNotification(String message) {
+        notifications.create(message)
+                .withType(Notifications.Type.WARNING)
+                .withCloseable(false)
+                .show();
     }
+    @Autowired
+    private UiComponents uiComponents;
+
+    @Supply(to = "basketRefDataGrid.nds", subject = "renderer")
+    private Renderer<Basket> basketRefDataGridNdsRenderer() {
+        return new ComponentRenderer<>(
+                () -> {
+                    JmixCheckbox checkbox = uiComponents.create(JmixCheckbox.class);
+                    checkbox.setReadOnly(true);
+                    return checkbox;
+                },
+                (checkbox, basket) -> checkbox.setValue(basket.getNds())
+        );
+    }
+//    @Subscribe(id = "ViewFile", subject = "clickListener")
+//    public void onViewFileClick(final ClickEvent<JmixButton> event) throws URISyntaxException, IOException {
+//        TypedTextField pdfPath = (TypedTextField) getContent().getComponent("scanInvoiceField");
+//        String nameforpdf=(String) pdfPath.getTypedValue();
+//        //openPDFInBrowser(nameforpdf);
+//        getContent().getComponent("pdfFrame");
+//    }
 }

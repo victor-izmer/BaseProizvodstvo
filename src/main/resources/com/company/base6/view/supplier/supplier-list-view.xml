@@ -9,7 +9,7 @@
             <fetchPlan extends="_base"/>
             <loader id="suppliersDl" readOnly="true">
                 <query>
-                    <![CDATA[select e from Supplier e]]>
+                    <![CDATA[select e from Supplier e order by e.description asc]]>
                 </query>
             </loader>
         </collection>
@@ -28,7 +28,7 @@
     </actions>
     <layout>
         <genericFilter id="genericFilter"
-                       dataLoader="suppliersDl">
+                       dataLoader="suppliersDl" opened="false" themeNames="small, filled, reverse">
             <properties include=".*"/>
         </genericFilter>
         <hbox id="buttonsPanel" classNames="buttons-panel">

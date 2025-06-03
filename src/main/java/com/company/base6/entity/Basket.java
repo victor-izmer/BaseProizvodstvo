@@ -1,48 +1,69 @@
 package com.company.base6.entity;
 
+import io.jmix.core.DeletePolicy;
 import io.jmix.core.MetadataTools;
-import io.jmix.core.entity.annotation.JmixGeneratedValue;
+import io.jmix.core.entity.annotation.OnDeleteInverse;
+import io.jmix.core.metamodel.annotation.Composition;
 import io.jmix.core.metamodel.annotation.DependsOnProperties;
 import io.jmix.core.metamodel.annotation.InstanceName;
 import io.jmix.core.metamodel.annotation.JmixEntity;
 import jakarta.persistence.*;
 
+import java.util.List;
+
 @JmixEntity
 @Table(name = "BASKET", indexes = {
         @Index(name = "IDX_BASKET_REQUEST_REF", columnList = "REQUEST_REF_ID"),
-        @Index(name = "IDX_BASKET_DETAL_REF", columnList = "DETAL_REF_ID"),
-        @Index(name = "IDX_BASKET_UNITMEASURE_REF", columnList = "UNITMEASURE_REF_ID")
+        @Index(name = "IDX_BASKET_UNITMEASURE_REF", columnList = "UNITMEASURE_REF_ID"),
+        @Index(name = "IDX_BASKET_OPERATION_REF", columnList = "OPERATION_REF_ID")
 })
 @Entity
 public class Basket {
-    @JmixGeneratedValue
+
     @Column(name = "ID", nullable = false)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     private Long id;
 
+    @Column(name = "QUANTITY")
+    private Float quantity;
+
+    @Column(name = "PRICE")
+    private Float price;
+
+    @Column(name = "NDS")
+    private Boolean nds;
+
+    @Column(name = "MATERIAL_OWNER")
+    private Boolean materialOwner;
+
+    @Column(name = "PRIM_BASKET", length = 1024)
+    private String primBasket;
+
+    @JoinColumn(name = "UNITMEASURE_REF_ID")
+    @ManyToOne(fetch = FetchType.LAZY)
+    private UnitMeasure unitmeasureRef;
+
+    @JoinColumn(name = "OPERATION_REF_ID")
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Operation operationRef;
+
+    @Composition
+    @OneToMany(mappedBy = "basket")
+    private List<Workpiece> detalComp;
+
+    @OnDeleteInverse(DeletePolicy.CASCADE)
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "REQUEST_REF_ID")
     private Request requestRef;
 
-    @JoinColumn(name = "DETAL_REF_ID")
-    @ManyToOne(fetch = FetchType.LAZY)
-    private Workpiece detalRef;
-    @JoinColumn(name = "OPERATION_REF_ID")
-    @ManyToOne(fetch = FetchType.LAZY)
-    private Operation operationRef;
-    @Column(name = "QUANTITY")
-    private Float quantity;
-    @JoinColumn(name = "UNITMEASURE_REF_ID")
-    @ManyToOne(fetch = FetchType.LAZY)
-    private UnitMeasure unitmeasureRef;
-    @Column(name = "PRICE")
-    private Float price;
-    @Column(name = "NDS")
-    private Boolean nds;
-    @Column(name = "MATERIAL_OWNER")
-    private Boolean materialOwner;
-    @Column(name = "PRIM_BASKET", length = 1024)
-    private String primBasket;
+    public List<Workpiece> getDetalComp() {
+        return detalComp;
+    }
+
+    public void setDetalComp(List<Workpiece> detalComp) {
+        this.detalComp = detalComp;
+    }
 
     public void setOperationRef(Operation operationRef) {
         this.operationRef = operationRef;
@@ -100,14 +121,6 @@ public class Basket {
         this.quantity = quantity;
     }
 
-    public Workpiece getDetalRef() {
-        return detalRef;
-    }
-
-    public void setDetalRef(Workpiece detalRef) {
-        this.detalRef = detalRef;
-    }
-
     public Request getRequestRef() {
         return requestRef;
     }
@@ -125,11 +138,10 @@ public class Basket {
     }
 
     @InstanceName
-    @DependsOnProperties({"requestRef", "detalRef", "operationRef"})
+    @DependsOnProperties({"requestRef", "operationRef"})
     public String getInstanceName(MetadataTools metadataTools) {
-        return String.format("%s %s %s",
+        return String.format("%s %s",
                 metadataTools.format(requestRef),
-                metadataTools.format(detalRef),
                 metadataTools.format(operationRef));
     }
 }

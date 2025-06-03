@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <view xmlns="http://jmix.io/schema/flowui/view"
+
       xmlns:c="http://jmix.io/schema/flowui/jpql-condition"
       title="msg://specificationListView.title"
       focusComponent="specificationsDataGrid">
@@ -43,30 +44,19 @@
                 </query>
             </loader>
         </collection>
-
     </data>
     <facets>
         <dataLoadCoordinator auto="true"/>
         <settings auto="true"/>
     </facets>
-    <actions>
-        <action id="selectAction" type="lookup_select"/>
-        <action id="discardAction" type="lookup_discard"/>
-    </actions>
     <layout padding="false">
-        <formLayout id="layoutWrapper" classNames="master-detail-layout" height="100%">
-            <vbox id="listLayout" height="100%" width="40%" maxWidth="40%">
-                <genericFilter id="genericFilter"
-                               dataLoader="specificationsDl">
-                    <properties include=".*"/>
-                </genericFilter>
-
+        <formLayout id="layoutWrapper" classNames="master-detail-layout">
+            <vbox id="treelistLayout">
                 <treeDataGrid id="specificationsDataGrid"
-                              width="100%"
-                              minHeight="20em"
                               dataContainer="specificationsDc"
                               hierarchyProperty="parentref"
-                              columnReorderingAllowed="true" showOrphans="true" >
+                              columnReorderingAllowed="true" showOrphans="true" themeNames="compact"
+                              allRowsVisible="true">
                     <actions>
                         <action id="create" type="list_create"/>
                         <action id="edit" type="list_edit">
@@ -77,21 +67,14 @@
                         <action id="remove" type="list_remove"/>
                     </actions>
                     <columns resizable="true">
-                        <column property="detalref.description" width="310px"/>
-                        <column property="skolko" width="50px" textAlign="CENTER"/>
-                        <column property="unitMeasure" width="40px" textAlign="CENTER"/>
-                        <column property="primSpec" autoWidth="true"/>
+                        <column property="detalref.fullDescription" width="310px"/>
+                        <column property="fullSkolko" textAlign="CENTER" sortable="false"/>
+                        <column property="detalref.priceNDS" textAlign="CENTER" sortable="false"/>
                         <column property="id"/>
-
                     </columns>
                 </treeDataGrid>
-
-                <hbox id="lookupActions" visible="false">
-                    <button id="selectButton" action="selectAction"/>
-                    <button id="discardButton" action="discardAction"/>
-                </hbox>
             </vbox>
-            <vbox id="detailsLayout" height="100%">
+            <vbox id="detailsLayout">
                 <hbox id="buttonsPanelchild" classNames="buttons-panel">
                     <button id="createButtonchild" action="childSpecification.create"/>
                     <button id="editButtonchild" action="childSpecification.edit"/>
@@ -99,9 +82,9 @@
                 </hbox>
                 <dataGrid id="childSpecification"
                           dataContainer="specificationDetalDc"
-                          minHeight="35rem"
                           aggregationPosition="TOP"
-                          columnReorderingAllowed="true">
+                          columnReorderingAllowed="true"
+                          allRowsVisible="true">
                     <actions>
                         <action id="create" type="list_create">
                             <properties>
@@ -115,55 +98,50 @@
                         </action>
                         <action id="remove" type="list_remove"/>
                     </actions>
-                    <columns resizable="true">
+                    <columns resizable="true" sortable="false">
                         <column property="detalref"/>
-                        <column property="skolko"/>
-                        <column property="detalref.typeref"/>
-                        <column property="unitMeasure"/>
+                        <column property="fullSkolko"/>
+                        <column property="detalref.typeref.picture"/>
                         <column property="primSpec"/>
                         <column property="detalref.timeProduce"/>
-                        <column property="detalref.priceLast"/>
-                        <column property="detalref.priceLastNDS"/>
+                        <column property="detalref.priceNDS"/>
                     </columns>
                 </dataGrid>
-                <formLayout id="form" dataContainer="specificationDetalDc">
 
-                    <responsiveSteps>
-                        <responsiveStep minWidth="0" columns="1"/>
-                        <responsiveStep minWidth="40em" columns="2"/>
-                    </responsiveSteps>
-
-                <hbox>
-                    <image
-                            id="photoImage" classNames="photo-preview"
-                            resource="{detalref.photoId}" text="msg://image.text"
-                            css=" height:300px; width:auto!important;object-fit: contain; max-width: 300px;"
-                            dataContainer="specificationDetalDc" property="detalref.photoId"/>
-                    <image
-                            id="drawImage" classNames="photo-preview"
-                            resource="{detalref.drawId}" text="msg://image.text"
-                            css=" height:300px; width:auto!important;object-fit: contain; max-width: 300px;"
-                            dataContainer="specificationDetalDc" property="detalref.drawId" minWidth="40em"/>
-                    <textArea property="detalref.primDetal" label="Примечание детали" minWidth="40em"/>
+                <hbox id="materialBox" enabled="false">
+                    <textField id="materialrefField" property="detalref.materialref.description" label="Материал"
+                               dataContainer="specificationDetalDc"/>
+                    <textField id="параметрРазмераField" property="detalref.parametrsizeref" maxWidth="110px"
+                               label="Размер" dataContainer="specificationDetalDc"/>
+                    <textField id="размерField" property="detalref.size" maxWidth="70px" label="мм"
+                               dataContainer="specificationDetalDc"/>
+                    <textField id="времяИзготовленияField" property="detalref.timeProduce" maxWidth="100px"
+                               label="мин" dataContainer="specificationDetalDc"/>
                 </hbox>
-                    <div>
-                        <iframe id="pdfFrame" width="100%" height="100%" alignSelf="STRETCH"
-                                resource="detalRef.getFullPhotoPath"/>
-                    </div>
-                <div>
-                    <textField id="materialrefField" property="detalref.materialref.description" label="Материал"/>
-                    <textField id="параметрРазмераField" property="detalref.parametrsizeref" maxWidth="110px"/>
-                    <textField id="размерField" property="detalref.size" maxWidth="70px"/>
-                    <textField id="времяИзготовленияField" property="detalref.timeProduce" maxWidth="100px"/>
-                </div>
-                    <textArea id="primSpecField" height="9.5em" property="primSpec"/>
-
-                </formLayout>
-                <hbox id="detailActions">
-                    <button id="saveButton" text="msg:///actions.Save" icon="CHECK" themeNames="primary"/>
-                    <button id="cancelButton" text="msg:///actions.Cancel" icon="BAN"/>
+                <hbox id="primBox">
+                    <textArea property="detalref.primDetal" label="Примечание детали" minWidth="100%"/>
+                    <textArea id="primSpecField" property="primSpec" label="Примечание спецификации" minWidth="100%"/>
+                </hbox>
+                <hbox id="formBox">
+                    <fileStorageUploadField
+                            id="PhotoStorageUpload" dataContainer="specificationDetalDc"
+                            fileNameVisible="true"
+                            property="detalref.photoFileRef"
+                    />
+                    <fileStorageUploadField
+                            id="DrawStorageUpload" dataContainer="specificationDetalDc"
+                            fileNameVisible="true"
+                            property="detalref.drawFileRef"
+                    />
+                </hbox>
+                <hbox id="picturesBox">
+                    <image text="Фото" dataContainer="specificationDetalDc" property="detalref.photoFileRef" css="object-fit: contain; "
+                           width="30%"/>
+                    <image text="Чертеж" dataContainer="specificationDetalDc" property="detalref.drawFileRef" css="object-fit: contain; "
+                           width="30%"/>
                 </hbox>
             </vbox>
         </formLayout>
+
     </layout>
 </view>

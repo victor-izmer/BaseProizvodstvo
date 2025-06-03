@@ -9,7 +9,7 @@
             <fetchPlan extends="_base"/>
             <loader id="typeworkpiecesDl" readOnly="true">
                 <query>
-                    <![CDATA[select e from Typeworkpiece e]]>
+                    <![CDATA[select e from Typeworkpiece e order by e.description asc]]>
                 </query>
             </loader>
         </collection>
@@ -56,6 +56,7 @@
                     <columns resizable="true">
                         <column property="id"/>
                         <column property="description"/>
+                        <column property="picture"/>
                     </columns>
                 </dataGrid>
                 <hbox id="lookupActions" visible="false">
@@ -71,13 +72,16 @@
                     </responsiveSteps>
                     <textField id="idField" property="id"/>
                     <textField id="descriptionField" property="description"/>
-                    <fileUploadField id="картинкаField" clearButtonVisible="true" fileNameVisible="true"
-                                     property="картинка"/>
+
                 </formLayout>
                 <hbox id="detailActions">
+
                     <button id="saveButton" text="msg:///actions.Save" icon="CHECK" themeNames="primary"/>
                     <button id="cancelButton" text="msg:///actions.Cancel" icon="BAN"/>
                 </hbox>
+                <fileStorageUploadField id="loadPicture" dataContainer="typeworkpieceDc" property="picture"
+                                        height="10em" width="10em" classNames="user-picture"/>
+
             </vbox>
         </formLayout>
     </layout>

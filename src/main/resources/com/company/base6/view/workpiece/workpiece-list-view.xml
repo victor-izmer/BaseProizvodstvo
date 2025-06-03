@@ -7,25 +7,24 @@
         <collection id="workpiecesDc"
                     class="com.company.base6.entity.Workpiece">
             <fetchPlan extends="_base">
-                <property name="materialref" fetchPlan="_base"/>
                 <property name="parametrsizeref" fetchPlan="_base"/>
                 <property name="typeref" fetchPlan="_base"/>
+
             </fetchPlan>
             <loader id="workpiecesDl" readOnly="true">
                 <query>
-                    <![CDATA[select e from Workpiece e]]>
+                    <![CDATA[select e from Workpiece e order by e.description asc]]>
                 </query>
             </loader>
         </collection>
-        <instance id="workpieceDc"
-                  class="com.company.base6.entity.Workpiece">
-            <fetchPlan extends="_base">
-                <property name="materialref" fetchPlan="_base"/>
-                <property name="parametrsizeref" fetchPlan="_base"/>
-                <property name="typeref" fetchPlan="_base"/>
-            </fetchPlan>
-            <loader id="workpieceDl"/>
-        </instance>
+        <collection id="specificationsDc" class="com.company.base6.entity.Specification">
+            <loader id="specificationsDl" readOnly="true">
+                <query>
+                    <![CDATA[select e from Specification e]]>
+                </query>
+            </loader>
+            <fetchPlan extends="_base"/>
+        </collection>
     </data>
     <facets>
         <dataLoadCoordinator auto="true"/>
@@ -33,102 +32,72 @@
             <genericFilter component="genericFilter"/>
             <pagination component="pagination"/>
         </urlQueryParameters>
-        <settings auto="true"/>
     </facets>
     <actions>
         <action id="selectAction" type="lookup_select"/>
         <action id="discardAction" type="lookup_discard"/>
     </actions>
-    <layout padding="false">
-        <formLayout id="layoutWrapper" classNames="master-detail-layout" height="100%">
-            <vbox id="listLayout" height="100%">
-                <genericFilter id="genericFilter"
-                               dataLoader="workpiecesDl">
-                    <properties include=".*"/>
-                </genericFilter>
+    <layout>
+        <genericFilter id="genericFilter"
+                       dataLoader="workpiecesDl">
+            <properties include=".*"/>
+        </genericFilter>
+        <formLayout id="form" dataContainer="workpiecesDc">
+            <vbox>
+                <treeDataGrid id="specificationsDataGrid"
+                              dataContainer="specificationsDc"
+                              hierarchyProperty="parentref"
+                              columnReorderingAllowed="true" showOrphans="true" themeNames="compact"
+                              allRowsVisible="true">
+            <actions>
+                <action id="create" type="list_create"/>
+                <action id="edit" type="list_edit"/>
+                <action id="remove" type="list_remove"/>
+            </actions>
+            <columns resizable="true">
+                <column property="detalref.fullDescription" />
+                <column property="fullSkolko" textAlign="CENTER" sortable="false"/>
+                <column property="primSpec" />
+                <column property="id"/>
+            </columns>
+        </treeDataGrid>
+            </vbox>
+            <vbox>
                 <hbox id="buttonsPanel" classNames="buttons-panel">
-                    <button id="createButton" action="workpiecesDataGrid.create"/>
-                    <button id="editButton" action="workpiecesDataGrid.edit"/>
-                    <button id="removeButton" action="workpiecesDataGrid.remove"/>
+                    <button id="createButton" action="workpiecesDataGrid.createAction"/>
+                    <button id="editButton" action="workpiecesDataGrid.editAction"/>
+                    <button id="removeButton" action="workpiecesDataGrid.removeAction"/>
                     <simplePagination id="pagination" dataLoader="workpiecesDl"/>
                 </hbox>
                 <dataGrid id="workpiecesDataGrid"
-                          width="100%"
                           minHeight="20em"
                           dataContainer="workpiecesDc"
-                          columnReorderingAllowed="true">
+                          columnReorderingAllowed="true" themeNames="compact">
                     <actions>
-                        <action id="create" type="list_create"/>
-                        <action id="edit" type="list_edit"/>
-                        <action id="remove" type="list_remove"/>
+                        <action id="createAction" type="list_create">
+                            <properties>
+                                <property name="openMode" value="DIALOG"/>
+                            </properties>
+                        </action>
+                        <action id="editAction" type="list_edit">
+                            <properties>
+                                <property name="openMode" value="DIALOG"/>
+                            </properties>
+                        </action>
+                        <action id="removeAction" type="list_remove"/>
                     </actions>
                     <columns resizable="true">
-                        <column property="id"/>
-                        <column property="description"/>
-                        <column property="numDraw"/>
+                        <column property="fullDescription"/>
                         <column property="primDetal"/>
                         <column property="priceLast"/>
                         <column property="priceLastNDS"/>
-                        <column property="materialref"/>
-                        <column property="size"/>
-                        <column property="timeProduce"/>
-                        <column property="parametrsizeref"/>
-                        <column property="typeref"/>
                     </columns>
-                </dataGrid>
-                <hbox id="lookupActions" visible="false">
-                    <button id="selectButton" action="selectAction"/>
-                    <button id="discardButton" action="discardAction"/>
-                </hbox>
-            </vbox>
-            <vbox id="detailsLayout" height="100%">
-                <formLayout id="form" dataContainer="workpieceDc">
-                    <responsiveSteps>
-                        <responsiveStep minWidth="0" columns="1"/>
-                        <responsiveStep minWidth="40em" columns="2"/>
-                    </responsiveSteps>
-                    <textField id="idField" property="id"/>
-                    <textField id="descriptionField" property="description"/>
-                    <textField id="NumDrawField" property="numDraw"/>
-                    <textField id="primDetalField" property="primDetal"/>
-                    <textField id="priceLastField" property="priceLast"/>
-                    <checkbox id="priceLastNDSField" property="priceLastNDS"/>
-                    <entityPicker id="materialrefField" property="materialref">
-                        <actions>
-                            <action id="entityLookup" type="entity_lookup"/>
-                            <action id="entityClear" type="entity_clear"/>
-                        </actions>
-                    </entityPicker>
-                    <textField id="sizeField" property="size"/>
-                    <textField id="timeProduceField" property="timeProduce"/>
-                    <image
-                            id="photoImage" classNames="photo-preview"
-                            resource="{photoId}"
-                            css=" height:300px; width:auto!important;object-fit: contain; "
-                            property="photoId"/>
-                    <image
-                            id="drawImage" classNames="photo-preview"
-                            resource="{drawId}"
-                            css=" height:300px; width:auto!important;object-fit: contain; "
-                            property="drawId"/>
-                    <entityPicker id="parametrsizerefField" property="parametrsizeref">
-                        <actions>
-                            <action id="entityLookup" type="entity_lookup"/>
-                            <action id="entityClear" type="entity_clear"/>
-                        </actions>
-                    </entityPicker>
-                    <entityPicker id="typerefField" property="typeref">
-                        <actions>
-                            <action id="entityLookup" type="entity_lookup"/>
-                            <action id="entityClear" type="entity_clear"/>
-                        </actions>
-                    </entityPicker>
-                </formLayout>
-                <hbox id="detailActions">
-                    <button id="saveButton" text="msg:///actions.Save" icon="CHECK" themeNames="primary"/>
-                    <button id="cancelButton" text="msg:///actions.Cancel" icon="BAN"/>
-                </hbox>
+            </dataGrid>
             </vbox>
         </formLayout>
+        <hbox id="lookupActions" visible="false">
+            <button id="selectButton" action="selectAction"/>
+            <button id="discardButton" action="discardAction"/>
+        </hbox>
     </layout>
 </view>

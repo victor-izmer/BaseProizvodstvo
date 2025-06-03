@@ -1,5 +1,6 @@
 package com.company.base6.entity;
 
+import io.jmix.core.metamodel.annotation.Comment;
 import io.jmix.core.metamodel.annotation.InstanceName;
 import io.jmix.core.metamodel.annotation.JmixEntity;
 import jakarta.persistence.*;
@@ -9,6 +10,7 @@ import jakarta.validation.constraints.Size;
 @Entity
 @Table(name = "material")
 public class Material {
+    @Comment("Название материала/сплава")
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)

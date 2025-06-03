@@ -1,5 +1,6 @@
 package com.company.base6.entity;
 
+import io.jmix.core.FileRef;
 import io.jmix.core.metamodel.annotation.InstanceName;
 import io.jmix.core.metamodel.annotation.JmixEntity;
 import jakarta.persistence.*;
@@ -12,6 +13,7 @@ import java.util.Set;
 @Table(name = "typeworkpiece")
 public class Typeworkpiece {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Long id;
 
@@ -20,11 +22,19 @@ public class Typeworkpiece {
     @Column(name = "description")
     private String description;
 
-    @Column(name = "Картинка")
-    private byte[] картинка;
+    @Column(name = "Картинка", length = 1024)
+    private FileRef picture;
 
     @OneToMany(mappedBy = "typeref")
     private Set<Workpiece> workpieces;
+
+    public void setPicture(FileRef picture) {
+        this.picture = picture;
+    }
+
+    public FileRef getPicture() {
+        return picture;
+    }
 
     public Long getId() {
         return id;
@@ -42,14 +52,6 @@ public class Typeworkpiece {
         this.description = description;
     }
 
-    public byte[] getКартинка() {
-        return картинка;
-    }
-
-    public void setКартинка(byte[] картинка) {
-        this.картинка = картинка;
-    }
-
     public Set<Workpiece> getWorkpieces() {
         return workpieces;
     }
@@ -57,5 +59,6 @@ public class Typeworkpiece {
     public void setWorkpieces(Set<Workpiece> workpieces) {
         this.workpieces = workpieces;
     }
+
 
 }

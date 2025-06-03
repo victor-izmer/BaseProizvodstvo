@@ -1,10 +1,12 @@
 package com.company.base6.entity;
 
+import io.jmix.core.metamodel.annotation.Comment;
+import io.jmix.core.metamodel.annotation.InstanceName;
+import io.jmix.core.metamodel.annotation.JmixEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
 
 import java.util.Set;
-import io.jmix.core.metamodel.annotation.JmixEntity;
 
 @JmixEntity
 @Entity
@@ -15,6 +17,7 @@ public class Fullnamematerial {
     @Column(name = "id", nullable = false)
     private Long id;
 
+    @InstanceName
     @Size(max = 255)
     @Column(name = "description")
     private String description;
@@ -23,6 +26,7 @@ public class Fullnamematerial {
     @JoinColumn(name = "material")
     private Material material;
 
+    @Comment("Добавление характеристик сортамента")
     @OneToMany(mappedBy = "materialref")
     private Set<Workpiece> workpieces;
 

@@ -1,6 +1,7 @@
 package com.company.base6.entity;
 
-import io.jmix.core.entity.annotation.JmixGeneratedValue;
+import io.jmix.core.DeletePolicy;
+import io.jmix.core.entity.annotation.OnDeleteInverse;
 import io.jmix.core.metamodel.annotation.InstanceName;
 import io.jmix.core.metamodel.annotation.JmixEntity;
 import jakarta.persistence.*;
@@ -9,7 +10,8 @@ import jakarta.persistence.*;
 @Table(name = "SUPPLIER")
 @Entity
 public class Supplier {
-    @JmixGeneratedValue
+
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID", nullable = false)
     @Id
     private Integer id;
@@ -19,6 +21,7 @@ public class Supplier {
     private String description;
     @Column(name = "WHAT_DO", length = 1024)
     private String whatDo;
+    @OnDeleteInverse(DeletePolicy.UNLINK)
     @JoinColumn(name = "TYPE_SUPPLIER_REF_ID")
     @ManyToOne(fetch = FetchType.LAZY)
     private TypeSupplier typeSupplierRef;

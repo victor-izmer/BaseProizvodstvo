@@ -1,8 +1,15 @@
 package com.company.base6.entity;
 
+import com.company.base6.DependsOnProperties;
+import io.jmix.core.DeletePolicy;
+import io.jmix.core.entity.annotation.OnDeleteInverse;
 import io.jmix.core.metamodel.annotation.InstanceName;
 import io.jmix.core.metamodel.annotation.JmixEntity;
+import io.jmix.core.metamodel.annotation.JmixProperty;
+import io.jmix.flowui.view.StandardDetailView;
+import io.jmix.flowui.view.Subscribe;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.PositiveOrZero;
 
 @JmixEntity
 @Entity
@@ -17,23 +24,54 @@ public class Specification {
     @Column(name = "id", nullable = false)
     private Long id;
 
+    @OnDeleteInverse(DeletePolicy.CASCADE)
     @JoinColumn(name = "PARENTREF_ID")
     @ManyToOne(fetch = FetchType.LAZY)
     private Specification parentref;
+
+    @PositiveOrZero(message = "Только положительное количество")
     @Column(name = "Количество")
     private Float skolko;
+
+    @OnDeleteInverse(DeletePolicy.UNLINK)
     @JoinColumn(name = "UNIT_MEASURE_ID")
     @ManyToOne(fetch = FetchType.LAZY)
     private UnitMeasure unitMeasure;
+
     @InstanceName
     @Lob
     @Column(name = "Примечание_спецификации")
     private String primSpec;
 
-
+    @OnDeleteInverse(DeletePolicy.CASCADE)
     @JoinColumn(name = "DETALREF_ID")
     @ManyToOne(fetch = FetchType.LAZY)
     private Workpiece detalref;
+
+    @Column(name = "PRICE_DETAL")
+    private Float priceDetalOperation;
+
+    @Column(name = "PRICE_DETAL_ASSEMBLE")
+    private Float priceDetalAssemble;
+
+
+
+    public Float getPriceDetalAssemble() {
+        return priceDetalAssemble;
+    }
+
+    public void setPriceDetalAssemble(Float priceDetalAssemble) {
+        this.priceDetalAssemble = priceDetalAssemble;
+    }
+
+
+    public Float getPriceDetalOperation() {
+        return priceDetalOperation;
+    }
+
+    public void setPriceDetalOperation(Float priceDetalOperation) {
+        this.priceDetalOperation = priceDetalOperation;
+    }
 
 
     public UnitMeasure getUnitMeasure() {
@@ -85,4 +123,14 @@ public class Specification {
         this.primSpec = Field;
     }
 
+    @JmixProperty
+    @DependsOnProperties({"skolko", "unitMeasure"})
+    public String getFullSkolko() {
+        if(this.skolko !=null & this.unitMeasure!=null){
+            if(this.skolko!=0) {
+                return this.skolko + " " + this.unitMeasure.getDescription();
+            }
+        }
+        return "";
+    }
 }

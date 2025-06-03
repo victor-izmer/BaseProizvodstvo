@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<view xmlns="http://jmix.io/schema/flowui/view"
+      title="msg://workpieceDetailView.title"
+      focusComponent="form">
+    <data>
+        <instance id="workpieceDc"
+                  class="com.company.base6.entity.Workpiece">
+            <fetchPlan extends="_base">
+                <property name="operationRef" fetchPlan="_base"/>
+                <property name="typeref" fetchPlan="_base"/>
+            </fetchPlan>
+            <loader id="workpieceDl"/>
+            <collection id="operationRefDc" property="operationRef"/>
+        </instance>
+        <collection id="typeworkpiecesDc" class="com.company.base6.entity.Typeworkpiece">
+            <loader id="typeworkpiecesDl" readOnly="true">
+                <query>
+                    <![CDATA[select e from Typeworkpiece e]]>
+                </query>
+            </loader>
+            <fetchPlan extends="_base"/>
+        </collection>
+        <collection id="parametrsizesDc" class="com.company.base6.entity.Parametrsize">
+            <loader id="parametrsizesDl" readOnly="true">
+                <query>
+                    <![CDATA[select e from Parametrsize e]]>
+                </query>
+            </loader>
+            <fetchPlan extends="_base"/>
+        </collection>
+    </data>
+    <facets>
+        <dataLoadCoordinator auto="true"/>
+    </facets>
+    <actions>
+        <action id="saveAction" type="detail_saveClose"/>
+        <action id="closeAction" type="detail_close"/>
+    </actions>
+    <layout>
+        <formLayout id="form" dataContainer="workpieceDc" width="100%">
+            <hbox>
+
+                <textField id="descriptionField" property="description" alignSelf="STRETCH" label="Название"
+                           width="45%"/>
+                <textField id="numDrawField" property="numDraw" alignSelf="STRETCH" label="Чертеж" width="25%"/>
+                <entityComboBox id="typeworkpiecesPicker" dataContainer="workpieceDc" property="typeref"
+                                label="Тип детали" itemsContainer="typeworkpiecesDc" width="25%">
+                    <actions>
+                        <action id="entityClear" type="entity_clear"/>
+                        <action id="entityLookup" type="entity_lookup"/>
+                        <action id="entityOpen" type="entity_open"/>
+                    </actions>
+                </entityComboBox>
+
+            </hbox>
+            <hbox>
+            <textField id="priceLastField" property="priceLast" label="Цена последняя"/>
+            <checkbox id="priceLastNDSField" property="priceLastNDS" label="20%"/>
+            </hbox>
+            <hbox maxWidth="100%" width="100%">
+                <entityComboBox id="materialsComboBox" metaClass="Material" dataContainer="workpieceDc"
+                                property="materialref" minWidth="50%" label="Материал">
+                    <itemsQuery class="com.company.base6.entity.Material" escapeValueForLike="true"
+                                searchStringFormat="(?i)%${inputString}%">
+                        <fetchPlan extends="_base"/>
+                        <query>
+                            <![CDATA[select e from Material e where e.description like :searchString escape '\' order by e.description]]>
+                        </query>
+                    </itemsQuery>
+                    <actions>
+                        <action id="entityClear" type="entity_clear"/>
+                        <action id="entityLookup" type="entity_lookup"/>
+                        <action id="entityOpen" type="entity_open"/>
+                    </actions>
+                </entityComboBox>
+                <entityComboBox id="ParameterSizeComboBox"
+                                itemsContainer="parametrsizesDc"
+                                dataContainer="workpieceDc"
+                                property="parametrsizeref"
+                                width="25%" label="мм">
+                    <actions>
+                        <action id="entityClear" type="entity_clear"/>
+                        <action id="entityLookup" type="entity_lookup"/>
+                        <action id="entityOpen" type="entity_open"/>
+                    </actions>
+                </entityComboBox>
+                <textField id="sizeField" property="size" label="Размер" maxWidth="10%"/>
+                <textField id="timeProduceField" property="timeProduce" label="ВремяИзготовл" maxWidth="10%"/>
+            </hbox>
+            <vbox>
+                <hbox id="buttonsPanel" classNames="buttons-panel">
+                    <button action="operationRefDataGrid.createAction"/>
+                    <button action="operationRefDataGrid.editAction"/>
+                    <button action="operationRefDataGrid.removeAction"/>
+                </hbox>
+                <dataGrid id="operationRefDataGrid"
+                          dataContainer="operationRefDc"
+                          width="100%" height="100%" minHeight="15em" alignSelf="STRETCH"
+                          columnReorderingAllowed="true">
+                    <actions>
+                        <action id="createAction" type="list_create">
+                            <properties>
+                                <property name="openMode" value="DIALOG"/>
+                            </properties>
+                        </action>
+                        <action id="editAction" type="list_edit">
+                            <properties>
+                                <property name="openMode" value="DIALOG"/>
+                            </properties>
+                        </action>
+                        <action id="removeAction" type="list_remove"/>
+                    </actions>
+                    <columns>
+                        <column property="typeOperationRef" resizable="true"/>
+                        <column property="priceOp" resizable="true"/>
+                        <column property="nds" resizable="true"/>
+                        <column property="primOp" resizable="true"/>
+                        <column property="durationOp" resizable="true"/>
+                    </columns>
+                </dataGrid>
+            </vbox>
+            <vbox>
+                <hbox>
+                    <fileStorageUploadField
+                            id="PhotoStorageUpload" dataContainer="workpieceDc"
+                            dropAllowed="true"
+                            clearButtonVisible="true"
+                            fileNameVisible="true"
+                            uploadIcon="vaadin:add-dock"
+                            property="photoFileRef" label="Фото детали"/>
+                    <fileStorageUploadField
+                            id="DrawStorageUpload" dataContainer="workpieceDc"
+                            dropAllowed="true"
+                            clearButtonVisible="true"
+                            fileNameVisible="true"
+                            uploadIcon="vaadin:add-dock"
+                            property="drawFileRef" label="Чертеж детали"/>
+                </hbox>
+                <hbox>
+                    <image text="Фото" dataContainer="workpieceDc" property="photoFileRef" css="object-fit: contain; "
+                           width="30%"/>
+                    <image text="Чертеж" dataContainer="workpieceDc" property="drawFileRef" css="object-fit: contain; "
+                           width="30%"/>
+                </hbox>
+            </vbox>
+
+            <textField id="primDetalField" property="primDetal"/>
+        </formLayout>
+        <hbox id="detailActions">
+            <button id="saveAndCloseButton" action="saveAction"/>
+            <button id="closeButton" action="closeAction"/>
+        </hbox>
+    </layout>
+</view>

@@ -11,6 +11,7 @@
                         <property name="detailOut" fetchPlan="_base"/>
                     </property>
                 </property>
+                <property name="supplierRef" fetchPlan="_base"/>
             </fetchPlan>
             <loader id="requestDl"/>
             <collection id="basketRefDc" property="basketRef"/>
@@ -33,17 +34,27 @@
         <action id="closeAction" type="detail_close"/>
     </actions>
     <layout>
-        <formLayout id="form" dataContainer="requestDc" height="40em">
+        <formLayout id="form" dataContainer="requestDc">
             <responsiveSteps>
                 <responsiveStep minWidth="0" columns="1"/>
                 <responsiveStep minWidth="40em" columns="2"/>
             </responsiveSteps>
             <vbox>
+            <vbox>
                 <hbox>
-                    <entityComboBox id="supplierRefField"
-                                    property="supplierRef"
-                                    dataContainer="requestDc" itemsContainer="suppliersDc" width="70%" minWidth="25em"
-                                    label="Поставщик" alignSelf="STRETCH"/>
+                    <entityComboBox id="suppliersComboBox"
+                                    itemsContainer="suppliersDc"
+                                    dataContainer="requestDc"
+                                    property="supplierRef" minWidth="25em" width="15%" alignSelf="STRETCH"
+                                    label="Поставщик">
+                        <actions>
+                            <action id="entityClear" type="entity_clear"/>
+                            <action id="entityLookup" type="entity_lookup"/>
+                            <action id="entityOpen" type="entity_open"/>
+                        </actions>
+                    </entityComboBox>
+
+
                     <textField id="sumRequestField" property="sumRequest" maxWidth="15%" minWidth="10em" width="15%"
                                label="Сумма заказа"/>
                 </hbox>
@@ -52,50 +63,56 @@
                     <datePicker id="dateControlField" property="dateControl" label="Дата контроля"/>
                     <datePicker id="dateFinishField" property="dateFinish" label="Дата завершения"/>
                 </hbox>
-                <textField id="scanInvoiceField" property="scanInvoice" alignSelf="STRETCH" label="Скан счета"/>
-                <button id="ViewFile" minHeight="5em" minWidth="5em" text="Привет!"
-                        icon="vaadin:airplane" themeNames="large"/>
-                <textArea id="primRequestField" property="primRequest" height="6em" alignSelf="STRETCH" label="Примечания запроса"/>
-            </vbox>
-            <vbox id="SpisokDetal" minWidth="50em">
-                <hbox id="buttonsPanel" >
-                    <button action="basketRefDataGrid.createAction"/>
-                    <button action="basketRefDataGrid.editAction"/>
-                    <button action="basketRefDataGrid.removeAction"/>
-                </hbox>
-                <dataGrid id="basketRefDataGrid"
-                          dataContainer="basketRefDc"
-                          width="100%" height="100%" minHeight="25em">
-                    <actions>
-                        <action id="createAction" type="list_create">
-                            <properties>
-                                <property name="openMode" value="DIALOG"/>
-                            </properties>
-                        </action>
-                        <action id="editAction" type="list_edit">
-                            <properties>
-                                <property name="openMode" value="DIALOG"/>
-                            </properties>
-                        </action>
-                        <action id="removeAction" type="list_remove"/>
-                    </actions>
-                    <columns>
-                        <column property="operationRef.detailOut" resizable="true" sortable="false"/>
-                        <column property="quantity" resizable="true" sortable="false"/>
-                        <column property="price" resizable="true" sortable="false"/>
-                        <column property="nds" resizable="true" sortable="false"/>
-                        <column property="primBasket" resizable="true" sortable="false"/>
-                    </columns>
-                </dataGrid>
 
+
+                <textArea id="primRequestField" property="primRequest" height="6em" alignSelf="STRETCH" label="Примечания заказа"/>
+            </vbox>
             </vbox>
             <vbox>
-                <iframe id="pdfFrame" width="100%" height="100%" resource="test.pdf" alignSelf="STRETCH"/>
+                <fileStorageUploadField id="fieldFileInvoice"
+                                        dataContainer="requestDc"
+                                        property="fileInvoice"
+                                        dropAllowed="true"
+                                        clearButtonVisible="true"
+                                        fileNameVisible="true"
+                                        uploadIcon="vaadin:add-dock"/>
+                <textField id="scanInvoiceField" property="scanInvoice" alignSelf="STRETCH" label="Скан счета"/>
             </vbox>
-
-        </formLayout>
-
+        </formLayout><vbox id="SpisokDetal" minWidth="50em">
+        <hbox id="buttonsPanel" >
+            <button action="basketRefDataGrid.createAction"/>
+            <button action="basketRefDataGrid.editAction"/>
+            <button action="basketRefDataGrid.removeAction"/>
+        </hbox>
+        <dataGrid id="basketRefDataGrid"
+                  dataContainer="basketRefDc"
+                  allRowsVisible="true"
+                  columnReorderingAllowed="true">
+            <actions>
+                <action id="createAction" type="list_create">
+                    <properties>
+                        <property name="openMode" value="DIALOG"/>
+                    </properties>
+                </action>
+                <action id="editAction" type="list_edit">
+                    <properties>
+                        <property name="openMode" value="DIALOG"/>
+                    </properties>
+                </action>
+                <action id="removeAction" type="list_remove"/>
+            </actions>
+            <columns>
+                <column property="operationRef.detailOut" resizable="true" sortable="false" editable="true"/>
+                <column property="quantity" resizable="true" sortable="false" editable="true"/>
+                <column property="price" resizable="true" sortable="false" editable="true"/>
+                <column property="nds" resizable="true" sortable="false" editable="true"/>
+                <column property="operationRef" editable="true"/>
+                <column property="primBasket" resizable="true" sortable="false" editable="true"/>
+            </columns>
+        </dataGrid>
+    </vbox>
         <hbox id="detailActions">
+
             <button id="saveAndCloseButton" action="saveAction"/>
             <button id="closeButton" action="closeAction"/>
         </hbox>

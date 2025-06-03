@@ -1,17 +1,18 @@
 package com.company.base6.entity;
 
+import io.jmix.core.DeletePolicy;
+import io.jmix.core.FileRef;
 import io.jmix.core.MetadataTools;
-import io.jmix.core.entity.annotation.JmixGeneratedValue;
+import io.jmix.core.entity.annotation.OnDeleteInverse;
+import io.jmix.core.metamodel.annotation.Composition;
 import io.jmix.core.metamodel.annotation.DependsOnProperties;
 import io.jmix.core.metamodel.annotation.InstanceName;
 import io.jmix.core.metamodel.annotation.JmixEntity;
 import io.jmix.core.metamodel.datatype.DatatypeFormatter;
 import jakarta.persistence.*;
-import io.jmix.flowui.model.CollectionLoader;
-import io.jmix.flowui.model.InstanceLoader;
-import io.jmix.flowui.component.grid.DataGrid;
 
-import java.util.Date;
+import java.time.LocalDate;
+import java.util.List;
 
 @JmixEntity
 @Table(name = "REQUEST", indexes = {
@@ -21,33 +22,78 @@ import java.util.Date;
 @Entity
 @Cacheable
 public class Request {
-    @JmixGeneratedValue
+
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID", nullable = false)
     @Id
     private Long id;
-    @JoinColumn(name = "SUPPLIER_REF_ID")
-    @ManyToOne(fetch = FetchType.LAZY)
-    private Supplier supplierRef;
-    @Column(name = "NUM_INVOICE")
-    private String numInvoice;
-    @Temporal(TemporalType.DATE)
+
     @Column(name = "DATE_REQUEST")
-    private Date dateRequest;
+    private LocalDate dateRequest;
+
+    @Column(name = "DATE_CONTROL")
+    private LocalDate dateControl;
+
+    @Column(name = "DATE_FINISH")
+    private LocalDate dateFinish;
+
     @Column(name = "SCAN_INVOICE")
     private String scanInvoice;
-    @Temporal(TemporalType.DATE)
-    @Column(name = "DATE_CONTROL")
-    private Date dateControl;
-    @Temporal(TemporalType.DATE)
-    @Column(name = "DATE_FINISH")
-    private Date dateFinish;
+
+    @Column(name = "FILE_INVOICE", length = 1024)
+    private FileRef fileInvoice;
+
     @Column(name = "PRIM_REQUEST", length = 1024)
     private String primRequest;
+
+    @Column(name = "SUM_REQUEST")
+    private Float sumRequest;
+
+    @OnDeleteInverse(DeletePolicy.UNLINK)
     @JoinColumn(name = "STATUS_ZAYAVKA_REF_ID")
     @ManyToOne(fetch = FetchType.LAZY)
     private StatusZayavka statusZayavkaRef;
-    @Column(name = "SUM_REQUEST")
-    private Float sumRequest;
+
+    @Composition
+    @OneToMany(mappedBy = "requestRef")
+    private List<Basket> basketRef;
+
+    @OnDeleteInverse(DeletePolicy.UNLINK)
+    @JoinColumn(name = "SUPPLIER_REF_ID")
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Supplier supplierRef;
+
+    public FileRef getFileInvoice() {
+        return fileInvoice;
+    }
+
+    public void setFileInvoice(FileRef fileInvoice) {
+        this.fileInvoice = fileInvoice;
+    }
+
+    public void setDateFinish(LocalDate dateFinish) {
+        this.dateFinish = dateFinish;
+    }
+
+    public LocalDate getDateFinish() {
+        return dateFinish;
+    }
+
+    public void setDateControl(LocalDate dateControl) {
+        this.dateControl = dateControl;
+    }
+
+    public LocalDate getDateControl() {
+        return dateControl;
+    }
+
+    public List<Basket> getBasketRef() {
+        return basketRef;
+    }
+
+    public void setBasketRef(List<Basket> basketRef) {
+        this.basketRef = basketRef;
+    }
 
     public Float getSumRequest() {
         return sumRequest;
@@ -73,22 +119,6 @@ public class Request {
         this.primRequest = primRequest;
     }
 
-    public Date getDateFinish() {
-        return dateFinish;
-    }
-
-    public void setDateFinish(Date dateFinish) {
-        this.dateFinish = dateFinish;
-    }
-
-    public Date getDateControl() {
-        return dateControl;
-    }
-
-    public void setDateControl(Date dateControl) {
-        this.dateControl = dateControl;
-    }
-
     public String getScanInvoice() {
         return scanInvoice;
     }
@@ -97,20 +127,13 @@ public class Request {
         this.scanInvoice = scanInvoice;
     }
 
-    public Date getDateRequest() {
+    public LocalDate getDateRequest() {
         return dateRequest;
     }
 
-    public void setDateRequest(Date dateRequest) {
-        this.dateRequest = dateRequest;
-    }
-
-    public String getNumInvoice() {
-        return numInvoice;
-    }
-
-    public void setNumInvoice(String numInvoice) {
-        this.numInvoice = numInvoice;
+    public void setDateRequest(LocalDate dateRequest) {
+        this.dateRequest = dateRequest == null ? LocalDate.now() : dateRequest;
+        //this.dateRequest = dateRequest;
     }
 
     public Supplier getSupplierRef() {
@@ -134,6 +157,6 @@ public class Request {
     public String getInstanceName(MetadataTools metadataTools, DatatypeFormatter datatypeFormatter) {
         return String.format("%s %s",
                 metadataTools.format(supplierRef),
-                datatypeFormatter.formatDate(dateRequest));
+                datatypeFormatter.formatLocalDate(dateRequest));
     }
 }

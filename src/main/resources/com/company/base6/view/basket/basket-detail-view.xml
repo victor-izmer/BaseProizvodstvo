@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<view xmlns="http://jmix.io/schema/flowui/view"
+      title="msg://basketDetailView.title"
+      focusComponent="form">
+    <data>
+        <instance id="basketDc"
+                  class="com.company.base6.entity.Basket">
+            <fetchPlan extends="_base">
+                <property name="unitmeasureRef" fetchPlan="_base"/>
+                <property name="detalComp" fetchPlan="_base"/>
+            </fetchPlan>
+            <loader id="basketDl"/>
+
+        </instance>
+        <collection id="workpiecesDc" class="com.company.base6.entity.Workpiece">
+            <loader id="workpiecesDl" readOnly="true">
+                <query>
+                    <![CDATA[select e from Workpiece e order by e.description asc]]>
+                </query>
+            </loader>
+            <fetchPlan extends="_base">
+
+            </fetchPlan>
+        </collection>
+        <collection id="unitMeasureDc" class="com.company.base6.entity.UnitMeasure">
+            <loader id="unitMeasureDl" readOnly="true">
+                <query>
+                    <![CDATA[select e from UnitMeasure e]]>
+                </query>
+            </loader>
+            <fetchPlan extends="_base"/>
+        </collection>
+        <collection id="operationsDc" class="com.company.base6.entity.Operation">
+            <loader id="operationsDl" readOnly="true">
+                <query>
+                    <![CDATA[select e from Operation e where e.detailOut = :detail]]>
+                </query>
+            </loader>
+            <fetchPlan extends="_base">
+                <property name="detailOut" fetchPlan="_base"/>
+            </fetchPlan>
+        </collection>
+    </data>
+    <facets>
+        <dataLoadCoordinator auto="true"/>
+    </facets>
+    <actions>
+        <action id="saveAction" type="detail_saveClose"/>
+        <action id="closeAction" type="detail_close"/>
+    </actions>
+    <layout>
+        <formLayout id="form" dataContainer="basketDc">
+
+            <responsiveSteps>
+                <responsiveStep minWidth="0" columns="1"/>
+                <responsiveStep minWidth="40em" columns="2"/>
+            </responsiveSteps>
+            <vbox>
+
+                <hbox id="DetalField">
+                    <entityComboBox id="basketsComboBox"
+                                    dataContainer="operationsDc"
+                                    itemsContainer="workpiecesDc"
+                                    property="detailOut"
+                                    width="35em" label="Деталь">
+                        <actions>
+                            <action id="entityLookup" type="entity_lookup"/>
+                            <action id="entityOpen" type="entity_open"/>
+                            <action id="entityClear" type="entity_clear"/>
+                        </actions>
+                    </entityComboBox>
+                    <textField id="quantityField" property="quantity" width="5em" label="Кол-во"/>
+                    <entityComboBox id="unitMeasComboBox"
+                                    dataContainer="basketDc"
+                                    itemsContainer="unitMeasureDc"
+                                    width="9em" label="ЕдИзм" property="unitmeasureRef">
+                    </entityComboBox>
+                </hbox>
+                <hbox id="PriceField">
+                    <textField label="Цена" id="priceFieldText" property="price" maxLength="8"/>
+                    <checkbox label="20%" id="ndsField" property="nds"/>
+                    <entityComboBox id="operationRefField"
+                                    dataContainer="basketDc"
+                                    itemsContainer="operationsDc"
+                                    property="operationRef"
+                                    width="20em"
+                                    label="Операция с деталью" maxWidth="20em" autoOpen="true">
+                    </entityComboBox>
+                </hbox>
+
+            </vbox>
+            <richTextEditor id="primBasketField"
+                                   property="primBasket"
+                                   helperText="msg://primBasketField.helperText" label="Примечение строки заказа"/>
+        </formLayout>
+
+        <hbox id="detailActions">
+            <button id="saveAndCloseButton" action="saveAction"/>
+            <button id="closeButton" action="closeAction"/>
+        </hbox>
+    </layout>
+</view>

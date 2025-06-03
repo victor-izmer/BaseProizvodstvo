@@ -10,7 +10,7 @@
             </fetchPlan>
             <loader id="requestsDl" readOnly="true">
                 <query>
-                    <![CDATA[select e from Request e]]>
+                    <![CDATA[select e from Request e order by e.dateRequest desc]]>
                 </query>
             </loader>
         </collection>
@@ -21,14 +21,13 @@
             <genericFilter component="genericFilter"/>
             <pagination component="pagination"/>
         </urlQueryParameters>
+        <settings auto="true"/>
     </facets>
     <actions>
         <action id="selectAction" type="lookup_select"/>
         <action id="discardAction" type="lookup_discard"/>
     </actions>
     <layout>
-        <button id="button" text="Проверка сроков"/>
-        <button id="CountSum" text="Сумма"/>
         <genericFilter id="genericFilter"
                        dataLoader="requestsDl">
             <properties include=".*"/>
@@ -43,7 +42,7 @@
                   width="100%"
                   minHeight="20em"
                   dataContainer="requestsDc"
-                  columnReorderingAllowed="true">
+                  columnReorderingAllowed="true" themeNames="compact">
             <actions>
                 <action id="createAction" type="list_create">
                     <properties>
@@ -59,14 +58,13 @@
             </actions>
             <columns resizable="true">
 
-                <column property="numInvoice"/>
-                <column property="dateRequest"/>
-                <column property="scanInvoice" textAlign="END" key="scan"/>
-                <column property="dateControl"/>
-                <column property="dateFinish"/>
-                <column property="primRequest"/>
-                <column property="sumRequest"/>
                 <column property="supplierRef"/>
+                <column property="dateRequest" textAlign="CENTER"/>
+                <column property="dateControl" textAlign="CENTER"/>
+                <column property="dateFinish" textAlign="CENTER"/>
+                <column property="sumRequest" textAlign="CENTER" sortable="false"/>
+                <column property="primRequest" sortable="false" textAlign="END"/>
+                <column key="file"/>
             </columns>
         </dataGrid>
         <hbox id="lookupActions" visible="false">

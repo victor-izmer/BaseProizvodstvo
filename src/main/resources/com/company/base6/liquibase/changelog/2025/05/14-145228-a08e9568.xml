@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd"
+        objectQuotingStrategy="QUOTE_ONLY_RESERVED_WORDS">
+    <changeSet id="1" author="Base6">
+        <dropForeignKeyConstraint baseTableName="BASKET" constraintName="FK_BASKET_ON_REQUEST_REF"/>
+    </changeSet>
+    <changeSet id="2" author="Base6">
+        <dropForeignKeyConstraint baseTableName="REQUEST" constraintName="FK_REQUEST_ON_STATUS_ZAYAVKA_REF"/>
+    </changeSet>
+    <changeSet id="3" author="Base6">
+        <dropForeignKeyConstraint baseTableName="REQUEST" constraintName="FK_REQUEST_ON_SUPPLIER_REF"/>
+    </changeSet>
+    <changeSet id="4" author="Base6">
+        <dropForeignKeyConstraint baseTableName="specification" constraintName="FK_SPECIFICATION_ON_DETALREF"/>
+    </changeSet>
+    <changeSet id="5" author="Base6">
+        <dropForeignKeyConstraint baseTableName="specification" constraintName="FK_SPECIFICATION_ON_PARENTREF"/>
+    </changeSet>
+    <changeSet id="6" author="Base6">
+        <dropForeignKeyConstraint baseTableName="specification" constraintName="FK_SPECIFICATION_ON_UNIT_MEASURE"/>
+    </changeSet>
+    <changeSet id="7" author="Base6">
+        <dropForeignKeyConstraint baseTableName="SUPPLIER" constraintName="FK_SUPPLIER_ON_TYPE_SUPPLIER_REF"/>
+    </changeSet>
+    <changeSet id="8" author="Base6">
+        <dropForeignKeyConstraint baseTableName="workpiece" constraintName="FK_WORKPIECE_ON_BASKET"/>
+    </changeSet>
+    <changeSet id="9" author="Base6">
+        <dropForeignKeyConstraint baseTableName="workpiece" constraintName="FK_WORKPIECE_ON_PARAMETRSIZEREF"/>
+    </changeSet>
+    <changeSet id="10" author="Base6">
+        <dropForeignKeyConstraint baseTableName="workpiece" constraintName="FK_WORKPIECE_ON_TYPEREF"/>
+    </changeSet>
+    <changeSet id="11" author="Base6">
+        <addForeignKeyConstraint baseColumnNames="REQUEST_REF_ID" baseTableName="BASKET"
+                                 constraintName="FK_BASKET_ON_REQUEST_REF" referencedColumnNames="ID"
+                                 referencedTableName="REQUEST"/>
+    </changeSet>
+    <changeSet id="12" author="Base6">
+        <addForeignKeyConstraint baseColumnNames="STATUS_ZAYAVKA_REF_ID" baseTableName="REQUEST"
+                                 constraintName="FK_REQUEST_ON_STATUS_ZAYAVKA_REF" onDelete="SET NULL"
+                                 referencedColumnNames="ID" referencedTableName="STATUS_ZAYAVKA"/>
+    </changeSet>
+    <changeSet id="13" author="Base6">
+        <addForeignKeyConstraint baseColumnNames="SUPPLIER_REF_ID" baseTableName="REQUEST"
+                                 constraintName="FK_REQUEST_ON_SUPPLIER_REF" onDelete="SET NULL"
+                                 referencedColumnNames="ID" referencedTableName="SUPPLIER"/>
+    </changeSet>
+    <changeSet id="14" author="Base6">
+        <addForeignKeyConstraint baseColumnNames="DETALREF_ID" baseTableName="specification"
+                                 constraintName="FK_SPECIFICATION_ON_DETALREF" onDelete="CASCADE"
+                                 referencedColumnNames="id" referencedTableName="workpiece"/>
+    </changeSet>
+    <changeSet id="15" author="Base6">
+        <addForeignKeyConstraint baseColumnNames="PARENTREF_ID" baseTableName="specification"
+                                 constraintName="FK_SPECIFICATION_ON_PARENTREF" onDelete="CASCADE"
+                                 referencedColumnNames="id" referencedTableName="specification"/>
+    </changeSet>
+    <changeSet id="16" author="Base6">
+        <addForeignKeyConstraint baseColumnNames="UNIT_MEASURE_ID" baseTableName="specification"
+                                 constraintName="FK_SPECIFICATION_ON_UNIT_MEASURE" onDelete="SET NULL"
+                                 referencedColumnNames="ID" referencedTableName="UnitMeasure"/>
+    </changeSet>
+    <changeSet id="17" author="Base6">
+        <addForeignKeyConstraint baseColumnNames="TYPE_SUPPLIER_REF_ID" baseTableName="SUPPLIER"
+                                 constraintName="FK_SUPPLIER_ON_TYPE_SUPPLIER_REF" onDelete="SET NULL"
+                                 referencedColumnNames="ID" referencedTableName="TYPE_SUPPLIER"/>
+    </changeSet>
+    <changeSet id="18" author="Base6">
+        <addForeignKeyConstraint baseColumnNames="BASKET_ID" baseTableName="workpiece"
+                                 constraintName="FK_WORKPIECE_ON_BASKET" onDelete="SET NULL" referencedColumnNames="ID"
+                                 referencedTableName="BASKET"/>
+    </changeSet>
+    <changeSet id="19" author="Base6">
+        <addForeignKeyConstraint baseColumnNames="parametrsizeref" baseTableName="workpiece"
+                                 constraintName="FK_WORKPIECE_ON_PARAMETRSIZEREF" onDelete="SET NULL"
+                                 referencedColumnNames="id" referencedTableName="parametrsize"/>
+    </changeSet>
+    <changeSet id="20" author="Base6">
+        <addForeignKeyConstraint baseColumnNames="typeref" baseTableName="workpiece"
+                                 constraintName="FK_WORKPIECE_ON_TYPEREF" onDelete="SET NULL" referencedColumnNames="id"
+                                 referencedTableName="typeworkpiece"/>
+    </changeSet>
+</databaseChangeLog>

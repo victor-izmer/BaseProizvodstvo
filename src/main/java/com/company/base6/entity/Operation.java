@@ -1,7 +1,10 @@
 package com.company.base6.entity;
 
 
-import io.jmix.core.entity.annotation.JmixGeneratedValue;
+import io.jmix.core.DeletePolicy;
+import io.jmix.core.MetadataTools;
+import io.jmix.core.entity.annotation.OnDeleteInverse;
+import io.jmix.core.metamodel.annotation.DependsOnProperties;
 import io.jmix.core.metamodel.annotation.InstanceName;
 import io.jmix.core.metamodel.annotation.JmixEntity;
 import jakarta.persistence.*;
@@ -10,14 +13,14 @@ import jakarta.persistence.*;
 @Table(name = "OPERATION")
 @Entity
 public class Operation {
-    @JmixGeneratedValue
+
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID", nullable = false)
     @Id
     private Long id;
-    @InstanceName
-    @JoinColumn(name = "TYPE_OPERATION_REF_ID")
-    @ManyToOne(fetch = FetchType.LAZY)
-    private TypeOperation typeOperationRef;
+    @Column(name = "TYPE_OPERATION_REF")
+    private Integer typeOperationRef;
+    @OnDeleteInverse(DeletePolicy.CASCADE)
     @JoinColumn(name = "DETAIL_OUT_ID")
     @ManyToOne(fetch = FetchType.LAZY)
     private Workpiece detailOut;
@@ -30,20 +33,20 @@ public class Operation {
     @Column(name = "DURATION_OP")
     private Float durationOp;
 
+    public void setTypeOperationRef(TypeOperationEnum typeOperationRef) {
+        this.typeOperationRef = typeOperationRef == null ? null : typeOperationRef.getId();
+    }
+
+    public TypeOperationEnum getTypeOperationRef() {
+        return typeOperationRef == null ? null : TypeOperationEnum.fromId(typeOperationRef);
+    }
+
     public void setDetailOut(Workpiece detailOut) {
         this.detailOut = detailOut;
     }
 
     public Workpiece getDetailOut() {
         return detailOut;
-    }
-
-    public void setTypeOperationRef(TypeOperation typeOperationRef) {
-        this.typeOperationRef = typeOperationRef;
-    }
-
-    public TypeOperation getTypeOperationRef() {
-        return typeOperationRef;
     }
 
     public Float getDurationOp() {
@@ -84,5 +87,13 @@ public class Operation {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    @InstanceName
+    @DependsOnProperties({"typeOperationRef", "durationOp"})
+    public String getInstanceName(MetadataTools metadataTools) {
+        return String.format("%s : %sмин",
+                metadataTools.format(getTypeOperationRef()),
+                metadataTools.format(durationOp));
     }
 }
