@@ -50,13 +50,11 @@
     </actions>
     <layout>
         <formLayout id="form" dataContainer="basketDc">
-
             <responsiveSteps>
                 <responsiveStep minWidth="0" columns="1"/>
                 <responsiveStep minWidth="40em" columns="2"/>
             </responsiveSteps>
             <vbox>
-
                 <hbox id="DetalField">
                     <entityComboBox id="basketsComboBox"
                                     dataContainer="operationsDc"
@@ -87,13 +85,11 @@
                                     label="Операция с деталью" maxWidth="20em" autoOpen="true">
                     </entityComboBox>
                 </hbox>
-
             </vbox>
             <richTextEditor id="primBasketField"
                                    property="primBasket"
                                    helperText="msg://primBasketField.helperText" label="Примечение строки заказа"/>
         </formLayout>
-
         <hbox id="detailActions">
             <button id="saveAndCloseButton" action="saveAction"/>
             <button id="closeButton" action="closeAction"/>

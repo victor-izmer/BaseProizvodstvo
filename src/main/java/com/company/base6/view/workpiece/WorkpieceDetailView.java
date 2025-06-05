@@ -1,6 +1,5 @@
 package com.company.base6.view.workpiece;
 
-import com.company.base6.entity.NewsItem;
 import com.company.base6.entity.Request;
 import com.company.base6.entity.Workpiece;
 import com.company.base6.view.main.MainView;

@@ -142,10 +142,12 @@
                     <image text="Чертеж" dataContainer="workpieceDc" property="drawFileRef" css="object-fit: contain; "
                            width="30%"/>
                 </hbox>
+                <richTextEditor id="PrimDetalEdit" dataContainer="workpieceDc" property="primDetal"/>
             </vbox>
 
-            <textField id="primDetalField" property="primDetal"/>
         </formLayout>
+
+        <textField id="primDetalField" property="primDetal"/>
         <hbox id="detailActions">
             <button id="saveAndCloseButton" action="saveAction"/>
             <button id="closeButton" action="closeAction"/>

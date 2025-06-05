@@ -112,6 +112,8 @@ public class SpecificationListView extends StandardListView<Specification> {
     private double scrollPosition = 0;
     @ViewComponent
     private HorizontalLayout formBox;
+    @ViewComponent
+    private CollectionLoader<Specification> specificationsDl;
 
     @Subscribe
     public void onInit(final InitEvent event) {
@@ -160,6 +162,7 @@ public class SpecificationListView extends StandardListView<Specification> {
             childSpecificationEdit.execute();
                 // Обновляем контейнер
                 specificationDetalDl.load();
+                specificationsDl.load();
 
         }
     }
@@ -226,7 +229,7 @@ public class SpecificationListView extends StandardListView<Specification> {
 
 
         //detailActions.setVisible(editing);
-        listLayout.setEnabled(!editing);
+        //listLayout.setEnabled(!editing);
         specificationsDataGrid.getActions().forEach(Action::refreshState);
 
     }

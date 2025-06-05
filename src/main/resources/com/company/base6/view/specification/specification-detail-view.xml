@@ -32,34 +32,11 @@
                 </query>
             </loader>
         </collection>
-        <collection id="FullNamematerialsDc" class="com.company.base6.entity.Fullnamematerial">
-            <loader id="FullNamematerialsDl" readOnly="true">
-                <query>
-                    <![CDATA[select f from Fullnamematerial f]]>
-                </query>
-            </loader>
-            <fetchPlan extends="_base"/>
-        </collection>
-        <collection id="parametrsizesDc" class="com.company.base6.entity.Parametrsize">
-            <loader id="parametrsizesDl" readOnly="true">
-                <query>
-                    <![CDATA[select e from Parametrsize e]]>
-                </query>
-            </loader>
-            <fetchPlan extends="_base"/>
-        </collection>
+
         <collection id="unitMeasuresDc" class="com.company.base6.entity.UnitMeasure">
             <loader id="unitMeasuresDl" readOnly="true">
                 <query>
                     <![CDATA[select e from UnitMeasure e]]>
-                </query>
-            </loader>
-            <fetchPlan extends="_base"/>
-        </collection>
-        <collection id="typeworkpiecesDc" class="com.company.base6.entity.Typeworkpiece">
-            <loader id="typeworkpiecesDl" readOnly="true">
-                <query>
-                    <![CDATA[select e from Typeworkpiece e]]>
                 </query>
             </loader>
             <fetchPlan extends="_base"/>
@@ -77,26 +54,11 @@
         <formLayout id="form" dataContainer="specificationDc">
           <vbox>
             <hbox id="parentAndTypeBox">
-
-                  <entityComboBox id="workpiecesComboBox1"
-                                  itemsContainer="workpiecesDc"
-                                  dataContainer="specificationDc"
-                                  property="parentref.detalref"
-                                  label="В составе:"
-                                  enabled="false"/>
-                  <entityComboBox id="typeWorkpieceComboBox"
-                                  dataContainer="specificationDc"
-                                  itemsContainer="typeworkpiecesDc"
-                                  property="detalref.typeref"
-                                  label="Тип детали" enabled="false">
-                      <actions>
-                          <action id="entityClear" type="entity_clear"/>
-
-                          <action id="entityOpen" type="entity_open"/>
-                      </actions>
-                  </entityComboBox>
-              </hbox>
+                <textField dataContainer="specificationDc" property="parentref.detalref"
+                           readOnly="true" label="Входит в"/>
+            </hbox>
             <hbox id="descriptionBox">
+                <textField dataContainer="specificationDc" property="detalref.typeref" readOnly="true"/>
                 <entityComboBox id="workpiecesComboBox2"
                                 itemsContainer="workpiecesDc"
                                 dataContainer="specificationDc"
@@ -113,26 +75,15 @@
                                 width="15%"
                                 itemsContainer="unitMeasuresDc" label="ЕдИзм"/>
             </hbox>
-            <hbox id="MaterialArea" enabled="false">
-                <entityComboBox id="MaterialComboBox"
-                                itemsContainer="FullNamematerialsDc"
-                                dataContainer="specificationDc"
-                                property="detalref.materialref"
-                                width="60%" label="Материал"/>
-                <entityComboBox id="TypeSizeComboBox"
-                                itemsContainer="parametrsizesDc"
-                                dataContainer="specificationDc"
-                                property="detalref.parametrsizeref"
-                                width="25%" label="Размер"/>
-
-                <textField dataContainer="specificationDc" property="detalref.size" width="15%" label="мм"/>
+            <hbox id="MaterialArea" colspan="0" boxSizing="BORDER_BOX" spacing="false">
+                <textField dataContainer="specificationDc" property="detalref.materialref" readOnly="true"/>
+                <textField dataContainer="specificationDc" property="detalref.parametrsizeref" readOnly="true"/>
+                <textField dataContainer="specificationDc" property="detalref.size" width="15%" label="мм"
+                           readOnly="true"/>
             </hbox>
             <vbox>
-                
-
                 <dataGrid id="operationsDataGrid" dataContainer="operationsDc" themeNames="compact"
                           allRowsVisible="true" enabled="false">
-
                     <columns resizable="true">
                         <column property="typeOperationRef"/>
                         <column property="durationOp"/>
@@ -148,11 +99,11 @@
                 <fileStorageUploadField
                         id="PhotoStorageUpload" dataContainer="specificationDc"
                         fileNameVisible="true"
-                        property="detalref.photoFileRef" label="Фото детали" enabled="false"/>
+                        property="detalref.photoFileRef" label="Фото детали" readOnly="true"/>
                 <fileStorageUploadField
                         id="DrawStorageUpload" dataContainer="specificationDc"
                         fileNameVisible="true"
-                        property="detalref.drawFileRef" label="Чертеж детали" enabled="false"/>
+                        property="detalref.drawFileRef" label="Чертеж детали" readOnly="true"/>
             </hbox>
             <hbox id="pictures">
                 <image text="Фото" dataContainer="specificationDc" property="detalref.photoFileRef" css="object-fit: contain; "
@@ -165,7 +116,7 @@
         <hbox>
             <textArea property="detalref.primDetal" label="Примечание детали" minWidth="40em"/>
             <textArea id="primSpecField" height="6em" property="primSpec" minWidth="40em"
-                      label="Примечение спецификации"/>
+                      label="Примечение сборки"/>
         </hbox>
         <hbox id="detailActions">
             <button id="saveAndCloseButton" action="saveAction"/>

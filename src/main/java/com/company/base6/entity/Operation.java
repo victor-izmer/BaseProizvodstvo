@@ -33,12 +33,12 @@ public class Operation {
     @Column(name = "DURATION_OP")
     private Float durationOp;
 
-    public void setTypeOperationRef(TypeOperationEnum typeOperationRef) {
+    public void setTypeOperationRef(TypeOperationTable typeOperationRef) {
         this.typeOperationRef = typeOperationRef == null ? null : typeOperationRef.getId();
     }
 
-    public TypeOperationEnum getTypeOperationRef() {
-        return typeOperationRef == null ? null : TypeOperationEnum.fromId(typeOperationRef);
+    public TypeOperationTable getTypeOperationRef() {
+        return typeOperationRef == null ? null : TypeOperationTable.fromId(typeOperationRef);
     }
 
     public void setDetailOut(Workpiece detailOut) {

@@ -74,33 +74,7 @@ public class RequestDetailView extends StandardDetailView<Request> {
 
     @Subscribe
     public void onBeforeShow(final BeforeShowEvent event) {
-        // final Long sumCount = dataManager.loadValue("select COUNT(b.price) from Basket b", Long.class).one();
-        //notifications.show("Сумма "+ sumCount);
         Request currentRequest=requestDc.getItem();
-        if(currentRequest.getScanInvoice()!= null){
-            String fileName=  currentRequest.getScanInvoice();
-            File f = new File(fileName);
-            //System.out.println(f.getName());
-            Integer ssTemp=f.getAbsolutePath().lastIndexOf("Счета поставщиков\\");
-            if (ssTemp != -1) {
-                String ss = f.getAbsolutePath().substring(ssTemp);
-
-                String fn = f.getAbsolutePath().substring(f.getAbsolutePath().lastIndexOf("\\") + 1);
-                //System.out.println(ss);
-                currentRequest.setScanInvoice(ss);
-                pdfFrame.setSrc(ss);
-                String encodedPath = ss.replaceAll(" ", "%20");
-
-                String next=encodedPath.replaceAll("\\\\","/");
-                FileRef ff= FileRef.fromString(encodedPath);
-                fileStorage.getStorageName()
-                        .toString()
-                        .replace("\\", "/");
-            }
-
-        } else{
-            //pdfFrame.setSrc(currentRequest.getFileInvoice().getPath()); // не работает. НЕ выдает картинку Could not navigate to 'fs
-        }
 
         if(currentRequest.getDateRequest()== null)
             getEditedEntity().setDateRequest(LocalDate.now());
@@ -108,31 +82,8 @@ public class RequestDetailView extends StandardDetailView<Request> {
             getEditedEntity().setDateControl(LocalDate.now().plusDays(5));
 
     }
-    @Autowired
-    private Notifications notifications;
-    private void openPDFInBrowser(String pdfPath) throws URISyntaxException, IOException {
-        Path absolutePath = Paths.get(pdfPath).toAbsolutePath();
-
-        UI.getCurrent().access(() -> {
-            try {
-                // 3. Открываем в браузере
-                Page page = UI.getCurrent().getPage();
-                page.executeJs("window.open($0)", pdfPath, "popup");
-            } catch (Exception e) {
-                notifications.show("Ошибка открытия изображения");
-            }
-        });
-    }
-    @Autowired
-    protected Metadata metadata;
 
 
-    protected void showNotification(String message) {
-        notifications.create(message)
-                .withType(Notifications.Type.WARNING)
-                .withCloseable(false)
-                .show();
-    }
     @Autowired
     private UiComponents uiComponents;
 

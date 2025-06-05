@@ -17,10 +17,7 @@ import io.jmix.flowui.component.validation.ValidationErrors;
 import io.jmix.flowui.kit.action.Action;
 import io.jmix.flowui.kit.action.ActionPerformedEvent;
 import io.jmix.flowui.kit.component.button.JmixButton;
-import io.jmix.flowui.model.CollectionContainer;
-import io.jmix.flowui.model.DataContext;
-import io.jmix.flowui.model.InstanceContainer;
-import io.jmix.flowui.model.InstanceLoader;
+import io.jmix.flowui.model.*;
 import io.jmix.flowui.view.*;
 
 @Route(value = "workpieces", layout = MainView.class)
@@ -33,8 +30,6 @@ public class WorkpieceListView extends StandardListView<Workpiece> {
     @ViewComponent
     private DataContext dataContext;
 
-    @ViewComponent
-    private CollectionContainer<Workpiece> workpiecesDc;
 
     @ViewComponent
     private InstanceContainer<Workpiece> workpieceDc;
@@ -53,6 +48,8 @@ public class WorkpieceListView extends StandardListView<Workpiece> {
 
     @ViewComponent
     private HorizontalLayout detailActions;
+    @ViewComponent
+    private CollectionLoader<Workpiece> workpiecesDl;
 
     @Subscribe
     public void onInit(final InitEvent event) {
@@ -65,7 +62,7 @@ public class WorkpieceListView extends StandardListView<Workpiece> {
 
     @Subscribe
     public void onBeforeShow(final BeforeShowEvent event) {
-        updateControls(false);
+        updateControls(true);
     }
 
     @Subscribe("workpiecesDataGrid.create")
@@ -81,29 +78,6 @@ public class WorkpieceListView extends StandardListView<Workpiece> {
         updateControls(true);
     }
 
-    @Subscribe("saveButton")
-    public void onSaveButtonClick(final ClickEvent<JmixButton> event) {
-        Workpiece item = workpieceDc.getItem();
-        ValidationErrors validationErrors = validateView(item);
-        if (!validationErrors.isEmpty()) {
-            ViewValidation viewValidation = getViewValidation();
-            viewValidation.showValidationErrors(validationErrors);
-            viewValidation.focusProblemComponent(validationErrors);
-            return;
-        }
-        dataContext.save();
-        workpiecesDc.replaceItem(item);
-        updateControls(false);
-    }
-
-    @Subscribe("cancelButton")
-    public void onCancelButtonClick(final ClickEvent<JmixButton> event) {
-        dataContext.clear();
-        workpieceDc.setItem(null);
-        workpieceDl.load();
-        updateControls(false);
-    }
-
     @Subscribe(id = "workpiecesDc", target = Target.DATA_CONTAINER)
     public void onWorkpiecesDcItemChange(final InstanceContainer.ItemChangeEvent<Workpiece> event) {
         Workpiece entity = event.getItem();
@@ -115,7 +89,7 @@ public class WorkpieceListView extends StandardListView<Workpiece> {
             workpieceDl.setEntityId(null);
             workpieceDc.setItem(null);
         }
-        updateControls(false);
+        updateControls(true);
     }
 
     protected ValidationErrors validateView(Workpiece entity) {
@@ -136,11 +110,34 @@ public class WorkpieceListView extends StandardListView<Workpiece> {
         });
 
         detailActions.setVisible(editing);
-        listLayout.setEnabled(!editing);
+        listLayout.setEnabled(editing);
         workpiecesDataGrid.getActions().forEach(Action::refreshState);
     }
 
     private ViewValidation getViewValidation() {
         return getApplicationContext().getBean(ViewValidation.class);
+    }
+
+    @Subscribe(id = "discardButton", subject = "clickListener")
+    public void onDiscardButtonClick(final ClickEvent<JmixButton> event) {
+        dataContext.clear();
+        workpieceDc.setItem(null);
+        workpieceDl.load();
+        updateControls(false);
+    }
+
+    @Subscribe(id = "selectButton", subject = "clickListener")
+    public void onSelectButtonClick(final ClickEvent<JmixButton> event) {
+        Workpiece item = workpieceDc.getItem();
+        ValidationErrors validationErrors = validateView(item);
+        if (!validationErrors.isEmpty()) {
+            ViewValidation viewValidation = getViewValidation();
+            viewValidation.showValidationErrors(validationErrors);
+            viewValidation.focusProblemComponent(validationErrors);
+            return;
+        }
+        dataContext.save();
+        //workpieceDc.replaceItem(item);
+        updateControls(false);
     }
 }

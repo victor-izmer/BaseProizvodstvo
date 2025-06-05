@@ -4,6 +4,14 @@
       title="msg://workpieceListView.title"
       focusComponent="workpiecesDataGrid">
     <data>
+        <instance id="workpieceDc"
+                  class="com.company.base6.entity.Workpiece">
+            <fetchPlan extends="_base">
+                <property name="operationRef" fetchPlan="_base"/>
+                <property name="typeref" fetchPlan="_base"/>
+            </fetchPlan>
+            <loader id="workpieceDl"/>
+        </instance>
         <collection id="workpiecesDc"
                     class="com.company.base6.entity.Workpiece">
             <fetchPlan extends="_base">
@@ -49,24 +57,24 @@
                               hierarchyProperty="parentref"
                               columnReorderingAllowed="true" showOrphans="true" themeNames="compact"
                               allRowsVisible="true">
-            <actions>
-                <action id="create" type="list_create"/>
-                <action id="edit" type="list_edit"/>
-                <action id="remove" type="list_remove"/>
-            </actions>
-            <columns resizable="true">
-                <column property="detalref.fullDescription" />
-                <column property="fullSkolko" textAlign="CENTER" sortable="false"/>
-                <column property="primSpec" />
-                <column property="id"/>
-            </columns>
-        </treeDataGrid>
+                    <actions>
+                        <action id="create" type="list_create"/>
+                        <action id="edit" type="list_edit"/>
+                        <action id="remove" type="list_remove"/>
+                    </actions>
+                    <columns resizable="true">
+                        <column property="detalref.fullDescription" />
+                        <column property="fullSkolko" textAlign="CENTER" sortable="false"/>
+                        <column property="primSpec" />
+                        <column property="id"/>
+                    </columns>
+                </treeDataGrid>
             </vbox>
-            <vbox>
+            <vbox id="listLayout">
                 <hbox id="buttonsPanel" classNames="buttons-panel">
-                    <button id="createButton" action="workpiecesDataGrid.createAction"/>
-                    <button id="editButton" action="workpiecesDataGrid.editAction"/>
-                    <button id="removeButton" action="workpiecesDataGrid.removeAction"/>
+                    <button id="createButton" action="workpiecesDataGrid.create"/>
+                    <button id="editButton" action="workpiecesDataGrid.edit"/>
+                    <button id="removeButton" action="workpiecesDataGrid.remove"/>
                     <simplePagination id="pagination" dataLoader="workpiecesDl"/>
                 </hbox>
                 <dataGrid id="workpiecesDataGrid"
@@ -74,17 +82,17 @@
                           dataContainer="workpiecesDc"
                           columnReorderingAllowed="true" themeNames="compact">
                     <actions>
-                        <action id="createAction" type="list_create">
+                        <action id="create" type="list_create">
                             <properties>
                                 <property name="openMode" value="DIALOG"/>
                             </properties>
                         </action>
-                        <action id="editAction" type="list_edit">
+                        <action id="edit" type="list_edit">
                             <properties>
                                 <property name="openMode" value="DIALOG"/>
                             </properties>
                         </action>
-                        <action id="removeAction" type="list_remove"/>
+                        <action id="remove" type="list_remove"/>
                     </actions>
                     <columns resizable="true">
                         <column property="fullDescription"/>
@@ -92,10 +100,10 @@
                         <column property="priceLast"/>
                         <column property="priceLastNDS"/>
                     </columns>
-            </dataGrid>
+                </dataGrid>
             </vbox>
         </formLayout>
-        <hbox id="lookupActions" visible="false">
+        <hbox id="detailActions" visible="false">
             <button id="selectButton" action="selectAction"/>
             <button id="discardButton" action="discardAction"/>
         </hbox>

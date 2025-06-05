@@ -51,7 +51,7 @@
     </facets>
     <layout padding="false">
         <formLayout id="layoutWrapper" classNames="master-detail-layout">
-            <vbox id="treelistLayout">
+            <vbox id="listLayout">
                 <treeDataGrid id="specificationsDataGrid"
                               dataContainer="specificationsDc"
                               hierarchyProperty="parentref"
@@ -108,31 +108,31 @@
                     </columns>
                 </dataGrid>
 
-                <hbox id="materialBox" enabled="false">
+                <hbox id="materialBox" spacing="false">
                     <textField id="materialrefField" property="detalref.materialref.description" label="Материал"
-                               dataContainer="specificationDetalDc"/>
-                    <textField id="параметрРазмераField" property="detalref.parametrsizeref" maxWidth="110px"
-                               label="Размер" dataContainer="specificationDetalDc"/>
-                    <textField id="размерField" property="detalref.size" maxWidth="70px" label="мм"
-                               dataContainer="specificationDetalDc"/>
-                    <textField id="времяИзготовленияField" property="detalref.timeProduce" maxWidth="100px"
-                               label="мин" dataContainer="specificationDetalDc"/>
+                               dataContainer="specificationDetalDc" readOnly="true"/>
+                    <textField id="параметрРазмераField" property="detalref.parametrsizeref"
+                               dataContainer="specificationDetalDc" readOnly="true"/>
+                    <textField id="размерField" property="detalref.size" label="мм"
+                               dataContainer="specificationDetalDc" readOnly="true"/>
+                    <textField id="времяИзготовленияField" property="detalref.timeProduce"
+                               label="мин" dataContainer="specificationDetalDc" readOnly="true"/>
                 </hbox>
                 <hbox id="primBox">
-                    <textArea property="detalref.primDetal" label="Примечание детали" minWidth="100%"/>
-                    <textArea id="primSpecField" property="primSpec" label="Примечание спецификации" minWidth="100%"/>
+                    <textArea property="detalref.primDetal" label="Примечание детали"/>
+                    <richTextEditor id="primSpecField" property="primSpec" label="Примечание сборки"/>
                 </hbox>
                 <hbox id="formBox">
                     <fileStorageUploadField
                             id="PhotoStorageUpload" dataContainer="specificationDetalDc"
                             fileNameVisible="true"
                             property="detalref.photoFileRef"
-                    />
+                            readOnly="true"/>
                     <fileStorageUploadField
                             id="DrawStorageUpload" dataContainer="specificationDetalDc"
                             fileNameVisible="true"
                             property="detalref.drawFileRef"
-                    />
+                            readOnly="true"/>
                 </hbox>
                 <hbox id="picturesBox">
                     <image text="Фото" dataContainer="specificationDetalDc" property="detalref.photoFileRef" css="object-fit: contain; "

@@ -10,7 +10,7 @@
         <item view="Department.list" title="msg://com.company.base6.view.department/departmentListView.title"/>
         <item view="Step.list" title="msg://com.company.base6.view.step/stepListView.title"/>
         <item view="MyOnboardingView" title="msg://com.company.base6.view.myonboarding/myOnboardingView.title"/>
-        <item view="NewsItem.list" title="msg://com.company.base6.view.newsitem/newsItemListView.title"/>
+
     </menu>
 
 </menu-config>
