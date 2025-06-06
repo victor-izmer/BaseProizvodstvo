@@ -114,9 +114,10 @@
           </vbox>
         </formLayout>
         <hbox>
-            <textArea property="detalref.primDetal" label="Примечание детали" minWidth="40em"/>
-            <textArea id="primSpecField" height="6em" property="primSpec" minWidth="40em"
-                      label="Примечение сборки"/>
+            <richTextEditor property="detalref.primDetal" label="Примечание детали" minWidth="40em"
+                            themeNames="compact" dataContainer="specificationDc"/>
+            <richTextEditor id="primSpecField" height="6em" property="primSpec" minWidth="40em"
+                            label="Примечение сборки" themeNames="compact" dataContainer="specificationDc"/>
         </hbox>
         <hbox id="detailActions">
             <button id="saveAndCloseButton" action="saveAction"/>

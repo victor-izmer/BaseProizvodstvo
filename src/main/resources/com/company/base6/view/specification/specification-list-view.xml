@@ -119,8 +119,10 @@
                                label="мин" dataContainer="specificationDetalDc" readOnly="true"/>
                 </hbox>
                 <hbox id="primBox">
-                    <textArea property="detalref.primDetal" label="Примечание детали"/>
-                    <richTextEditor id="primSpecField" property="primSpec" label="Примечание сборки"/>
+                    <richTextEditor property="detalref.primDetal" label="Примечание детали" themeNames="compact"
+                                    dataContainer="specificationDetalDc"/>
+                    <richTextEditor id="primSpecField" property="primSpec" label="Примечание сборки"
+                                    themeNames="compact" dataContainer="specificationDetalDc"/>
                 </hbox>
                 <hbox id="formBox">
                     <fileStorageUploadField
