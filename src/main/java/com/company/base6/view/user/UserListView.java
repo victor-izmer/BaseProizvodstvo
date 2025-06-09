@@ -9,6 +9,7 @@ import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.StreamResource;
 import io.jmix.core.FileRef;
 import io.jmix.core.FileStorage;
+import io.jmix.core.FileStorageLocator;
 import io.jmix.flowui.UiComponents;
 import io.jmix.flowui.component.grid.DataGrid;
 import io.jmix.flowui.view.*;
@@ -28,7 +29,7 @@ public class UserListView extends StandardListView<User> {
     private UiComponents uiComponents;
 
     @Autowired
-    private FileStorage fileStorage;
+    private FileStorageLocator fileStorageLocator;
 
     @Supply(to = "usersDataGrid.picture", subject = "renderer")
     private Renderer<User> usersDataGridPictureRenderer() {
@@ -40,7 +41,7 @@ public class UserListView extends StandardListView<User> {
                 image.setHeight("30px");
                 StreamResource streamResource = new StreamResource(
                         fileRef.getFileName(),
-                        () -> fileStorage.openStream(fileRef));
+                        () -> fileStorageLocator.getDefault().openStream(fileRef));
                 image.setSrc(streamResource);
                 image.setClassName("user-picture");
 

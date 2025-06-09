@@ -1,30 +1,18 @@
 package com.company.base6.view.workpiece;
 
-import com.company.base6.entity.Request;
+import com.company.base6.app.AdditionalFileStorageProcessor;
 import com.company.base6.entity.Workpiece;
 import com.company.base6.view.main.MainView;
 import com.vaadin.flow.component.ClickEvent;
 import com.vaadin.flow.component.UI;
-import com.vaadin.flow.component.html.H4;
-import com.vaadin.flow.component.html.Image;
-import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.component.page.Page;
 import com.vaadin.flow.router.Route;
-import com.vaadin.flow.server.StreamResource;
-import com.vaadin.flow.theme.lumo.LumoUtility;
-import io.jmix.core.FileRef;
-import io.jmix.core.FileStorage;
 import io.jmix.flowui.Notifications;
-import io.jmix.flowui.component.image.JmixImage;
-import io.jmix.flowui.kit.component.button.JmixButton;
-import io.jmix.flowui.view.*;
 import io.jmix.flowui.UiComponents;
+import io.jmix.flowui.component.image.JmixImage;
+import io.jmix.flowui.component.upload.FileStorageUploadField;
+import io.jmix.flowui.kit.component.upload.event.FileUploadSucceededEvent;
+import io.jmix.flowui.view.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-
-import java.io.Serializable;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 
 @Route(value = "workpieces/:id", layout = MainView.class)
 @ViewController(id = "Workpiece.detail")
@@ -36,10 +24,31 @@ public class WorkpieceDetailView extends StandardDetailView<Workpiece> {
     @Autowired
     private UiComponents uiComponents;
     @Autowired
-    private FileStorage fileStorage;
-    @Autowired
     private Notifications notifications;
+    @Autowired
+    private AdditionalFileStorageProcessor additionalFileStorageProcessor;
 
+    @Subscribe("PhotoStorageUpload")
+    public void onPhotoStorageUploadFileUploadSucceeded(final FileUploadSucceededEvent<FileStorageUploadField> event) {
+        additionalFileStorageProcessor.uploadFile("workpiecefs", event.getReceiver(), event.getSource(),
+                () -> String.valueOf(getEditedEntity().getId()));
+    }
+
+    @Subscribe("DrawStorageUpload")
+    public void onDrawStorageUploadFileUploadSucceeded(final FileUploadSucceededEvent<FileStorageUploadField> event) {
+        additionalFileStorageProcessor.uploadFile("workpiecefs", event.getReceiver(), event.getSource(),
+                () -> String.valueOf(getEditedEntity().getId()));
+    }
+
+    @Subscribe(id = "photo", subject = "clickListener")
+    public void onPhotoClick(final ClickEvent<JmixImage<?>> event) {
+        UI.getCurrent().getPage().open(event.getSource().getSrc());
+    }
+
+    @Subscribe(id = "graph", subject = "clickListener")
+    public void onGraphClick(final ClickEvent<JmixImage<?>> event) {
+        UI.getCurrent().getPage().open(event.getSource().getSrc());
+    }
 
 
 //    @Subscribe

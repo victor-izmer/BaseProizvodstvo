@@ -66,6 +66,7 @@
             </vbox>
             <vbox>
                 <fileStorageUploadField id="fieldFileInvoice"
+                                        fileStoragePutMode="MANUAL"
                                         dataContainer="requestDc"
                                         property="fileInvoice"
                                         dropAllowed="true"

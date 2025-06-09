@@ -28,7 +28,7 @@
             <fetchPlan extends="_base"/>
             <loader id="operationsDl" readOnly="true">
                 <query>
-                    <![CDATA[select e from Operation e where e.detailOut = :detalOut1]]>
+                    <![CDATA[select e from Operation e where e.detailOut = :container_workpiecesDc]]>
                 </query>
             </loader>
         </collection>
@@ -53,16 +53,15 @@
     <layout>
         <formLayout id="form" dataContainer="specificationDc">
           <vbox>
-            <hbox id="parentAndTypeBox">
-                <textField dataContainer="specificationDc" property="parentref.detalref"
-                           readOnly="true" label="Входит в"/>
+            <hbox id="parentAndTypeBox" alignItems="BASELINE">
+                <nativeLabel text="Входит в" setFor="detalRefField" classNames="label"/>
+                <textField id="detalRefField" dataContainer="specificationDc" property="parentref.detalref"
+                           readOnly="true"/>
             </hbox>
             <hbox id="descriptionBox">
-                <textField dataContainer="specificationDc" property="detalref.typeref" readOnly="true"/>
                 <entityComboBox id="workpiecesComboBox2"
                                 itemsContainer="workpiecesDc"
-                                dataContainer="specificationDc"
-                                property="detalref" label="Деталь" width="75%">
+                                dataContainer="specificationDc" property="detalref" width="75%">
                     <actions>
                         <action id="entityClear" type="entity_clear"/>
                         <action id="entityLookup" type="entity_lookup"/>
@@ -75,16 +74,18 @@
                                 width="15%"
                                 itemsContainer="unitMeasuresDc" label="ЕдИзм"/>
             </hbox>
-            <hbox id="MaterialArea" colspan="0" boxSizing="BORDER_BOX" spacing="false">
+            <hbox id="MaterialArea" colspan="0" boxSizing="BORDER_BOX" spacing="false" alignItems="BASELINE">
                 <textField dataContainer="specificationDc" property="detalref.materialref" readOnly="true"/>
                 <textField dataContainer="specificationDc" property="detalref.parametrsizeref" readOnly="true"/>
-                <textField dataContainer="specificationDc" property="detalref.size" width="15%" label="мм"
-                           readOnly="true"/>
+                <textField dataContainer="specificationDc" property="detalref.size" width="15%" readOnly="true"/>
+                <span text="мм" classNames="label ms-xs"/>
             </hbox>
-            <vbox>
+            <vbox padding="false">
                 <dataGrid id="operationsDataGrid" dataContainer="operationsDc" themeNames="compact"
+                          width="100%"
+                          minHeight="20em"
                           allRowsVisible="true" enabled="false">
-                    <columns resizable="true">
+                    <columns resizable="true" sortable="false">
                         <column property="typeOperationRef"/>
                         <column property="durationOp"/>
                         <column property="priceOp"/>
@@ -94,29 +95,31 @@
                 </dataGrid>
             </vbox>
           </vbox>
-          <vbox>
-            <hbox id="pictureName">
+          <hbox padding="false">
+            <vbox id="photoWrapper" width="100%">
                 <fileStorageUploadField
                         id="PhotoStorageUpload" dataContainer="specificationDc"
                         fileNameVisible="true"
                         property="detalref.photoFileRef" label="Фото детали" readOnly="true"/>
+                <image id="photo" text="Фото" dataContainer="specificationDc" property="detalref.photoFileRef"
+                       css="object-fit: contain; "
+                       width="100%"/>
+            </vbox>
+            <vbox id="drawWrapper" width="100%">
                 <fileStorageUploadField
                         id="DrawStorageUpload" dataContainer="specificationDc"
                         fileNameVisible="true"
                         property="detalref.drawFileRef" label="Чертеж детали" readOnly="true"/>
-            </hbox>
-            <hbox id="pictures">
-                <image text="Фото" dataContainer="specificationDc" property="detalref.photoFileRef" css="object-fit: contain; "
-                       width="45%"/>
-                <image text="Чертеж" dataContainer="specificationDc" property="detalref.drawFileRef" css="object-fit: contain; "
-                       width="45%"/>
-            </hbox>
-          </vbox>
+                <image id="graph" text="Чертеж" dataContainer="specificationDc" property="detalref.drawFileRef"
+                       css="object-fit: contain; "
+                       width="100%"/>
+            </vbox>
+          </hbox>
         </formLayout>
-        <hbox>
-            <textArea property="detalref.primDetal" label="Примечание детали" minWidth="40em"/>
-            <textArea id="primSpecField" height="6em" property="primSpec" minWidth="40em"
-                      label="Примечение сборки"/>
+        <hbox width="100%" padding="false">
+            <textArea property="detalref.primDetal" label="Примечание детали" minWidth="40em" width="100%"/>
+            <richTextEditor id="primSpecField" property="primSpec" minWidth="40em" width="100%"
+                            label="Примечение сборки"/>
         </hbox>
         <hbox id="detailActions">
             <button id="saveAndCloseButton" action="saveAction"/>
