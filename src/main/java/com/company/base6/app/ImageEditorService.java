@@ -3,6 +3,7 @@ package com.company.base6.app;
 import io.jmix.core.DataManager;
 import io.jmix.core.FileRef;
 import io.jmix.core.FileStorage;
+import io.jmix.core.FileStorageLocator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
@@ -14,17 +15,20 @@ import java.io.*;
 @Service
 public class ImageEditorService {
 
-    @Autowired
-    private FileStorage fileStorage;
+    private final FileStorageLocator fileStorageLocator;
 
     @Autowired
     private DataManager dataManager;
+
+    public ImageEditorService(FileStorageLocator fileStorageLocator) {
+        this.fileStorageLocator = fileStorageLocator;
+    }
 
     // Метод для изменения размера изображения
     public FileDescriptor resizeImage(FileRef originalDescriptor, int width, int height) throws IOException {
         // 1. Загрузить оригинальное изображение
         BufferedImage originalImage;
-        try (InputStream is = fileStorage.openStream(originalDescriptor)) {
+        try (InputStream is = fileStorageLocator.getDefault().openStream(originalDescriptor)) {
             originalImage = ImageIO.read(is);
         }
 

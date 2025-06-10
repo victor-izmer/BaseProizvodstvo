@@ -1,67 +1,42 @@
 package com.company.base6.view.specification;
 
 
-
-import com.company.base6.entity.*;
+import com.company.base6.entity.Specification;
 import com.company.base6.view.main.MainView;
-import com.vaadin.flow.component.*;
+import com.vaadin.flow.component.ClickEvent;
+import com.vaadin.flow.component.HasValueAndElement;
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.formlayout.FormLayout;
-import com.vaadin.flow.component.grid.CellFocusEvent;
 import com.vaadin.flow.component.grid.ItemClickEvent;
-import com.vaadin.flow.component.grid.ItemDoubleClickEvent;
-import com.vaadin.flow.component.grid.dnd.GridDragEndEvent;
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.component.page.Page;
-import com.vaadin.flow.component.treegrid.CollapseEvent;
 import com.vaadin.flow.data.renderer.ComponentRenderer;
 import com.vaadin.flow.data.renderer.Renderer;
-import com.vaadin.flow.data.selection.SelectionEvent;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.StreamResource;
-
-import io.jmix.core.*;
+import io.jmix.core.DataManager;
+import io.jmix.core.FileRef;
+import io.jmix.core.FileStorageLocator;
+import io.jmix.core.Metadata;
 import io.jmix.core.validation.group.UiCrossFieldChecks;
 import io.jmix.flowui.UiComponents;
 import io.jmix.flowui.action.SecuredBaseAction;
 import io.jmix.flowui.action.list.CreateAction;
 import io.jmix.flowui.action.list.EditAction;
 import io.jmix.flowui.component.UiComponentUtils;
-import io.jmix.flowui.component.checkbox.JmixCheckbox;
 import io.jmix.flowui.component.grid.DataGrid;
 import io.jmix.flowui.component.grid.TreeDataGrid;
 import io.jmix.flowui.component.image.JmixImage;
 import io.jmix.flowui.component.validation.ValidationErrors;
-import io.jmix.flowui.download.DownloadDataProvider;
-import io.jmix.flowui.download.DownloadFormat;
-import io.jmix.flowui.download.Downloader;
 import io.jmix.flowui.kit.action.Action;
 import io.jmix.flowui.kit.action.ActionPerformedEvent;
-import io.jmix.flowui.kit.component.button.JmixButton;
 import io.jmix.flowui.model.*;
-import io.jmix.flowui.upload.TemporaryStorage;
 import io.jmix.flowui.view.*;
-import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.awt.*;
-import java.io.*;
-import java.net.URISyntaxException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
-
-import io.jmix.flowui.Notifications;
-import com.vaadin.flow.component.notification.Notification;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.Resource;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-
-import javax.annotation.processing.Filer;
+import java.util.List;
+import java.util.Objects;
 
 
 @Route(value = "specifications", layout = MainView.class)
@@ -115,6 +90,11 @@ public class SpecificationListView extends StandardListView<Specification> {
     @ViewComponent
     private CollectionLoader<Specification> specificationsDl;
 
+    @Autowired
+    private FileStorageLocator fileStorageLocator;
+    @Autowired
+    private DataManager dataManager;
+
     @Subscribe
     public void onInit(final InitEvent event) {
         specificationsDataGrid.getActions().forEach(action -> {
@@ -123,14 +103,14 @@ public class SpecificationListView extends StandardListView<Specification> {
             }
         });
 
-    // Отслеживаем событие выбора элемента в TreeDataGrid
-    specificationsDataGrid.addCellFocusListener(selectionEvent -> {
-        if (selectionEvent.getItem().isPresent()) {
-            Specification selectedSpec = selectionEvent.getItem().orElse(null);
-            onSpecificationsDataGridCellFocus(selectedSpec);
-        }
-    });
-    // сохранением позиции скролла
+        // Отслеживаем событие выбора элемента в TreeDataGrid
+        specificationsDataGrid.addSelectionListener(selectionEvent -> {
+            if (selectionEvent.getFirstSelectedItem().isPresent()) {
+                Specification selectedSpec = selectionEvent.getFirstSelectedItem().orElse(null);
+                onSpecificationsDataGridCellFocus(selectedSpec);
+            }
+        });
+        // сохранением позиции скролла
         specificationsDataGrid.addSelectionListener(selectionEvent -> {
             // Сохраняем текущую позицию скролла перед обновлением
             scrollPosition = specificationsDataGrid.getElement().getProperty("_scrollTop", 0.0);
@@ -140,12 +120,13 @@ public class SpecificationListView extends StandardListView<Specification> {
         specificationsDataGrid.addCellFocusListener(updaterEvent -> {
             specificationsDataGrid.scrollToEnd();
         });
-        
+
     }
 
 
     @ViewComponent
     private DataGrid<Specification> childSpecification;
+
     @Subscribe("childSpecification.create")
     public void onchildSpecificationCreate(final ActionPerformedEvent event) {
         Specification parentSpec = specificationsDataGrid.getSingleSelectedItem();
@@ -160,9 +141,9 @@ public class SpecificationListView extends StandardListView<Specification> {
 
             // Открыть редактор
             childSpecificationEdit.execute();
-                // Обновляем контейнер
-                specificationDetalDl.load();
-                specificationsDl.load();
+            // Обновляем контейнер
+            specificationDetalDl.load();
+            specificationsDl.load();
 
         }
     }
@@ -241,13 +222,13 @@ public class SpecificationListView extends StandardListView<Specification> {
     @Subscribe("specificationsDataGrid")
     public void onSpecificationsDataGridCellFocus(Specification selectedSpec) {
         //if (selectedSpec != null && isParentSpecification(selectedSpec)) {
-            // Если выбрана родительская деталь, загружаем дочерние элементы
-            specificationDetalDl.setParameter("detal", selectedSpec.getId());
-            specificationDetalDl.load();
+        // Если выбрана родительская деталь, загружаем дочерние элементы
+        specificationDetalDl.setParameter("detal", selectedSpec.getId());
+        specificationDetalDl.load();
         //} else {
-            // Очищаем таблицу, если выбрана обычная деталь
+        // Очищаем таблицу, если выбрана обычная деталь
         //    specificationDetalDl.setParameter("detal", selectedSpec.getId());
-            // specificationDetalDl.removeParameter("detal");
+        // specificationDetalDl.removeParameter("detal");
         //    specificationDetalDl.load();
         //}
 
@@ -259,16 +240,6 @@ public class SpecificationListView extends StandardListView<Specification> {
 
     }
 
-    @Autowired
-    private FileStorageLocator fileStorageLocator;
-
-
-
-
-
-    @Autowired
-    private FileStorage fileStorage;
-
     @Supply(to = "childSpecification.[detalref.typeref.picture]", subject = "renderer")
     private Renderer<Specification> childSpecificationDetalrefTyperefPictureRenderer() {
         return new ComponentRenderer<>(specification -> {
@@ -279,7 +250,7 @@ public class SpecificationListView extends StandardListView<Specification> {
                 image.setHeight("30px");
                 StreamResource streamResource = new StreamResource(
                         fileRef.getFileName(),
-                        () -> fileStorage.openStream(fileRef));
+                        () -> fileStorageLocator.getDefault().openStream(fileRef));
                 image.setSrc(streamResource);
                 image.setClassName("user-picture");
 
@@ -288,6 +259,34 @@ public class SpecificationListView extends StandardListView<Specification> {
                 return null;
             }
         });
+    }
+
+    @Subscribe(id = "photo", subject = "clickListener")
+    public void onPhotoClick(final ClickEvent<JmixImage<?>> event) {
+        UI.getCurrent().getPage().open(event.getSource().getSrc());
+    }
+
+    @Subscribe(id = "graph", subject = "clickListener")
+    public void onGraphClick(final ClickEvent<JmixImage<?>> event) {
+        UI.getCurrent().getPage().open(event.getSource().getSrc());
+    }
+
+    @Install(to = "childSpecification.create", subject = "afterSaveHandler")
+    private void childSpecificationCreateAfterSaveHandler(final Specification specification) {
+        Specification selectedItem = specificationsDataGrid.getSingleSelectedItem();
+        if (selectedItem == null) {
+            return;
+        }
+
+        List<Specification> details = specificationDetalDc.getItems();
+        Float priceDetalAssemble = 0f;
+        for (Specification detail : details) {
+            priceDetalAssemble += Objects.requireNonNullElse(detail.getDetalref().getPriceLast(), 0f);
+        }
+
+        selectedItem.setPriceDetalAssemble(priceDetalAssemble);
+        Specification saved = dataManager.save(selectedItem);
+        specificationsDc.replaceItem(saved);
     }
 
 //    @Supply(to = "childSpecification.[detalref.priceLastNDS]", subject = "renderer")

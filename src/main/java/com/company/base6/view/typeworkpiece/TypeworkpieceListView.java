@@ -17,6 +17,7 @@ import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.StreamResource;
 import io.jmix.core.FileRef;
 import io.jmix.core.FileStorage;
+import io.jmix.core.FileStorageLocator;
 import io.jmix.core.validation.group.UiCrossFieldChecks;
 import io.jmix.flowui.UiComponents;
 import io.jmix.flowui.action.SecuredBaseAction;
@@ -67,6 +68,8 @@ public class TypeworkpieceListView extends StandardListView<Typeworkpiece> {
     private HorizontalLayout detailActions;
     @Autowired
     private UiComponents uiComponents;
+    @Autowired
+    private FileStorageLocator fileStorageLocator;
 
     @Subscribe
     public void onInit(final InitEvent event) {
@@ -161,10 +164,6 @@ public class TypeworkpieceListView extends StandardListView<Typeworkpiece> {
     @Autowired
     private Downloader downloader;
 
-
-    @Autowired
-    private FileStorage fileStorage;
-
     @Supply(to = "typeworkpiecesDataGrid.picture", subject = "renderer")
     private Renderer<Typeworkpiece> typeworkpiecesDataGridPictureRenderer() {
         return new ComponentRenderer<>(typeworkpiece -> {
@@ -175,7 +174,7 @@ public class TypeworkpieceListView extends StandardListView<Typeworkpiece> {
                 image.setHeight("30px");
                 StreamResource streamResource = new StreamResource(
                         fileRef.getFileName(),
-                        () -> fileStorage.openStream(fileRef));
+                        () -> fileStorageLocator.getDefault().openStream(fileRef));
                 image.setSrc(streamResource);
                 image.setClassName("user-picture");
 

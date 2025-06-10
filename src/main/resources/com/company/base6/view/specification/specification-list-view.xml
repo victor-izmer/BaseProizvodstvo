@@ -36,7 +36,11 @@
         <collection id="specificationDetalDc" class="com.company.base6.entity.Specification">
             <fetchPlan extends="_base">
                 <property name="parentref" fetchPlan="_base"/>
-                <property name="detalref" fetchPlan="_base"/>
+                <property name="detalref" fetchPlan="_base">
+                    <property name="typeref" fetchPlan="_base">
+                        <property name="picture"/>
+                    </property>
+                </property>
             </fetchPlan>
             <loader id="specificationDetalDl" readOnly="true">
                 <query>
@@ -49,13 +53,14 @@
         <dataLoadCoordinator auto="true"/>
         <settings auto="true"/>
     </facets>
-    <layout padding="false">
-        <formLayout id="layoutWrapper" classNames="master-detail-layout">
-            <vbox id="listLayout">
+    <layout classNames="specification-view-wrapper">
+        <hbox padding="false" width="100%" height="100%" classNames="specification-list-wrapper">
+            <vbox id="listLayout" width="100%" height="100%" padding="false">
                 <treeDataGrid id="specificationsDataGrid"
                               dataContainer="specificationsDc"
                               hierarchyProperty="parentref"
-                              columnReorderingAllowed="true" showOrphans="true" themeNames="compact"
+                              columnReorderingAllowed="true"
+                              showOrphans="true" themeNames="compact"
                               allRowsVisible="true">
                     <actions>
                         <action id="create" type="list_create"/>
@@ -74,7 +79,7 @@
                     </columns>
                 </treeDataGrid>
             </vbox>
-            <vbox id="detailsLayout">
+            <vbox id="detailsLayout" padding="false">
                 <hbox id="buttonsPanelchild" classNames="buttons-panel">
                     <button id="createButtonchild" action="childSpecification.create"/>
                     <button id="editButtonchild" action="childSpecification.edit"/>
@@ -83,8 +88,8 @@
                 <dataGrid id="childSpecification"
                           dataContainer="specificationDetalDc"
                           aggregationPosition="TOP"
-                          columnReorderingAllowed="true"
-                          allRowsVisible="true">
+                          minHeight="20em"
+                          columnReorderingAllowed="true">
                     <actions>
                         <action id="create" type="list_create">
                             <properties>
@@ -108,7 +113,7 @@
                     </columns>
                 </dataGrid>
 
-                <hbox id="materialBox" spacing="false">
+                <hbox id="materialBox" spacing="false" alignItems="BASELINE">
                     <textField id="materialrefField" property="detalref.materialref.description" label="Материал"
                                dataContainer="specificationDetalDc" readOnly="true"/>
                     <textField id="параметрРазмераField" property="detalref.parametrsizeref"
@@ -118,12 +123,21 @@
                     <textField id="времяИзготовленияField" property="detalref.timeProduce"
                                label="мин" dataContainer="specificationDetalDc" readOnly="true"/>
                 </hbox>
-                <hbox id="primBox">
-                    <richTextEditor property="detalref.primDetal" label="Примечание детали" themeNames="compact"
-                                    dataContainer="specificationDetalDc"/>
-                    <richTextEditor id="primSpecField" property="primSpec" label="Примечание сборки"
-                                    themeNames="compact" dataContainer="specificationDetalDc"/>
+
+                <hbox padding="false">
+                    <textField dataContainer="specificationDetalDc" property="totalPrice"
+                    label="msg://com.company.base6.entity/Specification.totalPrice"/>
                 </hbox>
+                <vbox id="primBox" padding="false">
+                    <textArea width="100%"
+                              dataContainer="specificationDetalDc" property="detalref.primDetal"
+                              minHeight="10em"
+                              label="Примечание детали"/>
+                    <richTextEditor id="primSpecField" width="100%"
+                                    minHeight="15em"
+                                    dataContainer="specificationDetalDc" property="primSpec"
+                                    label="Примечание сборки"/>
+                </vbox>
                 <hbox id="formBox">
                     <fileStorageUploadField
                             id="PhotoStorageUpload" dataContainer="specificationDetalDc"
@@ -137,13 +151,14 @@
                             readOnly="true"/>
                 </hbox>
                 <hbox id="picturesBox">
-                    <image text="Фото" dataContainer="specificationDetalDc" property="detalref.photoFileRef" css="object-fit: contain; "
+                    <image id="photo" text="Фото" dataContainer="specificationDetalDc" property="detalref.photoFileRef"
+                           css="object-fit: contain; "
                            width="30%"/>
-                    <image text="Чертеж" dataContainer="specificationDetalDc" property="detalref.drawFileRef" css="object-fit: contain; "
+                    <image id="graph" text="Чертеж" dataContainer="specificationDetalDc" property="detalref.drawFileRef"
+                           css="object-fit: contain; "
                            width="30%"/>
                 </hbox>
             </vbox>
-        </formLayout>
-
+        </hbox>
     </layout>
 </view>

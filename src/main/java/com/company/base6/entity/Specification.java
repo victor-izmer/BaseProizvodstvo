@@ -1,15 +1,15 @@
 package com.company.base6.entity;
 
-import com.company.base6.DependsOnProperties;
 import io.jmix.core.DeletePolicy;
 import io.jmix.core.entity.annotation.OnDeleteInverse;
+import io.jmix.core.metamodel.annotation.DependsOnProperties;
 import io.jmix.core.metamodel.annotation.InstanceName;
 import io.jmix.core.metamodel.annotation.JmixEntity;
 import io.jmix.core.metamodel.annotation.JmixProperty;
-import io.jmix.flowui.view.StandardDetailView;
-import io.jmix.flowui.view.Subscribe;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.PositiveOrZero;
+
+import java.util.Objects;
 
 @JmixEntity
 @Entity
@@ -54,6 +54,12 @@ public class Specification {
     @Column(name = "PRICE_DETAL_ASSEMBLE")
     private Float priceDetalAssemble;
 
+    @JmixProperty
+    @DependsOnProperties({"priceDetalAssemble", "priceDetalOperation"})
+    public Float getTotalPrice() {
+        return Objects.requireNonNullElse(priceDetalOperation, 0f) +
+                Objects.requireNonNullElse(priceDetalAssemble, 0f);
+    }
 
 
     public Float getPriceDetalAssemble() {

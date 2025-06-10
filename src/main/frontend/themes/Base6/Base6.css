@@ -5,3 +5,39 @@
 vaadin-grid.onboarding-steps::part(overdue-step) {
     color: red;
 }
+
+html {
+  --vaadin-input-field-border-width: 1px;
+  --vaadin-input-field-border-color: black;
+  --vaadin-input-field-readonly-border: 1px dashed var(--lumo-contrast)
+}
+
+.specification-list-wrapper {
+    flex-direction: column;
+}
+
+.specification-view-wrapper {
+    container-type: inline-size;
+    container-name: specification-view-wrapper;
+}
+
+@container specification-view-wrapper (min-width: 65em) {
+
+    .specification-list-wrapper {
+        flex-direction: row;
+    }
+}
+
+.label {
+    font-family: var(--lumo-font-family);
+    color: var(--vaadin-input-field-label-color, var(--lumo-secondary-text-color));
+    font-weight: var(--vaadin-input-field-label-font-weight, 500);
+    font-size: var(--vaadin-input-field-label-font-size, var(--lumo-font-size-s));
+}
+
+jmix-rich-text-editor .jmix-rich-text-editor-toolbar [class~='toolbar-button-strike'],
+jmix-rich-text-editor .jmix-rich-text-editor-toolbar [class~='toolbar-group-heading'],
+jmix-rich-text-editor .jmix-rich-text-editor-toolbar [class~='toolbar-group-glyph-transformation'],
+jmix-rich-text-editor .jmix-rich-text-editor-toolbar [class~='toolbar-group-alignment'] {
+    display: none;
+}

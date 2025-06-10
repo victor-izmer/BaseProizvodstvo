@@ -123,6 +123,7 @@
                 <hbox>
                     <fileStorageUploadField
                             id="PhotoStorageUpload" dataContainer="workpieceDc"
+                            fileStoragePutMode="MANUAL"
                             dropAllowed="true"
                             clearButtonVisible="true"
                             fileNameVisible="true"
@@ -130,6 +131,7 @@
                             property="photoFileRef" label="Фото детали"/>
                     <fileStorageUploadField
                             id="DrawStorageUpload" dataContainer="workpieceDc"
+                            fileStoragePutMode="MANUAL"
                             dropAllowed="true"
                             clearButtonVisible="true"
                             fileNameVisible="true"
@@ -137,9 +139,9 @@
                             property="drawFileRef" label="Чертеж детали"/>
                 </hbox>
                 <hbox>
-                    <image text="Фото" dataContainer="workpieceDc" property="photoFileRef" css="object-fit: contain; "
+                    <image id="photo" text="Фото" dataContainer="workpieceDc" property="photoFileRef" css="object-fit: contain; "
                            width="30%"/>
-                    <image text="Чертеж" dataContainer="workpieceDc" property="drawFileRef" css="object-fit: contain; "
+                    <image id="graph" text="Чертеж" dataContainer="workpieceDc" property="drawFileRef" css="object-fit: contain; "
                            width="30%"/>
                 </hbox>
                 <richTextEditor id="PrimDetalEdit" dataContainer="workpieceDc" property="primDetal"/>

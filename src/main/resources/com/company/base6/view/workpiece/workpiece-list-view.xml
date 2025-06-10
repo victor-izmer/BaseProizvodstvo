@@ -35,9 +35,9 @@
         </collection>
     </data>
     <facets>
+        <settings auto="true"/>
         <dataLoadCoordinator auto="true"/>
         <urlQueryParameters>
-            <genericFilter component="genericFilter"/>
             <pagination component="pagination"/>
         </urlQueryParameters>
     </facets>
@@ -45,13 +45,9 @@
         <action id="selectAction" type="lookup_select"/>
         <action id="discardAction" type="lookup_discard"/>
     </actions>
-    <layout>
-        <genericFilter id="genericFilter"
-                       dataLoader="workpiecesDl">
-            <properties include=".*"/>
-        </genericFilter>
-        <formLayout id="form" dataContainer="workpiecesDc">
-            <vbox>
+    <layout classNames="specification-view-wrapper">
+        <hbox padding="false" width="100%" height="100%" classNames="specification-list-wrapper">
+            <vbox padding="false" width="100%" height="100%">
                 <treeDataGrid id="specificationsDataGrid"
                               dataContainer="specificationsDc"
                               hierarchyProperty="parentref"
@@ -63,14 +59,24 @@
                         <action id="remove" type="list_remove"/>
                     </actions>
                     <columns resizable="true">
-                        <column property="detalref.fullDescription" />
-                        <column property="fullSkolko" textAlign="CENTER" sortable="false"/>
-                        <column property="primSpec" />
-                        <column property="id"/>
+                        <column property="detalref.fullDescription"/>
+                        <column property="fullSkolko" textAlign="CENTER" sortable="false" flexGrow="0" autoWidth="true"/>
+                        <column property="primSpec" flexGrow="0" autoWidth="true"/>
+                        <column property="id" flexGrow="0" autoWidth="true"/>
                     </columns>
                 </treeDataGrid>
             </vbox>
-            <vbox id="listLayout">
+            <vbox id="listLayout" padding="false">
+                <details summaryText="msg://filter" opened="true">
+                    <formLayout width="100%">
+                        <propertyFilter property="description" operation="CONTAINS" dataLoader="workpiecesDl"
+                                        operationTextVisible="false" operationEditable="false"/>
+                        <propertyFilter property="numDraw" operation="CONTAINS" dataLoader="workpiecesDl"
+                                        operationTextVisible="false" operationEditable="false"/>
+                        <propertyFilter property="primDetal" operation="CONTAINS" dataLoader="workpiecesDl"
+                                        operationTextVisible="false" operationEditable="false"/>
+                    </formLayout>
+                </details>
                 <hbox id="buttonsPanel" classNames="buttons-panel">
                     <button id="createButton" action="workpiecesDataGrid.create"/>
                     <button id="editButton" action="workpiecesDataGrid.edit"/>
@@ -102,8 +108,8 @@
                     </columns>
                 </dataGrid>
             </vbox>
-        </formLayout>
-        <hbox id="detailActions" visible="false">
+        </hbox>
+        <hbox id="lookupActions" visible="false">
             <button id="selectButton" action="selectAction"/>
             <button id="discardButton" action="discardAction"/>
         </hbox>
