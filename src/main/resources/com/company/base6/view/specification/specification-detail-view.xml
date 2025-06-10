@@ -116,10 +116,12 @@
             </vbox>
           </hbox>
         </formLayout>
-        <hbox width="100%" padding="false">
-            <textArea property="detalref.primDetal" label="Примечание детали" minWidth="40em" width="100%"/>
-            <richTextEditor id="primSpecField" property="primSpec" minWidth="40em" width="100%"
-                            label="Примечение сборки"/>
+
+        <hbox>
+            <richTextEditor property="detalref.primDetal" label="Примечание детали" minWidth="40em"
+                            themeNames="compact" dataContainer="specificationDc"/>
+            <richTextEditor id="primSpecField" height="6em" property="primSpec" minWidth="40em"
+                            label="Примечение сборки" themeNames="compact" dataContainer="specificationDc"/>
         </hbox>
         <hbox id="detailActions">
             <button id="saveAndCloseButton" action="saveAction"/>

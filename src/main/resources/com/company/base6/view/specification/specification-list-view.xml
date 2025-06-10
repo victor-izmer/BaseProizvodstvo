@@ -123,6 +123,7 @@
                     <textField id="времяИзготовленияField" property="detalref.timeProduce"
                                label="мин" dataContainer="specificationDetalDc" readOnly="true"/>
                 </hbox>
+
                 <hbox padding="false">
                     <textField dataContainer="specificationDetalDc" property="totalPrice"
                     label="msg://com.company.base6.entity/Specification.totalPrice"/>

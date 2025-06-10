@@ -87,8 +87,9 @@
                 </hbox>
             </vbox>
             <richTextEditor id="primBasketField"
-                                   property="primBasket"
-                                   helperText="msg://primBasketField.helperText" label="Примечение строки заказа"/>
+                            property="primBasket"
+                            helperText="msg://primBasketField.helperText" label="Примечание операции в заказе"
+                            dataContainer="basketDc" width="100%" themeNames="compact"/>
         </formLayout>
         <hbox id="detailActions">
             <button id="saveAndCloseButton" action="saveAction"/>
